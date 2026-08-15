@@ -422,7 +422,7 @@
 <script>
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbz9bmzgFjbdhpTTvuBKNeJxtacx4ZhasyQepv1D7sMswamANTcRp-cX14YMThTzbw/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbwXIaS5M_gG2nyP3m50z-_AvqygWyhS8XmmbSrT08R_WdZaWO7U0bgwDzDsHyD1-3M/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -442,17 +442,38 @@
     });
   }
 
-  async function apiRequest(action, payload = {}) {
+  async function apiRequest(action, payload = {}, refreshAction = null) {
     if (!API_URL || API_URL.includes('PASTE_YOUR_')) throw new Error('请先在 index.html 设置 API_URL');
-    if (action === 'getAll') return apiGet({ action: 'getAll' });
+
+    if (['getAll','getInventory','getFamilyMembers','getPurchases','getStores','getOrdersState'].includes(action)) {
+      return apiGet({ action });
+    }
+
     await fetch(API_URL, {
-      method: 'POST', mode: 'no-cors',
+      method: 'POST',
+      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ action, ...payload })
     });
-    // no-cors POST returns an opaque response; read the latest shared state afterwards.
-    return apiGet({ action: 'getAll' });
+
+    // Google Apps Script no-cors POST response is opaque.
+    // Refresh only the dataset that changed instead of reloading the whole database.
+    if (refreshAction) return apiGet({ action: refreshAction });
+    return { success: true };
   }
+
+  function setSavingState(button, saving, label) {
+    if (!button) return;
+    if (saving) {
+      button.dataset.oldText = button.textContent;
+      button.disabled = true;
+      button.textContent = label || '保存中…';
+    } else {
+      button.disabled = false;
+      if (button.dataset.oldText) button.textContent = button.dataset.oldText;
+    }
+  }
+
 
   function applyServerState(data) {
     inventory = Array.isArray(data.inventory) ? data.inventory.map(x =>
@@ -489,6 +510,32 @@
       }
     });
   }
+
+  function applyInventoryState(data) {
+    inventory = Array.isArray(data.inventory) ? data.inventory.map(x =>
+      typeof x === 'string' ? {id:'',name:x,qty:1,unit:'份',category:'其他'} : x
+    ) : [];
+  }
+
+  function applyFamilyState(data) {
+    familyMembers = Array.isArray(data.familyMembers) ? data.familyMembers : [];
+  }
+
+  function applyPurchaseState(data) {
+    purchases = Array.isArray(data.purchases) ? data.purchases : [];
+    priceHistory = Array.isArray(data.priceHistory) ? data.priceHistory : [];
+  }
+
+  function applyStoreState(data) {
+    stores = Array.isArray(data.stores) ? data.stores : [];
+  }
+
+  function applyOrdersState(data) {
+    orders = Array.isArray(data.orders) ? data.orders : [];
+    finalDecisions = Array.isArray(data.finalDecisions) ? data.finalDecisions : [];
+    shoppingItems = Array.isArray(data.shoppingItems) ? data.shoppingItems : [];
+  }
+
 
   async function refreshFromServer(render = true) {
     const data = await apiRequest('getAll');
@@ -719,7 +766,8 @@
 
     async function saveCustomDish(dish) {
       try {
-        const data = await apiRequest('saveCustomDish', { dish });
+        await apiRequest('saveCustomDish', { dish });
+        const data = await apiRequest('getAll');
         applyServerState(data);
         return true;
       } catch (e) {
@@ -809,7 +857,7 @@
       grid.querySelectorAll('[data-plus]').forEach(b=>b.addEventListener('click',async()=>{const i=Number(b.dataset.plus);inventory[i].qty=Number(inventory[i].qty||0)+1;await persistInventory();}));
       grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{inventory.splice(Number(b.dataset.del),1);await persistInventory();}));
     }
-    async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory});applyServerState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
+    async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory},'getInventory');applyInventoryState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
     async function addInventoryItemUI(){
       const name=document.getElementById('inventoryName').value.trim(),qty=Number(document.getElementById('inventoryQty').value||0),unit=document.getElementById('inventoryUnit').value,category=document.getElementById('inventoryCategory').value;
       if(!name)return alert('请输入食材名称');if(qty<0)return alert('数量不能小于 0');
@@ -869,15 +917,17 @@
     }
 
     async function saveFamilyMemberUI(){
+      const saveBtn=document.getElementById('saveMemberBtn');
       const member={name:document.getElementById('memberName').value.trim(),sex:document.getElementById('memberSex').value,age:Number(document.getElementById('memberAge').value||0),height:Number(document.getElementById('memberHeight').value||0),weight:Number(document.getElementById('memberWeight').value||0)};
       if(!member.name)return alert('请输入名字');
       if(!(member.age>0&&member.height>0&&member.weight>0))return alert('请完整填写年龄、身高和体重');
-      try{const data=await apiRequest('saveFamilyMember',{member});applyServerState(data);renderFamilyStats();['memberName','memberAge','memberHeight','memberWeight'].forEach(id=>document.getElementById(id).value='');alert('✅ 家庭成员已保存');}
+      try{setSavingState(saveBtn,true,'保存中…');const data=await apiRequest('saveFamilyMember',{member},'getFamilyMembers');applyFamilyState(data);renderFamilyStats();['memberName','memberAge','memberHeight','memberWeight'].forEach(id=>document.getElementById(id).value='');alert('✅ 家庭成员已保存');}
       catch(e){alert('保存家庭成员失败：'+e.message);}
+      finally{setSavingState(saveBtn,false);}
     }
     async function deleteFamilyMemberUI(id){
       if(!confirm('确定删除这个家庭成员资料？'))return;
-      try{const data=await apiRequest('deleteFamilyMember',{id});applyServerState(data);renderFamilyStats();}
+      try{const data=await apiRequest('deleteFamilyMember',{id},'getFamilyMembers');applyFamilyState(data);renderFamilyStats();}
       catch(e){alert('删除失败：'+e.message);}
     }
 
@@ -1010,8 +1060,8 @@
         if (!purchase.source) return alert('请先选择或添加购买渠道');
         if (!(purchase.qty > 0)) return alert('数量必须大于 0');
         if (purchase.unitPrice < 0) return alert('单价不能小于 0');
-        const data = await apiRequest('savePurchase', {purchase});
-        applyServerState(data);
+        const data = await apiRequest('savePurchase', {purchase}, 'getPurchases');
+        applyPurchaseState(data);
         renderSourceOptions(); renderMonthlyPurchaseSummary(); renderPriceComparison();
         alert(`✅ 采购已保存：${money(data.purchases?.at(-1)?.total || purchase.qty*purchase.unitPrice+purchase.shipping-purchase.discount)}`);
         clearPurchaseForm();
@@ -1103,8 +1153,8 @@
     async function deleteStoreUI(id){
       if (!confirm('确定删除这个渠道？历史采购记录不会删除。')) return;
       try {
-        const data = await apiRequest('deleteStore', {id});
-        applyServerState(data); renderSourceOptions(); renderStoreList();
+        const data = await apiRequest('deleteStore', {id}, 'getStores');
+        applyStoreState(data); renderSourceOptions(); renderStoreList();
       } catch(e){ alert('删除失败：'+e.message); }
     }
     window.deleteStoreUI = deleteStoreUI;
@@ -1119,8 +1169,8 @@
           note: document.getElementById('storeNote').value.trim()
         };
         if (!store.source) return alert('请输入渠道名称');
-        const data = await apiRequest('saveStore',{store});
-        applyServerState(data); renderSourceOptions(); renderStoreList();
+        const data = await apiRequest('saveStore',{store}, 'getStores');
+        applyStoreState(data); renderSourceOptions(); renderStoreList();
         document.getElementById('storeName').value=''; document.getElementById('storeBranch').value=''; document.getElementById('storeLocation').value=''; document.getElementById('storeNote').value='';
         alert('✅ 渠道已保存');
       }catch(e){alert('保存渠道失败：'+e.message);}
@@ -1313,8 +1363,8 @@
       const btn = document.getElementById('finalConfirmBtn');
       btn.disabled = true;
       try {
-        const data = await apiRequest('saveOrder', { order: orderToSave });
-        applyServerState(data);
+        const data = await apiRequest('saveOrder', { order: orderToSave }, 'getOrdersState');
+        applyOrdersState(data);
         selectedDishes.clear();
         renderMenu();
         document.getElementById('confirmModal').style.display = 'none';
@@ -1413,8 +1463,8 @@
           const id = e.target.dataset.id;
           e.target.disabled = true;
           try {
-            const data = await apiRequest('updateFinalDecision', { id, selected: e.target.checked });
-            applyServerState(data);
+            const data = await apiRequest('updateFinalDecision', { id, selected: e.target.checked }, 'getOrdersState');
+            applyOrdersState(data);
             renderFinalDecisions();
             renderShoppingList();
             renderDailyNutrition();
@@ -1484,8 +1534,8 @@
         cb.addEventListener('change', (e) => {
           const idx = parseInt(e.target.dataset.index);
           shoppingItems[idx].checked = e.target.checked;
-          apiRequest('updateShoppingItem', { id: shoppingItems[idx].id, checked: e.target.checked })
-            .then(data => { applyServerState(data); renderShoppingList(); })
+          apiRequest('updateShoppingItem', { id: shoppingItems[idx].id, checked: e.target.checked }, 'getOrdersState')
+            .then(data => { applyOrdersState(data); renderShoppingList(); })
             .catch(err => { shoppingItems[idx].checked = !e.target.checked; e.target.checked = shoppingItems[idx].checked; alert('❌ 更新购买清单失败：' + err.message); });
         });
       });
