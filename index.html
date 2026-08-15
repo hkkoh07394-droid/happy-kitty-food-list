@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
+  <title>春日家宴 · 家庭点餐系统</title>
+  <style>
+    :root {
+      --spring-green: #7fbf7f;
+      --spring-light: #e2f0d9;
+      --spring-pale: #f4faf2;
+      --spring-deep: #2d6a4f;
+      --spring-accent: #b7e4c7;
+      --shadow-soft: 0 8px 20px rgba(45, 106, 79, 0.12);
+      --shadow-glow: 0 12px 32px rgba(45, 106, 79, 0.25);
+      --radius-card: 20px;
+      --radius-btn: 30px;
+      --font-family: 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; }
+    body {
+      background: var(--spring-pale);
+      font-family: var(--font-family);
+      color: #1e3a2b;
+      padding: 12px 8px 40px;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 30% 20%, rgba(183, 228, 199, 0.25) 0%, transparent 30%),
+                        radial-gradient(circle at 80% 70%, rgba(127, 191, 127, 0.18) 0%, transparent 40%);
+    }
+    .app-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; background: #ffffffd9; backdrop-filter: blur(8px); padding: 12px 16px; border-radius: 32px; box-shadow: var(--shadow-soft); border: 1px solid var(--spring-accent); gap: 10px; }
+    .date-box { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 1rem; color: var(--spring-deep); background: var(--spring-light); padding: 8px 14px; border-radius: 40px; flex-wrap: wrap; }
+    .date-box span { background: white; padding: 4px 10px; border-radius: 30px; font-size: 0.9rem; box-shadow: inset 0 1px 4px rgba(0,0,0,0.03); }
+    .inventory-box { display: flex; align-items: center; gap: 6px; background: #eef7e9; padding: 6px 12px; border-radius: 40px; flex-wrap: wrap; }
+    .inventory-box input { border: 1px solid #b7d3b0; border-radius: 30px; padding: 8px 12px; font-size: 0.9rem; width: 170px; max-width: 100%; background: white; outline: none; }
+    .btn { background: var(--spring-deep); color: white; border: none; padding: 8px 16px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.9rem; box-shadow: 0 4px 10px rgba(45,106,79,0.3); white-space: nowrap; }
+    .btn-outline { background: white; color: var(--spring-deep); border: 2px solid var(--spring-deep); box-shadow: none; }
+    .category-nav { display: flex; flex-wrap: wrap; gap: 6px; background: #ffffffc7; backdrop-filter: blur(4px); padding: 10px 12px; border-radius: 40px; justify-content: center; box-shadow: var(--shadow-soft); border: 1px solid #cde5c0; }
+    .cat-btn { background: transparent; border: none; padding: 8px 14px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; color: #2d4a36; cursor: pointer; transition: 0.2s; letter-spacing: 0.5px; }
+    .cat-btn.active { background: var(--spring-deep); color: white; box-shadow: 0 6px 12px rgba(45,106,79,0.3); }
+    .subcat-nav { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 4px 0; }
+    .subcat-btn { background: #e8f5e0; border: 1px solid #b7d3b0; border-radius: 30px; padding: 5px 12px; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: 0.2s; color: #2d4a36; }
+    .subcat-btn.active { background: #2d6a4f; color: white; border-color: #2d6a4f; }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin: 6px 0 12px; }
+    .dish-card { background: white; border-radius: var(--radius-card); padding: 14px 8px 10px; box-shadow: var(--shadow-soft); transition: 0.2s; cursor: pointer; position: relative; border: 2px solid #e0f0d7; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 110px; justify-content: center; background: linear-gradient(145deg, #ffffff, #fbfef9); }
+    .dish-card:hover { transform: translateY(-4px); border-color: var(--spring-green); background: #fefffb; box-shadow: var(--shadow-glow); }
+    .dish-card.selected { border: 3px solid var(--spring-deep); background: #f0f9ea; box-shadow: 0 10px 18px rgba(45,106,79,0.25); }
+    .dish-name { font-weight: 700; font-size: 1rem; color: #1f462f; }
+    .dish-rating { font-size: 0.75rem; color: #e67e22; letter-spacing: 1px; }
+    .dish-cat-badge { background: var(--spring-light); color: #2d6a4f; font-size: 0.65rem; padding: 2px 8px; border-radius: 20px; font-weight: 600; position: absolute; top: 6px; left: 6px; }
+    .tooltip-box { position: relative; width: 100%; }
+    .tooltip-content { visibility: hidden; opacity: 0; background: #1e3a2b; color: #fff; text-align: left; padding: 12px 14px; border-radius: 16px; position: absolute; z-index: 100; bottom: 120%; left: 50%; transform: translateX(-50%); width: 200px; font-size: 0.75rem; line-height: 1.5; transition: 0.2s; box-shadow: 0 12px 18px rgba(0,0,0,0.2); pointer-events: none; }
+    .tooltip-content::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 8px solid transparent; border-top-color: #1e3a2b; }
+    .dish-card:hover .tooltip-content { visibility: visible; opacity: 1; }
+    .order-section { background: #fffffff2; backdrop-filter: blur(8px); border-radius: 30px; padding: 16px; box-shadow: var(--shadow-soft); border: 1px solid var(--spring-accent); display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; justify-content: space-between; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; min-width: 120px; flex: 0.5 0.5 auto; width: 140px; }
+    .form-group label { font-weight: 600; color: #28543c; font-size: 0.85rem; }
+    .form-group select, .form-group input, .form-group input[type="date"] { padding: 8px 10px; border-radius: 30px; border: 1px solid #b7d3b0; background: white; font-size: 0.85rem; outline: none; width: 100%; min-width: 100%; max-width: 100%; -webkit-appearance: none; appearance: none; }
+    #personSelect { font-family: var(--font-family); font-weight: 600; color: var(--spring-deep); letter-spacing: 0.5px; text-align: left; }
+    .form-group input[type="date"] { font-family: var(--font-family); font-weight: 600; color: var(--spring-deep); letter-spacing: 0.5px; text-align: center; }
+    .selected-summary { background: #f0f7eb; padding: 10px 14px; border-radius: 40px; font-weight: 500; flex: 1 1 auto; text-align: center; font-size: 0.9rem; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(8px); animation: fadeIn 0.2s ease; padding: 16px; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card { background: white; max-width: 500px; width: 100%; border-radius: 40px; padding: 24px 18px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); text-align: center; animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 4px solid var(--spring-accent); background: linear-gradient(145deg, #ffffff, #f8fff3); }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-card h3 { color: var(--spring-deep); font-size: 1.4rem; margin-bottom: 8px; letter-spacing: 1px; }
+    .emoji-big { font-size: 2.8rem; margin-bottom: 4px; }
+    .modal-dishes { background: #f0f9ea; border-radius: 24px; padding: 12px; margin: 12px 0; font-size: 1rem; max-height: 160px; overflow-y: auto; border: 2px dashed var(--spring-green); }
+    .modal-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+    .btn-modal-cancel { background: #e0e0e0; color: #333; padding: 10px 22px; border-radius: 40px; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+    .btn-modal-confirm { background: linear-gradient(135deg, #2d6a4f, #4c956c); color: white; padding: 10px 26px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; box-shadow: 0 8px 18px rgba(45,106,79,0.4); letter-spacing: 1px; font-size: 0.9rem; }
+    .floating-record-btn { position: fixed; bottom: 20px; right: 20px; background: var(--spring-deep); color: white; border: none; border-radius: 60px; padding: 12px 18px; font-weight: 700; cursor: pointer; box-shadow: 0 12px 28px rgba(45,106,79,0.5); z-index: 150; transition: 0.2s; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+    .record-panel { position: fixed; bottom: 80px; right: 20px; width: min(350px, calc(100vw - 40px)); max-height: 50vh; background: white; border-radius: 24px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); z-index: 140; padding: 12px; display: none; border: 2px solid var(--spring-accent); overflow-y: auto; }
+    .record-panel.active { display: block; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .query-result { background: #f9fef7; border-radius: 20px; padding: 10px; margin-top: 8px; font-size: 0.8rem; max-height: 200px; overflow-y: auto; }
+    .record-item { display: flex; justify-content: space-between; border-bottom: 1px dashed #cfe3ca; padding: 6px 4px; flex-wrap: wrap; gap: 4px; }
+    .shopping-section { margin-top: 14px; border-top: 2px solid var(--spring-accent); padding-top: 10px; }
+    .shopping-list-item { display: flex; align-items: center; gap: 8px; padding: 5px 2px; border-bottom: 1px dashed #dfebd5; }
+    .shopping-list-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--spring-deep); flex-shrink: 0; }
+    .shopping-list-item span { flex: 1; font-size: 0.8rem; }
+    .shopping-list-item .ingredient-source { font-size: 0.7rem; color: #6a8f75; }
+    .final-decision-section { margin-top: 14px; border-top: 2px solid var(--spring-accent); padding-top: 10px; }
+    .final-decision-item { display: flex; align-items: center; gap: 8px; padding: 5px 2px; border-bottom: 1px dashed #dfebd5; }
+    .final-decision-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--spring-deep); flex-shrink: 0; }
+    .final-decision-item span { flex: 1; font-size: 0.8rem; }
+    footer { text-align: center; margin-top: 12px; color: #51755f; font-size: 0.75rem; }
+    @media (max-width: 600px) {
+      .menu-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .header { flex-direction: column; align-items: stretch; }
+      .inventory-box input { width: 100%; }
+      .order-section { flex-direction: column; align-items: stretch; }
+      .form-group { flex: 0 0 48%; min-width: 0; width: 48%; }
+      .floating-record-btn { padding: 10px 14px; bottom: 15px; right: 15px; }
+      .record-panel { bottom: 70px; right: 15px; }
+    }
+  
+    #addDishModal .modal-card { max-width: 400px; text-align: left; }
+    #addDishModal .form-group { flex: 1 1 100%; min-width: 100%; width: 100%; }
+    #addDishModal textarea { font-family: var(--font-family); font-size: 0.9rem; resize: vertical; border-radius: 16px; border: 1px solid #b7d3b0; padding: 8px; width: 100%; }
+    #addDishModal .form-group select, #addDishModal .form-group input { width: 100%; min-width: 100%; }
+    .custom-dish-badge { background: #fff3cd; color: #8a5a00; font-size: 0.62rem; padding: 2px 7px; border-radius: 20px; font-weight: 700; position: absolute; top: 6px; right: 6px; }
+
+    .v2-nav { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:4px 0 2px; }
+    .v2-nav button { border:1px solid #b7d3b0; background:#fff; color:#2d6a4f; border-radius:30px; padding:8px 13px; font-weight:700; cursor:pointer; }
+    .v2-nav button.active { background:#2d6a4f; color:#fff; }
+    .v2-panel { display:none; background:#fff; border:2px solid #d8ead0; border-radius:24px; padding:14px; box-shadow:var(--shadow-soft); margin:8px 0 14px; }
+    .v2-panel.active { display:block; animation:slideUp .2s ease; }
+    .v2-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+    .v2-field { display:flex; flex-direction:column; gap:4px; }
+    .v2-field label { font-size:.78rem; font-weight:700; color:#2d6a4f; }
+    .v2-field input,.v2-field select,.v2-field textarea { width:100%; border:1px solid #b7d3b0; border-radius:16px; padding:9px 10px; font-family:var(--font-family); background:#fff; }
+    .v2-stat { background:#f3faef; border:1px solid #d8ead0; border-radius:18px; padding:10px; }
+    .v2-stat b { display:block; font-size:1.15rem; color:#2d6a4f; }
+    .v2-table { width:100%; border-collapse:collapse; font-size:.78rem; margin-top:8px; }
+    .v2-table th,.v2-table td { padding:7px 5px; border-bottom:1px dashed #dcebd7; text-align:left; vertical-align:top; }
+    .v2-table th { color:#2d6a4f; background:#f3faef; }
+    .v2-small { font-size:.72rem; color:#6a8f75; }
+    .v2-good { color:#2d6a4f; font-weight:800; }
+    .v2-warning { color:#a66a00; font-weight:800; }
+    .v2-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .v2-link { color:#2d6a4f; word-break:break-all; }
+    .nutrition-row { display:flex; align-items:center; gap:7px; margin:7px 0; font-size:.78rem; }
+    .nutrition-bar { flex:1; height:9px; border-radius:20px; background:#e9f1e5; overflow:hidden; }
+    .nutrition-bar span { display:block; height:100%; background:#4c956c; border-radius:20px; }
+    .purchase-card { border:1px solid #d8ead0; border-radius:18px; padding:9px; margin:7px 0; background:#fbfef9; }
+    @media (max-width:600px){ .v2-grid{grid-template-columns:1fr 1fr;} .v2-table{font-size:.7rem;} }
+
+    /* v2.2 */
+    .app-container{padding-bottom:90px}
+    .v2-nav{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;justify-content:flex-start;gap:6px;padding:4px 1px 8px;scrollbar-width:none}
+    .v2-nav::-webkit-scrollbar{display:none}
+    .v2-nav button{flex:0 0 auto;min-width:76px;padding:8px 10px;font-size:.76rem;white-space:nowrap}
+    .v2-panel{overflow:hidden}
+    .v2-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .v2-field{min-width:0}
+    .v2-field input,.v2-field select,.v2-field textarea{min-width:0;max-width:100%}
+    .full-row{grid-column:1/-1!important}
+    .inventory-launch{display:flex;align-items:center;gap:8px;border:0;background:#eef7e9;color:#2d6a4f;border-radius:30px;padding:9px 14px;font-weight:800;cursor:pointer}
+    .inventory-count{background:#2d6a4f;color:white;min-width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem}
+    #inventoryModal,#addDishModal{overflow-y:auto;align-items:flex-start;padding:18px 10px 100px}
+    #inventoryModal .modal-card,#addDishModal .modal-card{margin:auto;max-height:none;overflow:visible;border-radius:28px}
+    #inventoryModal .modal-card{max-width:720px;text-align:left}
+    .inventory-toolbar{position:sticky;top:0;z-index:3;background:linear-gradient(145deg,#fff,#f8fff3);padding-bottom:8px}
+    .inventory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:9px;margin-top:12px}
+    .inventory-card{border:1px solid #cfe3ca;border-radius:18px;padding:10px;background:#fff;min-height:115px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(45,106,79,.08)}
+    .inventory-emoji{font-size:1.7rem}.inventory-name{font-weight:800;color:#244b35;margin:2px 0}.inventory-qty{font-size:.82rem;color:#2d6a4f;font-weight:700}
+    .inventory-card-actions{display:flex;gap:5px;margin-top:7px}.inventory-mini-btn{border:1px solid #b7d3b0;background:#f6fbf3;color:#2d6a4f;border-radius:14px;padding:4px 7px;font-weight:800;cursor:pointer;flex:1}
+    .stock-badge{display:inline-block;background:#eaf6e3;color:#2d6a4f;border:1px solid #c4dfba;border-radius:12px;padding:2px 6px;font-size:.68rem;font-weight:800;margin-left:4px}
+    .family-form-card{margin:10px 0 12px;padding:12px;border-radius:18px;background:#f7fbf4;border:1px solid #d6e8ce}
+    .member-delete{border:1px solid #e1b9b9;background:#fff7f7;color:#9b3333;border-radius:14px;padding:5px 9px;font-size:.72rem;cursor:pointer}
+    @media(max-width:600px){
+      .order-section{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+      .order-section .form-group{width:100%;min-width:0;flex:none}
+      .order-section .selected-summary,.order-section #submitOrderBtn{grid-column:1/-1;width:100%}
+      .v2-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+      .v2-panel{padding:13px 11px}
+      .v2-field label{font-size:.74rem;line-height:1.35}
+      .v2-field input,.v2-field select,.v2-field textarea{padding:9px 8px;font-size:.84rem}
+      .inventory-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+      .inventory-card{padding:8px;min-height:108px}
+      .record-panel{max-height:62vh}
+    }
+    @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="header">
+    <div class="date-box">📅 <span id="currentDateDisplay"></span> <span id="currentWeekdayDisplay"></span></div>
+    <div class="inventory-box" style="background:transparent;padding:0;">
+      <button class="inventory-launch" id="openInventoryBtn">🥬 库存食材 <span class="inventory-count" id="inventoryCount">0</span></button>
+    </div>
+  </div>
+
+  <div class="order-section">
+    <div class="form-group">
+      <label>👤 点餐人</label>
+      <select id="personSelect">
+        <option value="Sue宝" selected>Sue宝</option>
+        <option value="Kitty">Kitty</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>📆 点餐日期</label>
+      <input type="date" id="orderDate" value="">
+    </div>
+    <div class="selected-summary" id="selectedSummary">已选 0 道菜</div>
+    <button class="btn" id="submitOrderBtn">✔ 提交</button>
+  </div>
+
+  <div class="v2-nav">
+    <button data-v2="menuPanel" class="active">🍽 菜单</button>
+    <button data-v2="nutritionPanel">🥗 营养</button>
+    <button data-v2="purchasePanel">🧾 采购记账</button>
+    <button data-v2="pricePanel">💰 价格比较</button>
+    <button data-v2="storePanel">🏪 渠道管理</button>
+  </div>
+
+
+  <div id="menuPanel" class="v2-panel active">
+    <div class="category-nav" id="categoryNav">
+      <button class="cat-btn active" data-cat="全部">🥗 全部</button>
+      <button class="cat-btn" data-cat="主食">🍚 主食</button>
+      <button class="cat-btn" data-cat="青菜">🥬 青菜</button>
+      <button class="cat-btn" data-cat="肉类">🍖 肉类</button>
+      <button class="cat-btn" data-cat="蛋类">🥚 蛋类</button>
+      <button class="cat-btn" data-cat="豆腐类">🧈 豆腐</button>
+    </div>
+    <div id="subcatContainer" class="subcat-nav"></div>
+    <div style="display:flex;justify-content:center;margin:8px 0;">
+      <button class="btn" id="addDishBtn" style="background:#4c956c;">➕ 添加自定义菜品</button>
+    </div>
+    <div id="menuGrid" class="menu-grid"></div>
+  </div>
+
+  <div id="nutritionPanel" class="v2-panel">
+    <h3 style="color:#2d6a4f;margin-bottom:8px;">🥗 家庭营养</h3>
+
+    <div class="family-form-card">
+      <b style="color:#2d6a4f;">➕ 添加家庭成员</b>
+      <div class="v2-grid" style="margin-top:8px;">
+        <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue宝"></div>
+        <div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
+        <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div>
+        <div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
+        <div class="v2-field"><label>体重 kg</label><input type="number" id="memberWeight" min="1" step="0.1"></div>
+        <div class="v2-field"><label>&nbsp;</label><button class="btn" id="saveMemberBtn">保存成员</button></div>
+      </div>
+    </div>
+    <div id="familyStats" class="v2-grid"></div>
+    <div style="margin-top:12px;">
+      <b style="color:#2d6a4f;">今日最终菜单营养汇总</b>
+      <div id="dailyNutrition"></div>
+    </div>
+    <div class="v2-small" style="margin-top:8px;">
+      BMR 是静息能量估算，不等于每日热量目标；蛋白质最低值按 0.8 g/kg 作为一般成人参考，实际目标可按活动量和专业建议调整。
+    </div>
+  </div>
+
+  <div id="purchasePanel" class="v2-panel">
+    <h3 style="color:#2d6a4f;margin-bottom:8px;">🧾 记录采购</h3>
+    <div class="v2-grid">
+      <div class="v2-field"><label>日期</label><input type="date" id="purchaseDate"></div>
+      <div class="v2-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
+      <div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
+      <div class="v2-field"><label>分店 / 店铺</label><input id="purchaseBranch" placeholder="例如 Mid Valley / ABC Store"></div>
+      <div class="v2-field"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
+      <div class="v2-field"><label>数量</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1"></div>
+      <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
+      <div class="v2-field"><label>每份规格</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 500"></div>
+      <div class="v2-field"><label>规格单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option>g</option><option>kg</option><option>ml</option><option>L</option><option>pcs</option></select></div>
+      <div class="v2-field"><label>每份价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01"></div>
+      <div class="v2-field"><label>运费 (RM)</label><input type="number" id="purchaseShipping" min="0" step="0.01" value="0"></div>
+      <div class="v2-field"><label>优惠 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0"></div>
+      <div class="v2-field"><label>分类</label><input id="purchaseCategory" placeholder="蔬菜 / 肉类 / 日用品"></div>
+      <div class="v2-field full-row"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
+      <div class="v2-field full-row"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
+    </div>
+    <div id="purchaseTotalPreview" class="v2-stat" style="margin-top:10px;">预计实际支付：RM 0.00</div>
+    <div class="v2-actions">
+      <button class="btn" id="savePurchaseBtn">💾 保存采购</button>
+      <button class="btn btn-outline" id="clearPurchaseBtn">清空</button>
+    </div>
+    <div style="margin-top:12px;"><b style="color:#2d6a4f;">本月采购</b><div id="monthlyPurchaseSummary"></div></div>
+  </div>
+
+  <div id="pricePanel" class="v2-panel">
+    <h3 style="color:#2d6a4f;margin-bottom:8px;">💰 价格比较</h3>
+    <div class="v2-grid">
+      <div class="v2-field"><label>商品</label><input id="priceSearchItem" placeholder="例如 鸡蛋"></div>
+      <div class="v2-field"><label>比较单位</label><select id="priceSearchUnit"><option value="">自动 / 全部</option><option>kg</option><option>L</option><option>个</option></select></div>
+    </div>
+    <div class="v2-actions"><button class="btn" id="comparePriceBtn">🔍 比较价格</button></div>
+    <div id="priceComparison" style="margin-top:10px;"></div>
+    <div class="v2-small">自动换算支持 g↔kg、ml↔L、pcs/个；实际成本 = 商品金额 + 运费 − 优惠。例：500g RM10 会换算成 RM20/kg。</div>
+  </div>
+
+  <div id="storePanel" class="v2-panel">
+    <h3 style="color:#2d6a4f;margin-bottom:8px;">🏪 购买渠道</h3>
+    <div class="v2-grid">
+      <div class="v2-field"><label>类型</label><select id="storeType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
+      <div class="v2-field"><label>渠道名称</label><input id="storeName" placeholder="AEON / Shopee / Lazada"></div>
+      <div class="v2-field"><label>分店 / 店铺</label><input id="storeBranch" placeholder="Mid Valley / ABC Store"></div>
+      <div class="v2-field"><label>地点</label><input id="storeLocation" placeholder="Kuala Lumpur"></div>
+      <div class="v2-field"><label>备注</label><input id="storeNote" placeholder="会员日等"></div>
+    </div>
+    <div class="v2-actions"><button class="btn" id="saveStoreBtn">➕ 添加渠道</button></div>
+    <div id="storeList"></div>
+  </div>
+
+
+    <div id="uiStatus" style="font-size:.72rem; text-align:center; margin-top:6px; color:#6a8f75;">✅ 页面按键已加载</div>
+<div id="apiStatus" style="font-size:.72rem; text-align:center; margin-top:6px; color:#6a8f75;">
+      🔄 正在连接 Google Sheets…
+    </div>
+  <footer>🌿 春日家宴 · 家庭点餐系统</footer>
+</div>
+
+
+
+<button class="floating-record-btn" id="floatingRecordBtn">📋 记录</button>
+<div class="record-panel" id="recordPanel">
+  <h3 style="text-align:center; margin-bottom:10px;">📋 点单记录</h3>
+
+  <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+    <input type="month" id="queryMonth"
+      style="flex:1; padding:8px; border-radius:20px; border:2px solid #b7d3b0;
+      font-family:var(--font-family); font-weight:600; color:var(--spring-deep); text-align:center;">
+    <button class="btn" id="queryOrdersBtn"
+      style="padding:8px 16px; font-size:0.8rem; white-space:nowrap;">🔍 查询</button>
+  </div>
+
+  <div id="queryResult" class="query-result">暂无查询结果</div>
+
+  <div class="final-decision-section">
+    <h4 style="margin-bottom:6px;">🎯 最终决定</h4>
+    <div id="finalDecisionContainer"></div>
+    <button class="btn" onclick="exportFinalDecision()"
+      style="width:80%; margin-top:8px; font-size:0.8rem;">📤 导出最终菜单</button>
+  </div>
+
+  <div class="shopping-section">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h4>🛒 购买清单</h4>
+      <button class="btn" onclick="exportToNotes()"
+        style="padding:6px 12px; font-size:0.8rem;">📤 导出</button>
+    </div>
+    <div id="shoppingListContainer"></div>
+  </div>
+</div>
+
+
+<div id="inventoryModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="inventory-toolbar">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <div><div class="emoji-big" style="font-size:2rem;margin:0;">🥬</div><h3 style="margin:0;">库存食材</h3><div class="v2-small">记录食材数量，像物品栏一样管理。</div></div>
+        <button class="btn-modal-cancel" id="closeInventoryBtn" style="padding:8px 12px;">✕</button>
+      </div>
+      <div class="v2-grid" style="margin-top:10px;">
+        <div class="v2-field"><label>食材名称</label><input id="inventoryName" placeholder="鸡蛋"></div>
+        <div class="v2-field"><label>数量</label><input type="number" id="inventoryQty" min="0" step="0.1" value="1"></div>
+        <div class="v2-field"><label>单位</label><select id="inventoryUnit"><option>个</option><option>盒</option><option>包</option><option>瓶</option><option>kg</option><option>g</option><option>L</option><option>ml</option><option>份</option></select></div>
+        <div class="v2-field"><label>分类</label><select id="inventoryCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>主食</option><option>调味</option><option>饮品</option><option>其他</option></select></div>
+      </div>
+      <div class="v2-actions"><button class="btn" id="addInventoryItemBtn">➕ 加入库存</button></div>
+      <div class="v2-field" style="margin-top:8px;"><label>🔎 搜索库存</label><input id="inventorySearch" placeholder="输入食材名称"></div>
+    </div>
+    <div id="inventoryGrid" class="inventory-grid"></div>
+  </div>
+</div>
+
+<div id="addDishModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="emoji-big">🍳</div><h3>添加自定义菜品</h3>
+    <div class="v2-small" style="margin-bottom:8px;">营养数据可选；填写后会同步到 Google Sheets，方便每日营养汇总。</div>
+    <div class="form-group" style="margin-bottom:10px;"><label>菜品名称</label><input type="text" id="newDishName" placeholder="输入菜品名称"></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>分类</label><select id="newDishCat"><option value="主食">主食</option><option value="青菜">青菜</option><option value="肉类">肉类</option><option value="蛋类">蛋类</option><option value="豆腐类">豆腐类</option></select></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>子分类</label><select id="newDishSubcat"></select></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>做法</label><textarea id="newDishMethod" rows="3" placeholder="输入做法说明"></textarea></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>食材（用逗号分隔）</label><input type="text" id="newDishIngredients" placeholder="如：鸡蛋,番茄,盐"></div>
+    <div class="form-group" style="margin-bottom:10px;"><label>推荐指数</label><select id="newDishRating"><option value="5">⭐⭐⭐⭐⭐ (5星)</option><option value="4" selected>⭐⭐⭐⭐ (4星)</option><option value="3">⭐⭐⭐ (3星)</option></select></div>
+    <div style="margin:8px 0; padding:10px; border-radius:18px; background:#f3faef; border:1px solid #d8ead0;">
+      <b style="color:#2d6a4f; font-size:.85rem;">🥗 每份营养（可选）</b>
+      <div class="v2-grid" style="margin-top:7px;">
+        <div class="v2-field"><label>热量 kcal</label><input type="number" id="newDishCalories" min="0" step="0.1"></div>
+        <div class="v2-field"><label>蛋白质 g</label><input type="number" id="newDishProtein" min="0" step="0.1"></div>
+        <div class="v2-field"><label>碳水 g</label><input type="number" id="newDishCarbs" min="0" step="0.1"></div>
+        <div class="v2-field"><label>脂肪 g</label><input type="number" id="newDishFat" min="0" step="0.1"></div>
+        <div class="v2-field"><label>膳食纤维 g</label><input type="number" id="newDishFiber" min="0" step="0.1"></div>
+        <div class="v2-field"><label>蔬菜份数</label><input type="number" id="newDishVeggie" min="0" step="0.1"></div>
+        <div class="v2-field"><label>水果份数</label><input type="number" id="newDishFruit" min="0" step="0.1"></div>
+      </div>
+    </div>
+    <div class="modal-actions"><button class="btn-modal-cancel" id="cancelAddDishBtn">取消</button><button class="btn-modal-confirm" id="confirmAddDishBtn">确认添加</button></div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="emoji-big">🍽️</div>
+    <h3>确认点餐</h3>
+    <p id="confirmText" style="margin:6px 0; font-size:0.95rem; color:#2d6a4f;"></p>
+    <div class="modal-dishes" id="modalDishList"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" id="cancelConfirmBtn">取消</button>
+      <button class="btn-modal-confirm" id="finalConfirmBtn">确认提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== Google Sheets API =====
+  // After deploying Code.gs as a Web App, paste the /exec URL here.
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz9bmzgFjbdhpTTvuBKNeJxtacx4ZhasyQepv1D7sMswamANTcRp-cX14YMThTzbw/exec';
+
+  function apiGet(params = {}) {
+    return new Promise((resolve, reject) => {
+      if (!API_URL || API_URL.includes('PASTE_YOUR_')) {
+        reject(new Error('请先在 index.html 设置 API_URL'));
+        return;
+      }
+      const callbackName = 'gsCallback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      const query = new URLSearchParams({ ...params, callback: callbackName }).toString();
+      const timer = setTimeout(() => { cleanup(); reject(new Error('Google Sheets 请求超时')); }, 20000);
+      function cleanup() { clearTimeout(timer); delete window[callbackName]; script.remove(); }
+      window[callbackName] = data => { cleanup(); data && data.success ? resolve(data) : reject(new Error((data && data.error) || 'API request failed')); };
+      script.onerror = () => { cleanup(); reject(new Error('无法连接 Google Apps Script')); };
+      script.src = API_URL + '?' + query;
+      document.body.appendChild(script);
+    });
+  }
+
+  async function apiRequest(action, payload = {}) {
+    if (!API_URL || API_URL.includes('PASTE_YOUR_')) throw new Error('请先在 index.html 设置 API_URL');
+    if (action === 'getAll') return apiGet({ action: 'getAll' });
+    await fetch(API_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action, ...payload })
+    });
+    // no-cors POST returns an opaque response; read the latest shared state afterwards.
+    return apiGet({ action: 'getAll' });
+  }
+
+  function applyServerState(data) {
+    inventory = Array.isArray(data.inventory) ? data.inventory.map(x =>
+      typeof x === 'string' ? {id:'',name:x,qty:1,unit:'份',category:'其他'} : x
+    ) : [];
+    orders = Array.isArray(data.orders) ? data.orders : [];
+    shoppingItems = Array.isArray(data.shoppingItems) ? data.shoppingItems : [];
+    const customDishes = Array.isArray(data.customDishes) ? data.customDishes : [];
+    finalDecisions = Array.isArray(data.finalDecisions) ? data.finalDecisions : [];
+    purchases = Array.isArray(data.purchases) ? data.purchases : [];
+    stores = Array.isArray(data.stores) ? data.stores : [];
+    priceHistory = Array.isArray(data.priceHistory) ? data.priceHistory : [];
+    familyMembers = Array.isArray(data.familyMembers) ? data.familyMembers : [];
+    nutritionRecords = Array.isArray(data.nutrition) ? data.nutrition : [];
+
+    customDishes.forEach(dish => {
+      if (dish && dish.name && !dishCatalog.some(d => d.name === dish.name)) {
+        dishCatalog.push({
+          name: dish.name,
+          cat: dish.cat || '主食',
+          subcat: dish.subcat || '其他',
+          method: dish.method || '',
+          ingredients: Array.isArray(dish.ingredients) ? dish.ingredients : [],
+          rating: Math.max(3, Math.min(5, Number(dish.rating) || 4)),
+          calories: Number(dish.calories) || 0,
+          protein: Number(dish.protein) || 0,
+          carbs: Number(dish.carbs) || 0,
+          fat: Number(dish.fat) || 0,
+          fiber: Number(dish.fiber) || 0,
+          veggieServings: Number(dish.veggieServings) || 0,
+          fruitServings: Number(dish.fruitServings) || 0,
+          isCustom: true
+        });
+      }
+    });
+  }
+
+  async function refreshFromServer(render = true) {
+    const data = await apiRequest('getAll');
+    applyServerState(data);
+    if (render) {
+      renderSubcats();
+      renderMenu();
+      renderShoppingList();
+      renderFinalDecisions();
+    }
+    return data;
+  }
+
+  // ========== 全局导出函数 ==========
+  function exportToNotes() {
+    try {
+      const shoppingItemsSnapshot = shoppingItems;
+      const uncheckedItems = shoppingItemsSnapshot.filter(item => !item.checked);
+      
+      if (uncheckedItems.length === 0) {
+        alert('所有食材已购买完毕或清单为空！');
+        return;
+      }
+      
+      const listText = uncheckedItems.map(item => 
+        `• ${item.name} (用于: ${item.source})`
+      ).join('\n');
+      
+      const fullText = `🛒 家庭购买清单\n\n${listText}\n\n共 ${uncheckedItems.length} 项食材`;
+      
+      if (navigator.share) {
+        navigator.share({ title: '购买清单', text: fullText }).catch(() => {});
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullText)
+          .then(() => alert('清单已复制到剪贴板，可粘贴至备忘录！'))
+          .catch(() => alert(fullText));
+      } else {
+        alert(fullText);
+      }
+    } catch(e) {
+      alert('导出失败：' + e.message);
+    }
+  }
+
+  function exportFinalDecision() {
+    try {
+      const finalDecisionsSnapshot = finalDecisions;
+      const selectedItems = finalDecisionsSnapshot.filter(item => item.selected);
+      
+      if (selectedItems.length === 0) {
+        alert('请先勾选最终要做的菜品');
+        return;
+      }
+      
+      const dateGroups = {};
+      selectedItems.forEach(item => {
+        if (!dateGroups[item.date]) {
+          dateGroups[item.date] = [];
+        }
+        dateGroups[item.date].push(item);
+      });
+      
+      let exportText = '📋 最终菜单决定\n\n';
+      
+      Object.keys(dateGroups).sort().forEach((date, index) => {
+
+        if (index > 0) { exportText += '\n\n'; }
+
+        exportText += `📅 ${date}\n`;
+        const dishes = dateGroups[date];
+        const ingredients = new Map();
+        
+        dishes.forEach(dish => {
+          exportText += `  • ${dish.name} (👤 ${dish.person})\n`;
+          if (dish.ingredients) {
+            dish.ingredients.forEach(ing => {
+              if (!ingredients.has(ing)) {
+                ingredients.set(ing, []);
+              }
+              ingredients.get(ing).push(dish.name);
+            });
+          }
+        });
+        
+        if (ingredients.size > 0) {
+          exportText += `  \n🛒 所需食材:\n`;
+          ingredients.forEach((sources, ing) => {
+            exportText += `    - ${ing} (用于: ${sources.join('、')})\n`;
+          });
+        }
+        exportText += '\n';
+      });
+      
+      if (navigator.share) {
+        navigator.share({ title: '最终菜单决定', text: exportText }).catch(() => {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(exportText)
+          .then(() => alert('最终菜单已复制，可粘贴到Notes'))
+          .catch(() => alert(exportText));
+      } else {
+        alert(exportText);
+      }
+    } catch(e) {
+      alert('导出失败：' + e.message);
+    }
+  }
+    
+  // ========== 主程序 ==========
+    const dishCatalog = [
+      { name: "凉拌黄瓜", method: "黄瓜拍碎，加蒜醋生抽香油", rating: 4, cat: "青菜", subcat: "凉拌", ingredients: ["黄瓜","大蒜","醋","生抽","香油"] },
+      { name: "韩式烤肉", method: "五花肉腌辣酱，烤盘煎熟", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["猪肉","韩式辣酱","生菜","蒜片"] },
+      { name: "蛋炒饭", method: "米饭隔夜，热油炒蛋，加米饭、葱花、盐翻炒", rating: 5, cat: "主食", subcat: "饭类", ingredients: ["米饭","鸡蛋","葱","盐"] },
+      { name: "番茄意大利面", method: "意面煮8分钟，番茄炒酱，混合撒芝士", rating: 4, cat: "主食", subcat: "面类", ingredients: ["意面","番茄","芝士","洋葱"] },
+      { name: "日式饭团", method: "米饭拌寿司醋，包入梅子或金枪鱼，捏成三角形", rating: 4, cat: "主食", subcat: "饭类", ingredients: ["米饭","寿司醋","梅子","海苔"] },
+      { name: "韩式拌饭", method: "蔬菜焯水，加辣酱、煎蛋、米饭拌匀", rating: 5, cat: "主食", subcat: "饭类", ingredients: ["米饭","菠菜","豆芽","鸡蛋","韩式辣酱"] },
+      { name: "酱油炒面", method: "面条煮后过凉，炒肉丝蔬菜，加酱油调味", rating: 4, cat: "主食", subcat: "面类", ingredients: ["面条","猪肉","卷心菜","酱油"] },
+      { name: "蔬菜粥", method: "大米煮开花，加胡萝卜丁、青菜、盐", rating: 3, cat: "主食", subcat: "粮食类", ingredients: ["大米","胡萝卜","青菜","盐"] },
+      { name: "牛肉汉堡", method: "牛肉饼煎熟，夹生菜番茄芝士面包", rating: 5, cat: "主食", subcat: "粮食类", ingredients: ["牛肉","汉堡面包","生菜","番茄","芝士"] },
+      { name: "日式乌冬面", method: "高汤煮乌冬，加鱼板、海带、天妇罗碎", rating: 4, cat: "主食", subcat: "面类", ingredients: ["乌冬面","鱼板","海带","天妇罗碎"] },
+      { name: "葱油拌面", method: "热油爆香葱段，加生抽糖，拌入面条", rating: 5, cat: "主食", subcat: "面类", ingredients: ["面条","葱","生抽","糖"] },
+      { name: "咖喱饭", method: "鸡肉土豆胡萝卜炖咖喱块，浇在饭上", rating: 5, cat: "主食", subcat: "饭类", ingredients: ["鸡肉","土豆","胡萝卜","咖喱块","米饭"] },
+      { name: "西班牙海鲜饭", method: "米炒香，加藏红花高汤，铺海鲜焖煮", rating: 4, cat: "主食", subcat: "饭类", ingredients: ["大米","虾","鱿鱼","藏红花"] },
+      { name: "越南春卷", method: "米纸包虾、生菜、米粉，蘸鱼露", rating: 4, cat: "主食", subcat: "粮食类", ingredients: ["米纸","虾","生菜","米粉"] },
+      { name: "披萨", method: "面饼涂番茄酱，撒芝士和配料烤制", rating: 5, cat: "主食", subcat: "粮食类", ingredients: ["面粉","番茄酱","芝士","香肠"] },
+      { name: "韭菜盒子", method: "韭菜鸡蛋馅包面皮，煎至两面金黄", rating: 4, cat: "主食", subcat: "粮食类", ingredients: ["韭菜","鸡蛋","面粉","粉丝"] },
+      { name: "南瓜粥", method: "南瓜蒸熟压泥，与大米同煮", rating: 3, cat: "主食", subcat: "粮食类", ingredients: ["南瓜","大米"] },
+      { name: "日式猪排饭", method: "猪排炸脆，加蛋液洋葱煮，盖饭", rating: 5, cat: "主食", subcat: "饭类", ingredients: ["猪排","鸡蛋","洋葱","米饭"] },
+      { name: "虾仁炒河粉", method: "河粉炒软，加虾仁豆芽，酱油调味", rating: 4, cat: "主食", subcat: "面类", ingredients: ["河粉","虾仁","豆芽","酱油"] },
+      { name: "蘑菇烩饭", method: "米炒香，加高汤和蘑菇炖煮", rating: 4, cat: "主食", subcat: "饭类", ingredients: ["大米","蘑菇","高汤","芝士"] },
+      { name: "玉米饼", method: "玉米面调糊，煎成小饼", rating: 3, cat: "主食", subcat: "粮食类", ingredients: ["玉米面","鸡蛋","牛奶"] },
+      { name: "日式茶泡饭", method: "米饭加三文鱼碎，倒热茶，撒海苔", rating: 4, cat: "主食", subcat: "饭类", ingredients: ["米饭","三文鱼","绿茶","海苔"] },
+      { name: "蒜蓉西兰花", method: "西兰花焯水，蒜末爆香，翻炒", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["西兰花","大蒜","盐"] },
+      { name: "清炒菠菜", method: "菠菜焯水，蒜片炒香，快速翻炒", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["菠菜","大蒜","盐"] },
+      { name: "醋溜白菜", method: "白菜帮片炒软，加醋糖盐", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["白菜","醋","糖","盐"] },
+      { name: "上汤娃娃菜", method: "娃娃菜蒸熟，淋高汤皮蛋", rating: 4, cat: "青菜", subcat: "上汤", ingredients: ["娃娃菜","高汤","皮蛋"] },
+      { name: "干煸四季豆", method: "四季豆炸软，加肉末芽菜炒", rating: 4, cat: "青菜", subcat: "干锅", ingredients: ["四季豆","猪肉末","芽菜"] },
+      { name: "炒合菜", method: "豆芽韭菜粉丝鸡蛋同炒", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["豆芽","韭菜","粉丝","鸡蛋"] },
+      { name: "清炒莴笋", method: "莴笋切片快炒，少许盐", rating: 3, cat: "青菜", subcat: "清炒", ingredients: ["莴笋","盐"] },
+      { name: "蚝油生菜", method: "生菜焯水，淋蚝油汁", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["生菜","蚝油"] },
+      { name: "地三鲜", method: "茄子土豆青椒过油，加酱汁", rating: 5, cat: "青菜", subcat: "干锅", ingredients: ["茄子","土豆","青椒"] },
+      { name: "白灼芥蓝", method: "芥蓝焯水，淋蒸鱼豉油", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["芥蓝","蒸鱼豉油"] },
+      { name: "酸辣土豆丝", method: "土豆丝泡水，加醋辣椒炒", rating: 5, cat: "青菜", subcat: "清炒", ingredients: ["土豆","醋","干辣椒"] },
+      { name: "炒南瓜", method: "南瓜切片，蒜炒软", rating: 3, cat: "青菜", subcat: "清炒", ingredients: ["南瓜","蒜"] },
+      { name: "香菇油菜", method: "油菜焯水，香菇烧汁", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["油菜","香菇"] },
+      { name: "凉拌木耳", method: "木耳泡发煮熟，加辣椒油醋", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["木耳","辣椒油","醋"] },
+      { name: "炒荷兰豆", method: "荷兰豆焯水，蒜片爆炒", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["荷兰豆","蒜"] },
+      { name: "烤蔬菜拼盘", method: "彩椒西葫芦刷橄榄油烤", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["彩椒","西葫芦","橄榄油"] },
+      { name: "芝麻菠菜", method: "菠菜焯水加芝麻酱", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["菠菜","芝麻酱"] },
+      { name: "韩式拌豆芽", method: "豆芽烫熟，加辣酱芝麻", rating: 4, cat: "青菜", subcat: "清炒", ingredients: ["豆芽","韩式辣酱","芝麻"] },
+      { name: "腐乳炒空心菜", method: "空心菜加蒜炒，腐乳调味", rating: 4, cat: "青菜", subcat: "腐乳炒", ingredients: ["空心菜","腐乳","蒜"] },
+      { name: "红烧肉", method: "五花肉焯水炒糖色，加酱油炖", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["五花肉","冰糖","酱油"] },
+      { name: "糖醋排骨", method: "排骨炸后加糖醋汁收浓", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["排骨","糖","醋"] },
+      { name: "宫保鸡丁", method: "鸡丁花生辣椒炒，调宫保汁", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡胸肉","花生","干辣椒"] },
+      { name: "黑椒牛柳", method: "牛柳腌制，加黑椒洋葱炒", rating: 5, cat: "肉类", subcat: "牛肉", ingredients: ["牛肉","黑椒","洋葱"] },
+      { name: "可乐鸡翅", method: "鸡翅煎黄，加可乐酱油炖", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡翅","可乐","酱油"] },
+      { name: "日式炸鸡", method: "鸡腿肉腌姜蒜，裹粉油炸", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡腿肉","姜","蒜","面粉"] },
+      { name: "鱼香肉丝", method: "肉丝配木耳笋丝，调鱼香汁", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["猪肉","木耳","笋丝"] },
+      { name: "回锅肉", method: "五花肉煮后切片，加豆瓣酱炒", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["五花肉","豆瓣酱","青蒜"] },
+      { name: "孜然羊肉", method: "羊肉腌孜然，大火爆炒", rating: 4, cat: "肉类", subcat: "牛肉", ingredients: ["羊肉","孜然","洋葱"] },
+      { name: "叉烧肉", method: "梅花肉腌叉烧酱烤制", rating: 4, cat: "肉类", subcat: "猪肉", ingredients: ["梅花肉","叉烧酱"] },
+      { name: "香煎三文鱼", method: "三文鱼盐黑胡椒腌，煎脆皮", rating: 5, cat: "肉类", subcat: "鱼", ingredients: ["三文鱼","盐","黑胡椒"] },
+      { name: "水煮牛肉", method: "牛肉片煮辣汤，浇热油", rating: 5, cat: "肉类", subcat: "牛肉", ingredients: ["牛肉","豆瓣酱","豆芽"] },
+      { name: "照烧鸡腿", method: "鸡腿去骨煎，加照烧汁", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡腿","照烧汁"] },
+      { name: "红烧牛腩", method: "牛腩焯水加香料炖烂", rating: 5, cat: "肉类", subcat: "牛肉", ingredients: ["牛腩","香料"] },
+      { name: "蒜香排骨", method: "排骨腌蒜末炸熟", rating: 4, cat: "肉类", subcat: "猪肉", ingredients: ["排骨","蒜"] },
+      { name: "蜜汁叉烧", method: "梅花肉刷蜜烤", rating: 5, cat: "肉类", subcat: "猪肉", ingredients: ["梅花肉","蜂蜜"] },
+      { name: "白切鸡", method: "鸡煮熟浸冰水，蘸姜葱", rating: 4, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡","姜","葱"] },
+      { name: "辣子鸡", method: "鸡块炸干，与辣椒花椒炒", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡肉","干辣椒","花椒"] },
+      { name: "意大利肉酱面", method: "肉末番茄炒酱，拌意面", rating: 4, cat: "肉类", subcat: "猪肉", ingredients: ["肉末","番茄","意面"] },
+      { name: "煎牛排", method: "牛排室温，大火煎每面2分钟", rating: 5, cat: "肉类", subcat: "牛肉", ingredients: ["牛排","盐","黑胡椒"] },
+      { name: "咖喱鸡肉", method: "鸡肉土豆咖喱块炖", rating: 5, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡肉","土豆","咖喱块"] },
+      { name: "韩式辣炒猪肉", method: "猪肉片辣酱腌制炒", rating: 4, cat: "肉类", subcat: "猪肉", ingredients: ["猪肉","韩式辣酱"] },
+      { name: "京酱肉丝", method: "肉丝甜面酱炒，配豆皮", rating: 4, cat: "肉类", subcat: "猪肉", ingredients: ["猪肉","甜面酱","豆皮"] },
+      { name: "柠檬鸡", method: "鸡肉炸后裹柠檬汁", rating: 4, cat: "肉类", subcat: "鸡肉", ingredients: ["鸡肉","柠檬"] },
+      { name: "干锅虾", method: "干炒虾", rating: 4, cat: "肉类", subcat: "虾", ingredients: ["虾","干辣椒","姜"] },
+      { name: "番茄炒蛋", method: "鸡蛋炒散，加番茄块糖盐", rating: 5, cat: "蛋类", subcat: "炒蛋", ingredients: ["鸡蛋","番茄","糖","盐"] },
+      { name: "蒸水蛋", method: "蛋液加水蒸8分钟，淋酱油", rating: 4, cat: "蛋类", subcat: "蒸蛋", ingredients: ["鸡蛋","酱油"] },
+      { name: "日式厚蛋烧", method: "蛋液分层卷起，加糖盐", rating: 4, cat: "蛋类", subcat: "煎蛋", ingredients: ["鸡蛋","糖","盐"] },
+      { name: "茶叶蛋", method: "鸡蛋煮熟敲裂，加茶叶酱油煮", rating: 4, cat: "蛋类", subcat: "煮蛋", ingredients: ["鸡蛋","茶叶","酱油"] },
+      { name: "蛋包饭", method: "炒饭包在蛋皮中，挤番茄酱", rating: 5, cat: "蛋类", subcat: "煎蛋", ingredients: ["鸡蛋","米饭","番茄酱"] },
+      { name: "韭菜炒蛋", method: "韭菜切段与鸡蛋同炒", rating: 4, cat: "蛋类", subcat: "炒蛋", ingredients: ["韭菜","鸡蛋"] },
+      { name: "西式炒蛋", method: "鸡蛋加牛奶黄油慢炒", rating: 4, cat: "蛋类", subcat: "炒蛋", ingredients: ["鸡蛋","牛奶","黄油"] },
+      { name: "韩式鸡蛋卷", method: "蛋液加蔬菜丁卷起", rating: 4, cat: "蛋类", subcat: "煎蛋", ingredients: ["鸡蛋","胡萝卜","洋葱"] },
+      { name: "咸蛋黄焗南瓜", method: "南瓜条炸后裹咸蛋黄", rating: 5, cat: "蛋类", subcat: "炒蛋", ingredients: ["南瓜","咸蛋黄"] },
+      { name: "蛋饺", method: "蛋液摊皮包肉馅", rating: 4, cat: "蛋类", subcat: "煎蛋", ingredients: ["鸡蛋","猪肉馅"] },
+      { name: "洋葱炒蛋", method: "洋葱丝炒软加鸡蛋", rating: 4, cat: "蛋类", subcat: "炒蛋", ingredients: ["洋葱","鸡蛋"] },
+      { name: "虾仁滑蛋", method: "虾仁炒熟，倒入蛋液轻推", rating: 5, cat: "蛋类", subcat: "炒蛋", ingredients: ["虾仁","鸡蛋"] },
+      { name: "酱油溏心蛋", method: "鸡蛋煮6分钟，泡酱油汁", rating: 4, cat: "蛋类", subcat: "煮蛋", ingredients: ["鸡蛋","酱油","味醂"] },
+      { name: "菠菜鸡蛋饼", method: "菠菜碎与蛋液煎饼", rating: 4, cat: "蛋类", subcat: "煎蛋", ingredients: ["菠菜","鸡蛋","面粉"] },
+      { name: "玉子烧", method: "日式高汤蛋液层层卷", rating: 4, cat: "蛋类", subcat: "煎蛋", ingredients: ["鸡蛋","高汤"] },
+      { name: "麻婆豆腐", method: "豆腐焯水，加豆瓣酱肉末煮", rating: 5, cat: "豆腐类", subcat: "麻婆", ingredients: ["豆腐","豆瓣酱","猪肉末"] },
+      { name: "家常豆腐", method: "豆腐煎黄，加青椒木耳炒", rating: 4, cat: "豆腐类", subcat: "家常", ingredients: ["豆腐","青椒","木耳"] },
+      { name: "凉拌豆腐", method: "内酯豆腐加皮蛋、酱油", rating: 4, cat: "豆腐类", subcat: "凉拌", ingredients: ["豆腐","皮蛋","酱油"] },
+      { name: "韩式豆腐汤", method: "嫩豆腐加辣酱海鲜煮", rating: 5, cat: "豆腐类", subcat: "汤煲", ingredients: ["豆腐","韩式辣酱","蛤蜊"] },
+      { name: "豆腐味噌汤", method: "味噌酱化开，加豆腐海带", rating: 4, cat: "豆腐类", subcat: "汤煲", ingredients: ["豆腐","味噌","海带"] },
+      { name: "红烧豆腐", method: "豆腐煎后加酱油糖炖", rating: 4, cat: "豆腐类", subcat: "红烧", ingredients: ["豆腐","酱油","糖"] },
+      { name: "虾仁豆腐", method: "豆腐与虾仁滑炒", rating: 4, cat: "豆腐类", subcat: "家常", ingredients: ["豆腐","虾仁"] },
+      { name: "蟹黄豆腐", method: "咸蛋黄炒出沙，加豆腐煮", rating: 5, cat: "豆腐类", subcat: "红烧", ingredients: ["豆腐","咸蛋黄"] },
+      { name: "青菜豆腐汤", method: "豆腐青菜煮汤，盐调味", rating: 3, cat: "豆腐类", subcat: "汤煲", ingredients: ["豆腐","青菜"] },
+      { name: "烤豆腐", method: "豆腐切块刷酱烤制", rating: 4, cat: "豆腐类", subcat: "烤制", ingredients: ["豆腐","烧烤酱"] },
+      { name: "酿豆腐", method: "豆腐挖洞填肉馅煎", rating: 4, cat: "豆腐类", subcat: "家常", ingredients: ["豆腐","猪肉馅"] },
+      { name: "皮蛋豆腐", method: "豆腐皮蛋切块，淋酱汁", rating: 4, cat: "豆腐类", subcat: "凉拌", ingredients: ["豆腐","皮蛋"] },
+      { name: "腐竹烧肉", method: "腐竹泡软与肉同烧", rating: 4, cat: "豆腐类", subcat: "红烧", ingredients: ["腐竹","猪肉"] },
+      { name: "豆花", method: "豆浆点卤成豆花，加糖", rating: 4, cat: "豆腐类", subcat: "甜品", ingredients: ["豆浆","糖"] },
+      { name: "家常炖豆腐", method: "豆腐加白菜粉条炖", rating: 4, cat: "豆腐类", subcat: "家常", ingredients: ["豆腐","白菜","粉条"] },
+      { name: "炸豆腐", method: "豆腐裹粉油炸，撒椒盐", rating: 4, cat: "豆腐类", subcat: "炸制", ingredients: ["豆腐","椒盐"] },
+      { name: "豆腐沙拉", method: "豆腐切块与蔬菜拌", rating: 3, cat: "豆腐类", subcat: "凉拌", ingredients: ["豆腐","生菜","沙拉酱"] },
+      { name: "韩式辣豆腐", method: "豆腐加辣酱炖煮", rating: 4, cat: "豆腐类", subcat: "汤煲", ingredients: ["豆腐","韩式辣酱"] },
+      { name: "豆腐蒸蛋", method: "豆腐垫底蒸蛋", rating: 4, cat: "豆腐类", subcat: "蒸制", ingredients: ["豆腐","鸡蛋"] },
+      { name: "味噌烤豆腐", method: "豆腐抹味噌烤", rating: 4, cat: "豆腐类", subcat: "烤制", ingredients: ["豆腐","味噌"] },
+    ];
+
+    const subcatMap = {
+      '主食': ['饭类', '面类', '粮食类'],
+      '青菜': ['清炒', '腐乳炒', '干锅', '上汤'],
+      '肉类': ['鸡肉', '猪肉', '牛肉', '鱼', '虾'],
+      '蛋类': ['炒蛋', '蒸蛋', '煎蛋', '煮蛋'],
+      '豆腐类': ['麻婆', '家常', '凉拌', '汤煲', '红烧', '烤制', '炸制', '蒸制', '甜品']
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+    }
+
+    function loadCustomDishes() {
+      // Custom dishes are loaded centrally by refreshFromServer().
+    }
+
+    async function saveCustomDish(dish) {
+      try {
+        const data = await apiRequest('saveCustomDish', { dish });
+        applyServerState(data);
+        return true;
+      } catch (e) {
+        alert('❌ 保存自定义菜品失败：' + e.message);
+        return false;
+      }
+    }
+
+    function updateSubcatSelect() {
+      const cat = document.getElementById('newDishCat').value;
+      const select = document.getElementById('newDishSubcat');
+      const subcats = [...new Set([...(subcatMap[cat] || []), ...dishCatalog.filter(d => d.cat === cat).map(d => d.subcat).filter(Boolean), '其他'])];
+      select.innerHTML = subcats.map(sub => `<option value="${escapeHtml(sub)}">${escapeHtml(sub)}</option>`).join('');
+    }
+
+    function openAddDishModal() {
+      document.getElementById('newDishName').value = '';
+      document.getElementById('newDishMethod').value = '';
+      document.getElementById('newDishIngredients').value = '';
+      document.getElementById('newDishRating').value = '4';
+      ['newDishCalories','newDishProtein','newDishCarbs','newDishFat','newDishFiber','newDishVeggie','newDishFruit'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('newDishCat').value = currentCategory === '全部' ? '主食' : currentCategory;
+      updateSubcatSelect();
+      const modal=document.getElementById('addDishModal');
+      modal.style.display='flex';modal.scrollTop=0;document.body.style.overflow='hidden';
+      setTimeout(() => document.getElementById('newDishName').focus(), 50);
+    }
+
+    function closeAddDishModal(){document.getElementById('addDishModal').style.display='none';document.body.style.overflow='';}
+
+    async function addCustomDish() {
+      const name = document.getElementById('newDishName').value.trim();
+      const cat = document.getElementById('newDishCat').value;
+      const subcat = document.getElementById('newDishSubcat').value;
+      const method = document.getElementById('newDishMethod').value.trim();
+      const ingredients = document.getElementById('newDishIngredients').value.split(/[,，、\\s]+/).map(x => x.trim()).filter(Boolean);
+      const rating = parseInt(document.getElementById('newDishRating').value, 10) || 4;
+      const calories = Number(document.getElementById('newDishCalories').value) || 0;
+      const protein = Number(document.getElementById('newDishProtein').value) || 0;
+      const carbs = Number(document.getElementById('newDishCarbs').value) || 0;
+      const fat = Number(document.getElementById('newDishFat').value) || 0;
+      const fiber = Number(document.getElementById('newDishFiber').value) || 0;
+      const veggieServings = Number(document.getElementById('newDishVeggie').value) || 0;
+      const fruitServings = Number(document.getElementById('newDishFruit').value) || 0;
+
+      if (!name) return alert('请输入菜品名称');
+      if (!method) return alert('请输入做法说明');
+      if (!ingredients.length) return alert('请至少输入一种食材');
+      if (dishCatalog.some(d => d.name === name)) return alert(`「${name}」已经存在，请换一个菜品名称`);
+
+      const newDish = { name, cat, subcat, method, ingredients, rating,
+        calories, protein, carbs, fat, fiber, veggieServings, fruitServings, isCustom: true };
+      const saved = await saveCustomDish(newDish);
+      if (!saved) return;
+      if (!dishCatalog.some(d => d.name === name)) dishCatalog.push(newDish);
+      closeAddDishModal();
+
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.cat === cat));
+      renderSubcats();
+      const subBtn = [...document.querySelectorAll('.subcat-btn')].find(btn => btn.dataset.subcat === subcat);
+      if (subBtn) {
+        document.querySelectorAll('.subcat-btn').forEach(btn => btn.classList.remove('active'));
+        subBtn.classList.add('active');
+        currentSubcat = subcat;
+      }
+      renderMenu();
+      alert(`✅ 已添加菜品：${name}`);
+    }
+
+
+
+    function inventoryEmoji(category){return {'蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟','主食':'🍚','调味':'🧂','饮品':'🥤','其他':'📦'}[category]||'📦';}
+    function getInventoryItem(name){const n=String(name||'').trim().toLowerCase();return inventory.find(x=>String(x.name||'').trim().toLowerCase()===n)||null;}
+    function updateInventoryCount(){const el=document.getElementById('inventoryCount');if(el)el.textContent=inventory.length;}
+    function renderInventoryGrid(){
+      const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();
+      const q=(document.getElementById('inventorySearch')?.value||'').trim().toLowerCase();
+      const rows=inventory.filter(x=>!q||String(x.name).toLowerCase().includes(q)).sort((a,b)=>String(a.category).localeCompare(String(b.category),'zh-CN')||String(a.name).localeCompare(String(b.name),'zh-CN'));
+      if(!rows.length){grid.innerHTML='<div class="v2-small" style="grid-column:1/-1;padding:16px;text-align:center;">暂无库存食材</div>';return;}
+      grid.innerHTML=rows.map(item=>{const idx=inventory.indexOf(item);return `<div class="inventory-card">
+        <div><div style="display:flex;justify-content:space-between;"><span class="inventory-emoji">${inventoryEmoji(item.category)}</span><span class="v2-small">${escapeHtml(item.category||'其他')}</span></div>
+        <div class="inventory-name">${escapeHtml(item.name)}</div><div class="inventory-qty">库存 ${Number(item.qty||0)} ${escapeHtml(item.unit||'')}</div></div>
+        <div class="inventory-card-actions"><button class="inventory-mini-btn" data-minus="${idx}">−</button><button class="inventory-mini-btn" data-plus="${idx}">＋</button><button class="inventory-mini-btn" data-del="${idx}" style="color:#9b3333;">删</button></div>
+      </div>`;}).join('');
+      grid.querySelectorAll('[data-minus]').forEach(b=>b.addEventListener('click',async()=>{const i=Number(b.dataset.minus);inventory[i].qty=Math.max(0,Number(inventory[i].qty||0)-1);await persistInventory();}));
+      grid.querySelectorAll('[data-plus]').forEach(b=>b.addEventListener('click',async()=>{const i=Number(b.dataset.plus);inventory[i].qty=Number(inventory[i].qty||0)+1;await persistInventory();}));
+      grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{inventory.splice(Number(b.dataset.del),1);await persistInventory();}));
+    }
+    async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory});applyServerState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
+    async function addInventoryItemUI(){
+      const name=document.getElementById('inventoryName').value.trim(),qty=Number(document.getElementById('inventoryQty').value||0),unit=document.getElementById('inventoryUnit').value,category=document.getElementById('inventoryCategory').value;
+      if(!name)return alert('请输入食材名称');if(qty<0)return alert('数量不能小于 0');
+      const existing=getInventoryItem(name);if(existing){existing.qty=qty;existing.unit=unit;existing.category=category;}else inventory.push({id:'',name,qty,unit,category});
+      await persistInventory();document.getElementById('inventoryName').value='';document.getElementById('inventoryQty').value='1';
+    }
+    function openInventoryModal(){renderInventoryGrid();document.getElementById('inventoryModal').style.display='flex';document.body.style.overflow='hidden';}
+    function closeInventoryModal(){document.getElementById('inventoryModal').style.display='none';document.body.style.overflow='';}
+    let inventoryUiInitialized=false;
+    function initInventoryUI(){if(inventoryUiInitialized)return;inventoryUiInitialized=true;
+      document.getElementById('openInventoryBtn').addEventListener('click',openInventoryModal);
+      document.getElementById('closeInventoryBtn').addEventListener('click',closeInventoryModal);
+      document.getElementById('addInventoryItemBtn').addEventListener('click',addInventoryItemUI);
+      document.getElementById('inventorySearch').addEventListener('input',renderInventoryGrid);
+      document.getElementById('inventoryModal').addEventListener('click',e=>{if(e.target.id==='inventoryModal')closeInventoryModal();});
+      updateInventoryCount();
+    }
+
+    // ========== 春日家宴 2.0：采购 / 价格 / 营养 ==========
+    function money(n){ return `RM ${Number(n||0).toFixed(2)}`; }
+    function monthNow(){ return new Date().toISOString().slice(0,7); }
+
+    function renderSourceOptions(){
+      const select = document.getElementById('purchaseSource');
+      if (!select) return;
+      const type = document.getElementById('purchaseSourceType').value;
+      const filtered = stores.filter(s => s.sourceType === type);
+      const names = [...new Set(filtered.map(s => s.source).filter(Boolean))];
+      select.innerHTML = names.length
+        ? names.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('')
+        : '<option value="">请先添加渠道</option>';
+    }
+
+    function updatePersonSelect(){
+      const select=document.getElementById('personSelect');
+      if(!select)return;
+      const old=select.value;
+      if(!familyMembers.length){select.innerHTML='<option value="家庭成员">家庭成员</option>';return;}
+      select.innerHTML=familyMembers.map(x=>`<option value="${escapeHtml(x.name)}">${escapeHtml(x.name)}</option>`).join('');
+      if(familyMembers.some(x=>x.name===old))select.value=old;
+    }
+
+    function renderFamilyStats(){
+      const box=document.getElementById('familyStats');
+      if(!box)return;
+      updatePersonSelect();
+      box.innerHTML=familyMembers.map(m=>`<div class="v2-stat">
+        <div style="display:flex;justify-content:space-between;gap:6px;align-items:flex-start;">
+          <b>${escapeHtml(m.name)}</b><button class="member-delete" data-member-delete="${escapeHtml(m.id)}">删除</button>
+        </div>
+        <div class="v2-small">${escapeHtml(m.sex||'')} · ${m.age}岁 · ${m.height}cm · ${m.weight}kg</div>
+        <div>🔥 BMR：<strong>${Math.round(m.bmr)} kcal/天</strong></div>
+        <div>🥚 蛋白质最低参考：<strong>${Number(m.proteinMin||0).toFixed(0)}g</strong></div>
+        <div>🎯 建议起点：<strong>${Number(m.proteinSuggested||0).toFixed(0)}g+</strong></div>
+      </div>`).join('')||'<div class="v2-small">还没有家庭成员，请先在上方添加。</div>';
+      box.querySelectorAll('[data-member-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteFamilyMemberUI(btn.dataset.memberDelete)));
+    }
+
+    async function saveFamilyMemberUI(){
+      const member={name:document.getElementById('memberName').value.trim(),sex:document.getElementById('memberSex').value,age:Number(document.getElementById('memberAge').value||0),height:Number(document.getElementById('memberHeight').value||0),weight:Number(document.getElementById('memberWeight').value||0)};
+      if(!member.name)return alert('请输入名字');
+      if(!(member.age>0&&member.height>0&&member.weight>0))return alert('请完整填写年龄、身高和体重');
+      try{const data=await apiRequest('saveFamilyMember',{member});applyServerState(data);renderFamilyStats();['memberName','memberAge','memberHeight','memberWeight'].forEach(id=>document.getElementById(id).value='');alert('✅ 家庭成员已保存');}
+      catch(e){alert('保存家庭成员失败：'+e.message);}
+    }
+    async function deleteFamilyMemberUI(id){
+      if(!confirm('确定删除这个家庭成员资料？'))return;
+      try{const data=await apiRequest('deleteFamilyMember',{id});applyServerState(data);renderFamilyStats();}
+      catch(e){alert('删除失败：'+e.message);}
+    }
+
+    function getDishNutrition(name){
+      const dish = dishCatalog.find(d => d.name === name);
+      const rec = nutritionRecords.find(n => n.dish === name);
+      return {
+        calories: Number((dish && dish.calories) || (rec && rec.calories) || 0),
+        protein: Number((dish && dish.protein) || (rec && rec.protein) || 0),
+        carbs: Number((dish && dish.carbs) || (rec && rec.carbs) || 0),
+        fat: Number((dish && dish.fat) || (rec && rec.fat) || 0),
+        fiber: Number((dish && dish.fiber) || (rec && rec.fiber) || 0),
+        veggieServings: Number((dish && dish.veggieServings) || (rec && rec.veggieServings) || 0),
+        fruitServings: Number((dish && dish.fruitServings) || (rec && rec.fruitServings) || 0)
+      };
+    }
+
+    function renderDailyNutrition(){
+      const box = document.getElementById('dailyNutrition');
+      if (!box) return;
+      const selected = finalDecisions.filter(x => x.selected);
+      if (!selected.length) {
+        box.innerHTML = '<div class="v2-small" style="margin-top:7px;">还没有勾选最终菜品。</div>';
+        return;
+      }
+      const total = selected.reduce((a,x) => {
+        const n = getDishNutrition(x.name);
+        Object.keys(n).forEach(k => a[k] += Number(n[k]||0));
+        return a;
+      }, {calories:0,protein:0,carbs:0,fat:0,fiber:0,veggieServings:0,fruitServings:0});
+      const missing = selected.filter(x => {
+        const n = getDishNutrition(x.name);
+        return !(n.protein || n.calories || n.carbs || n.fat || n.fiber);
+      }).length;
+      box.innerHTML = `
+        <div class="v2-grid" style="margin-top:8px;">
+          <div class="v2-stat">🔥 热量<b>${total.calories.toFixed(0)} kcal</b></div>
+          <div class="v2-stat">🥚 蛋白质<b>${total.protein.toFixed(1)} g</b></div>
+          <div class="v2-stat">🍚 碳水<b>${total.carbs.toFixed(1)} g</b></div>
+          <div class="v2-stat">🥑 脂肪<b>${total.fat.toFixed(1)} g</b></div>
+          <div class="v2-stat">🌾 纤维<b>${total.fiber.toFixed(1)} g</b></div>
+          <div class="v2-stat">🥬 蔬菜份数<b>${total.veggieServings.toFixed(1)}</b></div>
+          <div class="v2-stat">🍎 水果份数<b>${total.fruitServings.toFixed(1)}</b></div>
+        </div>
+        ${missing ? `<div class="v2-warning" style="margin-top:8px;">⚠️ ${missing} 道最终菜品尚未录入营养数据，以上合计会低估实际摄入。</div>` : ''}
+      `;
+    }
+
+    function renderMonthlyPurchaseSummary(){
+      const box = document.getElementById('monthlyPurchaseSummary');
+      if (!box) return;
+      const m = monthNow();
+      const rows = purchases.filter(p => p.date && p.date.startsWith(m));
+      const total = rows.reduce((s,p)=>s+Number(p.total||0),0);
+      const bySource = {};
+      rows.forEach(p => bySource[p.source] = (bySource[p.source]||0) + Number(p.total||0));
+      box.innerHTML = `
+        <div class="v2-grid" style="margin-top:8px;">
+          <div class="v2-stat">本月总采购<b>${money(total)}</b><div class="v2-small">${rows.length} 笔</div></div>
+          ${Object.entries(bySource).map(([s,v])=>`<div class="v2-stat">${escapeHtml(s)}<b>${money(v)}</b></div>`).join('')}
+        </div>`;
+    }
+
+    function clearPurchaseForm(){
+      document.getElementById('purchaseDate').value = formatDate(new Date());
+      document.getElementById('purchaseSourceType').value = 'Supermarket';
+      document.getElementById('purchaseSource').value = '';
+      document.getElementById('purchaseBranch').value = '';
+      document.getElementById('purchaseItem').value = '';
+      document.getElementById('purchaseQty').value = '1';
+      document.getElementById('purchasePackageSize').value = '';
+      document.getElementById('purchaseMeasureUnit').value = '';
+      document.getElementById('purchaseUnitPrice').value = '';
+      document.getElementById('purchaseShipping').value = '0';
+      document.getElementById('purchaseDiscount').value = '0';
+      document.getElementById('purchaseCategory').value = '';
+      document.getElementById('purchaseUrl').value = '';
+      document.getElementById('purchaseNote').value = '';
+      updatePurchaseTotalPreview();
+    }
+
+    function normalizePreview(total, qty, size, unit){
+      if (!(qty>0) || !(size>0) || !unit) return null;
+      let base = '', amount = 0;
+      if(unit==='g'){base='kg'; amount=qty*size/1000;}
+      else if(unit==='kg'){base='kg'; amount=qty*size;}
+      else if(unit==='ml'){base='L'; amount=qty*size/1000;}
+      else if(unit==='L'){base='L'; amount=qty*size;}
+      else if(unit==='pcs'){base='个'; amount=qty*size;}
+      if(!base || !(amount>0)) return null;
+      return {base, cost: total/amount};
+    }
+
+    function updatePurchaseTotalPreview(){
+      const q = Number(document.getElementById('purchaseQty').value||0);
+      const p = Number(document.getElementById('purchaseUnitPrice').value||0);
+      const s = Number(document.getElementById('purchaseShipping').value||0);
+      const d = Number(document.getElementById('purchaseDiscount').value||0);
+      const size = Number(document.getElementById('purchasePackageSize').value||0);
+      const mu = document.getElementById('purchaseMeasureUnit').value;
+      const total = Math.max(0,q*p+s-d);
+      const norm = normalizePreview(total,q,size,mu);
+      document.getElementById('purchaseTotalPreview').innerHTML =
+        `预计实际支付：<b>${money(total)}</b>` +
+        (norm ? `<br><span class="v2-small">换算后：${money(norm.cost)} / ${escapeHtml(norm.base)}</span>` : '');
+    }
+
+    async function savePurchaseUI(){
+      const btn = document.getElementById('savePurchaseBtn');
+      btn.disabled = true;
+      try {
+        const purchase = {
+          date: document.getElementById('purchaseDate').value,
+          sourceType: document.getElementById('purchaseSourceType').value,
+          source: document.getElementById('purchaseSource').value.trim(),
+          branch: document.getElementById('purchaseBranch').value.trim(),
+          item: document.getElementById('purchaseItem').value.trim(),
+          qty: Number(document.getElementById('purchaseQty').value||0),
+          unit: document.getElementById('purchaseUnit').value,
+          packageSize: Number(document.getElementById('purchasePackageSize').value||0),
+          measureUnit: document.getElementById('purchaseMeasureUnit').value,
+          unitPrice: Number(document.getElementById('purchaseUnitPrice').value||0),
+          shipping: Number(document.getElementById('purchaseShipping').value||0),
+          discount: Number(document.getElementById('purchaseDiscount').value||0),
+          category: document.getElementById('purchaseCategory').value.trim(),
+          note: document.getElementById('purchaseNote').value.trim(),
+          url: document.getElementById('purchaseUrl').value.trim()
+        };
+        if (!purchase.item) return alert('请输入商品/食材');
+        if (!purchase.source) return alert('请先选择或添加购买渠道');
+        if (!(purchase.qty > 0)) return alert('数量必须大于 0');
+        if (purchase.unitPrice < 0) return alert('单价不能小于 0');
+        const data = await apiRequest('savePurchase', {purchase});
+        applyServerState(data);
+        renderSourceOptions(); renderMonthlyPurchaseSummary(); renderPriceComparison();
+        alert(`✅ 采购已保存：${money(data.purchases?.at(-1)?.total || purchase.qty*purchase.unitPrice+purchase.shipping-purchase.discount)}`);
+        clearPurchaseForm();
+      } catch(e){ alert('❌ 保存采购失败：' + e.message); }
+      finally { btn.disabled = false; }
+    }
+
+    function renderPriceComparison(){
+      const box = document.getElementById('priceComparison');
+      if (!box) return;
+      const q = document.getElementById('priceSearchItem').value.trim().toLowerCase();
+      const targetBase = document.getElementById('priceSearchUnit').value;
+      if (!q) {
+        box.innerHTML = '<div class="v2-small">输入商品名称，例如“鸡蛋”或“鸡肉”，再点击比较。</div>';
+        return;
+      }
+
+      let rows = priceHistory.filter(r => String(r.item).toLowerCase().includes(q));
+
+      // Prefer normalized comparable rows.
+      let normalized = rows.filter(r => Number(r.normalizedCost) > 0 && r.normalizedBaseUnit);
+      if (targetBase) normalized = normalized.filter(r => r.normalizedBaseUnit === targetBase);
+
+      if (normalized.length) {
+        normalized.sort((a,b) => String(b.date).localeCompare(String(a.date)));
+        const groups = {};
+        normalized.forEach(r => {
+          const key = `${r.source}||${r.branch}||${r.normalizedBaseUnit}`;
+          if (!groups[key]) groups[key] = [];
+          groups[key].push(r);
+        });
+        const results = Object.values(groups).map(a => {
+          const latest = a[0];
+          const costs = a.map(x=>Number(x.normalizedCost||0)).filter(x=>x>0);
+          return {
+            source:latest.source, branch:latest.branch, base:latest.normalizedBaseUnit,
+            latest:Number(latest.normalizedCost||0),
+            min:Math.min(...costs),
+            avg:costs.reduce((s,x)=>s+x,0)/costs.length,
+            count:costs.length, date:latest.date, url:latest.url,
+            spec: latest.packageSize && latest.measureUnit ? `${latest.packageSize}${latest.measureUnit}` : ''
+          };
+        }).sort((a,b)=>a.latest-b.latest);
+
+        const compatible = targetBase ? results : results.filter(r => r.base === results[0].base);
+        const shown = targetBase ? results : compatible;
+        if (!shown.length) { box.innerHTML = '<div class="v2-small">没有可自动换算的价格记录。</div>'; return; }
+        const best = [...shown].sort((a,b)=>a.latest-b.latest)[0];
+
+        box.innerHTML = `
+          <div class="v2-stat" style="margin-bottom:8px;">🏆 当前最近单位成本最低：
+            <b>${escapeHtml(best.source)} · ${money(best.latest)} / ${escapeHtml(best.base)}</b>
+          </div>
+          <table class="v2-table"><thead><tr><th>渠道</th><th>最近单位成本</th><th>历史最低</th><th>平均</th><th>最近规格</th><th></th></tr></thead>
+          <tbody>${shown.map(r=>`<tr>
+            <td><strong>${escapeHtml(r.source)}</strong><br><span class="v2-small">${escapeHtml(r.branch||'')}</span></td>
+            <td>${money(r.latest)} / ${escapeHtml(r.base)}<br><span class="v2-small">${escapeHtml(r.date)}</span></td>
+            <td>${money(r.min)} / ${escapeHtml(r.base)}</td>
+            <td>${money(r.avg)} / ${escapeHtml(r.base)}</td>
+            <td>${escapeHtml(r.spec || '-')}</td>
+            <td>${r.url ? `<a class="v2-link" href="${escapeHtml(r.url)}" target="_blank" rel="noopener">打开</a>` : ''}</td>
+          </tr>`).join('')}</tbody></table>
+          ${!targetBase && [...new Set(results.map(r=>r.base))].length>1 ? '<div class="v2-warning" style="margin-top:8px;">存在不同基础单位，请选择 kg / L / 个后再做严格比较。</div>' : ''}
+        `;
+        return;
+      }
+
+      // Legacy fallback for older records without package size.
+      rows.sort((a,b) => String(b.date).localeCompare(String(a.date)));
+      const legacy = rows.filter(r => Number(r.finalUnitCost)>0);
+      if (!legacy.length) {
+        box.innerHTML = '<div class="v2-small">没有找到相符的价格记录。</div>';
+        return;
+      }
+      box.innerHTML = `<div class="v2-warning">这些是旧记录，没有包装规格，暂时只能按“购买单位”显示，无法进行 g/kg 自动换算。</div>
+        <table class="v2-table"><thead><tr><th>渠道</th><th>购买单位成本</th><th>单位</th><th>日期</th></tr></thead>
+        <tbody>${legacy.slice(0,20).map(r=>`<tr><td>${escapeHtml(r.source)}</td><td>${money(r.finalUnitCost)}</td><td>${escapeHtml(r.unit)}</td><td>${escapeHtml(r.date)}</td></tr>`).join('')}</tbody></table>`;
+    }
+
+    function renderStoreList(){
+      const box = document.getElementById('storeList');
+      if (!box) return;
+      if (!stores.length) { box.innerHTML = '<div class="v2-small" style="margin-top:8px;">还没有渠道资料。</div>'; return; }
+      box.innerHTML = `<table class="v2-table"><thead><tr><th>类型</th><th>渠道</th><th>分店/店铺</th><th>地点</th><th></th></tr></thead>
+      <tbody>${stores.map(s=>`<tr><td>${escapeHtml(s.sourceType)}</td><td><b>${escapeHtml(s.source)}</b></td><td>${escapeHtml(s.branch||'')}</td><td>${escapeHtml(s.location||'')}</td>
+      <td><button class="btn btn-outline" style="padding:4px 8px;font-size:.7rem;" onclick="deleteStoreUI('${escapeHtml(s.id)}')">删除</button></td></tr>`).join('')}</tbody></table>`;
+    }
+
+    async function deleteStoreUI(id){
+      if (!confirm('确定删除这个渠道？历史采购记录不会删除。')) return;
+      try {
+        const data = await apiRequest('deleteStore', {id});
+        applyServerState(data); renderSourceOptions(); renderStoreList();
+      } catch(e){ alert('删除失败：'+e.message); }
+    }
+    window.deleteStoreUI = deleteStoreUI;
+
+    async function saveStoreUI(){
+      try{
+        const store = {
+          sourceType: document.getElementById('storeType').value,
+          source: document.getElementById('storeName').value.trim(),
+          branch: document.getElementById('storeBranch').value.trim(),
+          location: document.getElementById('storeLocation').value.trim(),
+          note: document.getElementById('storeNote').value.trim()
+        };
+        if (!store.source) return alert('请输入渠道名称');
+        const data = await apiRequest('saveStore',{store});
+        applyServerState(data); renderSourceOptions(); renderStoreList();
+        document.getElementById('storeName').value=''; document.getElementById('storeBranch').value=''; document.getElementById('storeLocation').value=''; document.getElementById('storeNote').value='';
+        alert('✅ 渠道已保存');
+      }catch(e){alert('保存渠道失败：'+e.message);}
+    }
+
+    let v2UiInitialized = false;
+    function initV2UI(){
+      if (v2UiInitialized) return;
+      v2UiInitialized = true;
+      document.querySelectorAll('.v2-nav button').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          const id=btn.dataset.v2;
+          document.querySelectorAll('.v2-panel').forEach(p=>p.classList.remove('active'));
+          document.querySelectorAll('.v2-nav button').forEach(b=>b.classList.remove('active'));
+          document.getElementById(id).classList.add('active'); btn.classList.add('active');
+          if(id==='menuPanel'){renderSubcats();renderMenu();}
+          if(id==='nutritionPanel'){renderFamilyStats();renderDailyNutrition();}
+          if(id==='purchasePanel'){renderSourceOptions();renderMonthlyPurchaseSummary();}
+          if(id==='pricePanel')renderPriceComparison();
+          if(id==='storePanel')renderStoreList();
+        });
+      });
+      ['purchaseQty','purchaseUnitPrice','purchaseShipping','purchaseDiscount','purchasePackageSize'].forEach(id=>document.getElementById(id).addEventListener('input',updatePurchaseTotalPreview));
+      document.getElementById('purchaseMeasureUnit').addEventListener('change',updatePurchaseTotalPreview);
+      document.getElementById('purchaseSourceType').addEventListener('change',renderSourceOptions);
+      document.getElementById('savePurchaseBtn').addEventListener('click',savePurchaseUI);
+      document.getElementById('clearPurchaseBtn').addEventListener('click',clearPurchaseForm);
+      document.getElementById('comparePriceBtn').addEventListener('click',renderPriceComparison);
+      document.getElementById('priceSearchItem').addEventListener('keydown',e=>{if(e.key==='Enter')renderPriceComparison();});
+      document.getElementById('saveStoreBtn').addEventListener('click',saveStoreUI);
+      document.getElementById('saveMemberBtn').addEventListener('click',saveFamilyMemberUI);
+      clearPurchaseForm();
+    }
+
+        function initCustomDishUI() {
+      document.getElementById('addDishBtn').addEventListener('click', openAddDishModal);
+      document.getElementById('cancelAddDishBtn').addEventListener('click', closeAddDishModal);
+      document.getElementById('confirmAddDishBtn').addEventListener('click', addCustomDish);
+      document.getElementById('newDishCat').addEventListener('change', updateSubcatSelect);
+      document.getElementById('addDishModal').addEventListener('click', e => { if (e.target.id === 'addDishModal') closeAddDishModal(); });
+    }
+
+
+    let inventory = [];
+    let selectedDishes = new Set();
+    let orders = [];
+    let currentCategory = '全部';
+    let currentSubcat = '全部';
+    let shoppingItems = [];
+    let finalDecisions = [];
+  let purchases = [];
+  let stores = [];
+  let priceHistory = [];
+  let familyMembers = [];
+  let nutritionRecords = [];
+
+    const today = new Date();
+    const todayStr = formatDate(today);
+    document.getElementById('currentDateDisplay').innerText = todayStr;
+    document.getElementById('currentWeekdayDisplay').innerText = getWeekday(today);
+    document.getElementById('orderDate').value = todayStr;
+    document.getElementById('orderDate').min = todayStr;
+    document.getElementById('orderDate').max = formatDate(new Date(today.getTime() + 12*86400000));
+    document.getElementById('queryMonth').value = todayStr.substring(0,7);
+
+    function formatDate(date) { const y=date.getFullYear(); const m=String(date.getMonth()+1).padStart(2,'0'); const d=String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; }
+    function getWeekday(date) { const weekdays=['日','一','二','三','四','五','六']; return '星期'+weekdays[date.getDay()]; }
+
+    async function loadData() {
+      await refreshFromServer(false);
+    }
+
+    async function saveInventory() {
+      const data = await apiRequest('saveInventory', { inventory });
+      applyServerState(data);
+    }
+
+    async function saveOrders() {
+      const data = await apiRequest('getAll');
+      applyServerState(data);
+    }
+
+    async function saveShopping() {
+      // Shopping list is maintained by Apps Script when final decisions change.
+      const data = await apiRequest('getAll');
+      applyServerState(data);
+    }
+
+
+    function renderSubcats() {
+      const container = document.getElementById('subcatContainer');
+      container.innerHTML = '';
+      let subcats = ['全部'];
+      if (currentCategory !== '全部') {
+        const catalogSubcats = dishCatalog.filter(d => d.cat === currentCategory).map(d => d.subcat).filter(Boolean);
+        subcats = ['全部', ...new Set([...(subcatMap[currentCategory] || []), ...catalogSubcats])];
+      }
+      currentSubcat = '全部';
+      subcats.forEach(sub => {
+        const btn = document.createElement('button');
+        btn.className = 'subcat-btn' + (sub === '全部' ? ' active' : '');
+        btn.textContent = sub;
+        btn.dataset.subcat = sub;
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active'); currentSubcat = sub; renderMenu();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    function renderMenu() {
+      const grid = document.getElementById('menuGrid');
+      grid.innerHTML = '';
+      let filtered = dishCatalog;
+      if (currentCategory !== '全部') filtered = filtered.filter(d => d.cat === currentCategory);
+      if (currentSubcat !== '全部' && currentSubcat) filtered = filtered.filter(d => d.subcat === currentSubcat);
+      filtered.forEach(dish => {
+        const card = document.createElement('div');
+        card.className = 'dish-card' + (selectedDishes.has(dish.name) ? ' selected' : '');
+        card.innerHTML = `
+          <div class="dish-cat-badge">${escapeHtml(dish.cat)}·${escapeHtml(dish.subcat)}</div>
+          ${dish.isCustom ? '<div class="custom-dish-badge">自定义</div>' : ''}
+          <div class="dish-name">${escapeHtml(dish.name)}</div>
+          <div class="dish-rating">${'★'.repeat(dish.rating)}${'☆'.repeat(5-dish.rating)}</div>
+          <div class="tooltip-box"><div class="tooltip-content">🥢 ${escapeHtml(dish.method)}
+            ${dish.protein ? `<br><br>🥗 蛋白质 ${Number(dish.protein).toFixed(1)}g · 碳水 ${Number(dish.carbs||0).toFixed(1)}g · 脂肪 ${Number(dish.fat||0).toFixed(1)}g` : ''}
+          </div></div>
+        `;
+        card.addEventListener('click', () => toggleDishSelection(dish.name));
+        grid.appendChild(card);
+      });
+      updateSelectedSummary();
+    }
+
+    function toggleDishSelection(name) { if(selectedDishes.has(name)) selectedDishes.delete(name); else selectedDishes.add(name); renderMenu(); }
+    function updateSelectedSummary(){ document.getElementById('selectedSummary').innerText = `已选 ${selectedDishes.size} 道`; }
+
+    document.getElementById('categoryNav').addEventListener('click', (e) => {
+      if(e.target.classList.contains('cat-btn')) {
+        document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        currentCategory = e.target.dataset.cat;
+        renderSubcats();
+        renderMenu();
+      }
+    });
+
+    const personSelect = document.getElementById('personSelect');
+    personSelect.addEventListener('change', () => {
+      // 自定义输入已移除，不需要处理
+    });
+
+    let pendingOrder = null;
+    document.getElementById('submitOrderBtn').addEventListener('click', () => {
+      if(selectedDishes.size===0){ alert('请至少选择一道菜品'); return; }
+      const person = personSelect.value;
+      const date = document.getElementById('orderDate').value;
+      if(!date){ alert('请选择日期'); return; }
+      const dishNames = Array.from(selectedDishes);
+      const uiStatus = document.getElementById('uiStatus');
+      if (uiStatus) uiStatus.textContent = `✅ 已准备提交 ${dishNames.length} 道菜`;
+      document.getElementById('confirmText').innerText = `👤 ${person} | 📅 ${date}`;
+      document.getElementById('modalDishList').innerHTML = dishNames.map(d => `🍽️ ${d}`).join('<br>');
+      pendingOrder = { person, date, dishes: dishNames };
+      document.getElementById('confirmModal').style.display = 'flex';
+    });
+
+    document.getElementById('cancelConfirmBtn').addEventListener('click', () => {
+      document.getElementById('confirmModal').style.display='none';
+      pendingOrder=null;
+    });
+    document.getElementById('confirmModal').addEventListener('click', (e) => {
+      if (e.target.id === 'confirmModal') {
+        document.getElementById('confirmModal').style.display='none';
+        pendingOrder=null;
+      }
+    });
+    document.getElementById('finalConfirmBtn').addEventListener('click', async () => {
+      if (!pendingOrder) return;
+      const orderToSave = pendingOrder;
+      const btn = document.getElementById('finalConfirmBtn');
+      btn.disabled = true;
+      try {
+        const data = await apiRequest('saveOrder', { order: orderToSave });
+        applyServerState(data);
+        selectedDishes.clear();
+        renderMenu();
+        document.getElementById('confirmModal').style.display = 'none';
+        pendingOrder = null;
+        renderFinalDecisions();
+        renderShoppingList();
+        alert('点餐提交成功！请在“最终决定”中勾选要做的菜');
+      } catch (e) {
+        alert('❌ 点餐保存失败：' + e.message);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function updateShoppingListFromFinalDecisions() {
+      // The server rebuilds the shared shopping list from selected final decisions.
+      try {
+        const data = await apiRequest('getAll');
+        applyServerState(data);
+        renderShoppingList();
+      } catch (e) {
+        console.warn('无法刷新购买清单', e);
+      }
+    }
+
+    function generateShoppingList(dishNames) {
+      const ingredientMap = new Map();
+      
+      // 收集所有食材
+      dishNames.forEach(name => {
+        const dish = dishCatalog.find(d => d.name === name);
+        if (dish && dish.ingredients) {
+          dish.ingredients.forEach(ing => {
+            if (!ingredientMap.has(ing)) {
+              ingredientMap.set(ing, []);
+            }
+            if (!ingredientMap.get(ing).includes(name)) {
+              ingredientMap.get(ing).push(name);
+            }
+          });
+        }
+      });
+      
+      // 生成新的购物项
+      const newItems = [];
+      ingredientMap.forEach((sources, ingredient) => {
+        newItems.push({ 
+          name: ingredient, 
+          source: sources.join('、'), 
+          checked: false 
+        });
+      });
+      
+      // 合并已存在的未勾选项（避免重复）
+      const existingUnchecked = shoppingItems.filter(item => !item.checked);
+      
+      // 合并相同食材
+      const mergedItems = [...existingUnchecked];
+      
+      newItems.forEach(newItem => {
+        const existingIndex = mergedItems.findIndex(item => 
+          item.name === newItem.name && !item.checked
+        );
+        
+        if (existingIndex >= 0) {
+          // 合并菜品来源
+          const existingSources = mergedItems[existingIndex].source.split('、');
+          const newSources = newItem.source.split('、');
+          const combinedSources = [...new Set([...existingSources, ...newSources])];
+          mergedItems[existingIndex].source = combinedSources.join('、');
+        } else {
+          mergedItems.push(newItem);
+        }
+      });
+      
+      shoppingItems = mergedItems;
+      saveShopping();
+      renderShoppingList();
+    }
+
+    function renderFinalDecisions() {
+      const container = document.getElementById('finalDecisionContainer');
+      if (!container) return;
+      if (finalDecisions.length === 0) {
+        container.innerHTML = '<p style="color:#888; font-size:0.8rem;">暂无多人点餐记录</p>';
+        return;
+      }
+      container.innerHTML = finalDecisions.map(item => `
+        <div class="final-decision-item">
+          <input type="checkbox" data-id="${escapeHtml(item.id || '')}" ${item.selected ? 'checked' : ''}>
+          <span>${escapeHtml(item.name)} <span style="font-size:0.7rem; color:#6a8f75;">(👤 ${escapeHtml(item.person)} | 📅 ${escapeHtml(item.date)})</span></span>
+        </div>
+      `).join('');
+      container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', async e => {
+          const id = e.target.dataset.id;
+          e.target.disabled = true;
+          try {
+            const data = await apiRequest('updateFinalDecision', { id, selected: e.target.checked });
+            applyServerState(data);
+            renderFinalDecisions();
+            renderShoppingList();
+            renderDailyNutrition();
+          } catch (err) {
+            e.target.checked = !e.target.checked;
+            alert('❌ 更新最终决定失败：' + err.message);
+          } finally {
+            e.target.disabled = false;
+          }
+        });
+      });
+    }
+
+
+    function openPurchaseFromShopping(itemName){
+      const purchasePanel = document.getElementById('purchasePanel');
+      document.querySelectorAll('.v2-panel').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.v2-nav button').forEach(b=>b.classList.remove('active'));
+      purchasePanel.classList.add('active');
+      const navBtn = [...document.querySelectorAll('.v2-nav button')].find(b=>b.dataset.v2==='purchasePanel');
+      if(navBtn) navBtn.classList.add('active');
+      document.getElementById('purchaseDate').value = formatDate(new Date());
+      document.getElementById('purchaseItem').value = itemName;
+      document.getElementById('purchaseQty').value = '1';
+      renderSourceOptions();
+      updatePurchaseTotalPreview();
+      purchasePanel.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(()=>document.getElementById('purchaseUnitPrice').focus(),250);
+    }
+    window.openPurchaseFromShopping = openPurchaseFromShopping;
+
+    function renderShoppingList() {
+      const container = document.getElementById('shoppingListContainer');
+      if (shoppingItems.length === 0) {
+        container.innerHTML = '<p style="color:#888; font-size:0.8rem;">暂无购买清单</p>';
+        return;
+      }
+      
+      // 按食材名称排序
+      const sortedItems = [...shoppingItems].sort((a, b) => 
+        a.name.localeCompare(b.name, 'zh-CN')
+      );
+      
+      container.innerHTML = sortedItems.map((item, index) => {
+        const originalIndex = shoppingItems.indexOf(item);
+        return `
+          <div class="shopping-list-item">
+            <input type="checkbox" data-index="${originalIndex}" ${item.checked ? 'checked' : ''}>
+            <span>${escapeHtml(item.name)} <span class="ingredient-source">(${escapeHtml(item.source)})</span>
+              ${(() => { const s=getInventoryItem(item.name); return s ? `<span class="stock-badge">库存 ${Number(s.qty||0)}${escapeHtml(s.unit||'')}</span>` : ''; })()}
+            </span>
+            <button class="btn btn-outline quick-purchase-btn" data-index="${originalIndex}" style="padding:4px 8px;font-size:.68rem;">🧾 购买</button>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.quick-purchase-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const idx = parseInt(btn.dataset.index, 10);
+          const item = shoppingItems[idx];
+          if (item) openPurchaseFromShopping(item.name);
+        });
+      });
+      
+      container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const idx = parseInt(e.target.dataset.index);
+          shoppingItems[idx].checked = e.target.checked;
+          apiRequest('updateShoppingItem', { id: shoppingItems[idx].id, checked: e.target.checked })
+            .then(data => { applyServerState(data); renderShoppingList(); })
+            .catch(err => { shoppingItems[idx].checked = !e.target.checked; e.target.checked = shoppingItems[idx].checked; alert('❌ 更新购买清单失败：' + err.message); });
+        });
+      });
+    }
+    const recordPanel = document.getElementById('recordPanel');
+    const floatingRecordBtn = document.getElementById('floatingRecordBtn');
+
+    floatingRecordBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const willOpen = !recordPanel.classList.contains('active');
+      recordPanel.classList.toggle('active', willOpen);
+      floatingRecordBtn.textContent = willOpen ? '✕ 关闭记录' : '📋 记录';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (recordPanel.classList.contains('active') && 
+          !recordPanel.contains(e.target) && 
+          !floatingRecordBtn.contains(e.target)) {
+        recordPanel.classList.remove('active');
+        floatingRecordBtn.textContent = '📋 记录';
+      }
+    });
+
+    recordPanel.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+    document.getElementById('queryOrdersBtn').addEventListener('click', () => {
+      const month = document.getElementById('queryMonth').value;
+      if(!month){ alert('请选择月份'); return; }
+      const result = orders.filter(o => o.date && o.date.startsWith(month));
+      const container = document.getElementById('queryResult');
+      if(result.length===0){ container.innerHTML = '该月份暂无点餐记录'; }
+      else { container.innerHTML = result.map(o => `<div class="record-item"><span>👤 ${o.person} | ${o.date}</span><span>${o.dishes.join('、')}</span></div>`).join(''); }
+    });
+
+    initCustomDishUI();
+    (async function initApp() {
+      try {
+        await loadData();
+        renderSubcats();
+        renderMenu();
+        renderShoppingList();
+        renderFinalDecisions();
+        initV2UI();
+        initInventoryUI();
+        renderInventoryGrid();
+        renderFamilyStats();
+        renderDailyNutrition();
+        renderSourceOptions();
+        renderMonthlyPurchaseSummary();
+        renderStoreList();
+        const apiStatus = document.getElementById('apiStatus');
+        if (apiStatus) {
+          apiStatus.textContent = '✅ Google Sheets 已连接';
+          apiStatus.style.color = '#2d6a4f';
+        }
+      } catch (e) {
+        console.error(e);
+        const apiStatus = document.getElementById('apiStatus');
+        if (apiStatus) {
+          apiStatus.textContent = '⚠️ Google Sheets 未连接：' + e.message;
+          apiStatus.style.color = '#a66a00';
+        }
+        // Keep the local menu/UI usable even when API_URL is missing or the backend is unavailable.
+        renderSubcats();
+        renderMenu();
+        initV2UI();
+        initInventoryUI();
+        renderInventoryGrid();
+        renderFamilyStats();
+        renderDailyNutrition();
+        renderSourceOptions();
+        renderMonthlyPurchaseSummary();
+        renderStoreList();
+      }
+    })();
+</script>
+</body>
+</html>
