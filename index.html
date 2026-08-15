@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes, viewport-fit=cover">
-  <title>Weekly order system</title>
+  <title>春日家宴 · 家庭点餐系统</title>
   <style>
     :root {
       --spring-green: #7fbf7f;
@@ -164,6 +164,25 @@
     }
     @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+    /* v2.2.1 UI fixes */
+    .purchase-date-field,.purchase-source-type-field{min-width:0!important;width:100%!important;max-width:100%!important}
+    #purchaseDate,#purchaseSourceType{display:block;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+    #purchaseDate{-webkit-appearance:none;appearance:none}
+    #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:100%}
+    #purchasePanel .v2-field{width:100%;min-width:0!important;max-width:100%;overflow:hidden}
+    #purchasePanel input,#purchasePanel select,#purchasePanel textarea{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+    .family-add-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+    .family-add-toggle{width:38px;height:38px;min-width:38px;border:none;border-radius:50%;background:var(--spring-deep);color:#fff;font-size:1.45rem;line-height:1;font-weight:400;cursor:pointer;box-shadow:0 5px 14px rgba(45,106,79,.25);display:flex;align-items:center;justify-content:center;padding:0}
+    .family-add-toggle.open{transform:rotate(45deg)}
+    #familyMemberForm{display:none;margin-top:8px}
+    #familyMemberForm.open{display:block;animation:slideUp .2s ease}
+    @media(max-width:600px){
+      #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
+      #purchaseDate,#purchaseSourceType{font-size:.82rem!important;padding-left:8px!important;padding-right:8px!important}
+    }
+    @media(max-width:340px){#purchasePanel .v2-grid{grid-template-columns:1fr!important}}
+
   </style>
 </head>
 <body>
@@ -220,14 +239,22 @@
     <h3 style="color:#2d6a4f;margin-bottom:8px;">🥗 家庭营养</h3>
 
     <div class="family-form-card">
-      <b style="color:#2d6a4f;">➕ 添加家庭成员</b>
-      <div class="v2-grid" style="margin-top:8px;">
-        <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue宝"></div>
-        <div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
-        <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div>
-        <div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
-        <div class="v2-field"><label>体重 kg</label><input type="number" id="memberWeight" min="1" step="0.1"></div>
-        <div class="v2-field"><label>&nbsp;</label><button class="btn" id="saveMemberBtn">保存成员</button></div>
+      <div class="family-add-header">
+        <div>
+          <b style="color:#2d6a4f;">家庭成员资料</b>
+          <div class="v2-small">点右边 ＋ 添加成员</div>
+        </div>
+        <button type="button" class="family-add-toggle" id="toggleMemberFormBtn" aria-label="添加家庭成员">＋</button>
+      </div>
+      <div id="familyMemberForm">
+        <div class="v2-grid" style="margin-top:8px;">
+          <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue宝"></div>
+          <div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
+          <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div>
+          <div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
+          <div class="v2-field"><label>体重 kg</label><input type="number" id="memberWeight" min="1" step="0.1"></div>
+          <div class="v2-field"><label>&nbsp;</label><button class="btn" id="saveMemberBtn">保存成员</button></div>
+        </div>
       </div>
     </div>
     <div id="familyStats" class="v2-grid"></div>
@@ -243,8 +270,8 @@
   <div id="purchasePanel" class="v2-panel">
     <h3 style="color:#2d6a4f;margin-bottom:8px;">🧾 记录采购</h3>
     <div class="v2-grid">
-      <div class="v2-field"><label>日期</label><input type="date" id="purchaseDate"></div>
-      <div class="v2-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
+      <div class="v2-field purchase-date-field"><label>日期</label><input type="date" id="purchaseDate"></div>
+      <div class="v2-field purchase-source-type-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
       <div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
       <div class="v2-field"><label>分店 / 店铺</label><input id="purchaseBranch" placeholder="例如 Mid Valley / ABC Store"></div>
       <div class="v2-field"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
@@ -1124,6 +1151,14 @@
       document.getElementById('comparePriceBtn').addEventListener('click',renderPriceComparison);
       document.getElementById('priceSearchItem').addEventListener('keydown',e=>{if(e.key==='Enter')renderPriceComparison();});
       document.getElementById('saveStoreBtn').addEventListener('click',saveStoreUI);
+      const toggleMemberFormBtn=document.getElementById('toggleMemberFormBtn');
+      const familyMemberForm=document.getElementById('familyMemberForm');
+      toggleMemberFormBtn.addEventListener('click',()=>{
+        const willOpen=!familyMemberForm.classList.contains('open');
+        familyMemberForm.classList.toggle('open',willOpen);
+        toggleMemberFormBtn.classList.toggle('open',willOpen);
+        if(willOpen)setTimeout(()=>document.getElementById('memberName').focus(),100);
+      });
       document.getElementById('saveMemberBtn').addEventListener('click',saveFamilyMemberUI);
       clearPurchaseForm();
     }
