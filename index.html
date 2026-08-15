@@ -422,7 +422,7 @@
 <script>
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwXIaS5M_gG2nyP3m50z-_AvqygWyhS8XmmbSrT08R_WdZaWO7U0bgwDzDsHyD1-3M/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxW3FmXjX6rigwHScq6-3sPv8DrPHzgnvhY_1wLO-vc5pdxbKEAGg2otfk9miRjkg/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -489,7 +489,7 @@
     familyMembers = Array.isArray(data.familyMembers) ? data.familyMembers : [];
     nutritionRecords = Array.isArray(data.nutrition) ? data.nutrition : [];
 
-    customDishes.forEach(dish => {
+    [...customDishes].sort((a,b)=>smartNameSort(a && a.name,b && b.name)).forEach(dish => {
       if (dish && dish.name && !dishCatalog.some(d => d.name === dish.name)) {
         dishCatalog.push({
           name: dish.name,
@@ -756,6 +756,11 @@
       '豆腐类': ['麻婆', '家常', '凉拌', '汤煲', '红烧', '烤制', '炸制', '蒸制', '甜品']
     };
 
+
+    function smartNameSort(a, b) {
+      return String(a || '').localeCompare(String(b || ''), 'zh-CN', { numeric: true, sensitivity: 'base' });
+    }
+
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
     }
@@ -846,7 +851,7 @@
     function renderInventoryGrid(){
       const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();
       const q=(document.getElementById('inventorySearch')?.value||'').trim().toLowerCase();
-      const rows=inventory.filter(x=>!q||String(x.name).toLowerCase().includes(q)).sort((a,b)=>String(a.category).localeCompare(String(b.category),'zh-CN')||String(a.name).localeCompare(String(b.name),'zh-CN'));
+      const rows=inventory.filter(x=>!q||String(x.name).toLowerCase().includes(q)).sort((a,b)=>smartNameSort(a.name,b.name));
       if(!rows.length){grid.innerHTML='<div class="v2-small" style="grid-column:1/-1;padding:16px;text-align:center;">暂无库存食材</div>';return;}
       grid.innerHTML=rows.map(item=>{const idx=inventory.indexOf(item);return `<div class="inventory-card">
         <div><div style="display:flex;justify-content:space-between;"><span class="inventory-emoji">${inventoryEmoji(item.category)}</span><span class="v2-small">${escapeHtml(item.category||'其他')}</span></div>
@@ -885,7 +890,7 @@
       if (!select) return;
       const type = document.getElementById('purchaseSourceType').value;
       const filtered = stores.filter(s => s.sourceType === type);
-      const names = [...new Set(filtered.map(s => s.source).filter(Boolean))];
+      const names = [...new Set(filtered.map(s => s.source).filter(Boolean))].sort(smartNameSort);
       select.innerHTML = names.length
         ? names.map(x => `<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('')
         : '<option value="">请先添加渠道</option>';
@@ -896,7 +901,8 @@
       if(!select)return;
       const old=select.value;
       if(!familyMembers.length){select.innerHTML='<option value="家庭成员">家庭成员</option>';return;}
-      select.innerHTML=familyMembers.map(x=>`<option value="${escapeHtml(x.name)}">${escapeHtml(x.name)}</option>`).join('');
+      const sortedMembers=[...familyMembers].sort((a,b)=>smartNameSort(a.name,b.name));
+      select.innerHTML=sortedMembers.map(x=>`<option value="${escapeHtml(x.name)}">${escapeHtml(x.name)}</option>`).join('');
       if(familyMembers.some(x=>x.name===old))select.value=old;
     }
 
@@ -904,7 +910,8 @@
       const box=document.getElementById('familyStats');
       if(!box)return;
       updatePersonSelect();
-      box.innerHTML=familyMembers.map(m=>`<div class="v2-stat">
+      const sortedMembers=[...familyMembers].sort((a,b)=>smartNameSort(a.name,b.name));
+      box.innerHTML=sortedMembers.map(m=>`<div class="v2-stat">
         <div style="display:flex;justify-content:space-between;gap:6px;align-items:flex-start;">
           <b>${escapeHtml(m.name)}</b><button class="member-delete" data-member-delete="${escapeHtml(m.id)}">删除</button>
         </div>
@@ -1104,7 +1111,7 @@
             count:costs.length, date:latest.date, url:latest.url,
             spec: latest.packageSize && latest.measureUnit ? `${latest.packageSize}${latest.measureUnit}` : ''
           };
-        }).sort((a,b)=>a.latest-b.latest);
+        }).sort((a,b)=>(a.latest-b.latest)||smartNameSort(a.source,b.source));
 
         const compatible = targetBase ? results : results.filter(r => r.base === results[0].base);
         const shown = targetBase ? results : compatible;
@@ -1145,8 +1152,9 @@
       const box = document.getElementById('storeList');
       if (!box) return;
       if (!stores.length) { box.innerHTML = '<div class="v2-small" style="margin-top:8px;">还没有渠道资料。</div>'; return; }
+      const sortedStores=[...stores].sort((a,b)=>smartNameSort(a.source,b.source)||smartNameSort(a.branch,b.branch));
       box.innerHTML = `<table class="v2-table"><thead><tr><th>类型</th><th>渠道</th><th>分店/店铺</th><th>地点</th><th></th></tr></thead>
-      <tbody>${stores.map(s=>`<tr><td>${escapeHtml(s.sourceType)}</td><td><b>${escapeHtml(s.source)}</b></td><td>${escapeHtml(s.branch||'')}</td><td>${escapeHtml(s.location||'')}</td>
+      <tbody>${sortedStores.map(s=>`<tr><td>${escapeHtml(s.sourceType)}</td><td><b>${escapeHtml(s.source)}</b></td><td>${escapeHtml(s.branch||'')}</td><td>${escapeHtml(s.location||'')}</td>
       <td><button class="btn btn-outline" style="padding:4px 8px;font-size:.7rem;" onclick="deleteStoreUI('${escapeHtml(s.id)}')">删除</button></td></tr>`).join('')}</tbody></table>`;
     }
 
@@ -1296,6 +1304,9 @@
       let filtered = dishCatalog;
       if (currentCategory !== '全部') filtered = filtered.filter(d => d.cat === currentCategory);
       if (currentSubcat !== '全部' && currentSubcat) filtered = filtered.filter(d => d.subcat === currentSubcat);
+      const builtInDishes=filtered.filter(d=>!d.isCustom);
+      const customSorted=filtered.filter(d=>d.isCustom).sort((a,b)=>smartNameSort(a.name,b.name));
+      filtered=[...builtInDishes,...customSorted];
       filtered.forEach(dish => {
         const card = document.createElement('div');
         card.className = 'dish-card' + (selectedDishes.has(dish.name) ? ' selected' : '');
@@ -1504,9 +1515,7 @@
       }
       
       // 按食材名称排序
-      const sortedItems = [...shoppingItems].sort((a, b) => 
-        a.name.localeCompare(b.name, 'zh-CN')
-      );
+      const sortedItems=[...shoppingItems].sort((a,b)=>smartNameSort(a.name,b.name));
       
       container.innerHTML = sortedItems.map((item, index) => {
         const originalIndex = shoppingItems.indexOf(item);
