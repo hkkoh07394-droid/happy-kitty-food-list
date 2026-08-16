@@ -193,6 +193,92 @@
 #purchasePanel .purchase-branch-row #purchaseBranch{flex:1 1 auto;width:100%!important;min-width:0!important}
 #purchasePanel #quickAddBranchBtn{width:38px!important;min-width:38px!important;max-width:38px!important;height:38px!important;flex:0 0 38px!important;padding:0!important;border-radius:50%!important}
 
+
+    /* ===== v2.4.1 Modal layer + date input fix ===== */
+
+    /* Inventory remains the base modal */
+    #inventoryModal {
+      z-index: 220 !important;
+    }
+
+    /* Usage/history must appear ABOVE inventory */
+    #useStockModal,
+    #stockHistoryModal {
+      z-index: 320 !important;
+    }
+
+    /* Other action modals */
+    #quickBranchModal,
+    #addDishModal,
+    #confirmModal {
+      z-index: 300 !important;
+    }
+
+    /* All native date/month inputs: prevent iPhone Safari intrinsic width overflow */
+    input[type="date"],
+    input[type="month"] {
+      display: block !important;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    /* Every v2 field containing date/month can shrink inside grid/flex */
+    .v2-field,
+    .form-group {
+      min-width: 0;
+    }
+
+    .v2-field input[type="date"],
+    .v2-field input[type="month"],
+    .form-group input[type="date"],
+    .form-group input[type="month"] {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Specific usage modal grid: guarantee equal columns without overlap */
+    #useStockModal .v2-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+      column-gap: 10px !important;
+      row-gap: 12px !important;
+      width: 100%;
+    }
+
+    #useStockModal .v2-field {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden;
+    }
+
+    #useStockModal input,
+    #useStockModal select {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Query month field inside record panel */
+    #queryMonth {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    @media (max-width: 360px) {
+      #useStockModal .v2-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -200,7 +286,7 @@
   <div class="header">
     <div class="date-box">📅 <span id="currentDateDisplay"></span> <span id="currentWeekdayDisplay"></span></div>
     <div class="inventory-box" style="background:transparent;padding:0;">
-      <button class="inventory-launch" id="openInventoryBtn">🥬 库存食材 <span class="inventory-count" id="inventoryCount">0</span></button>
+      <button class="inventory-launch" id="openInventoryBtn">💈 库存食材<span class="inventory-count" id="inventoryCount">0</span></button>
     </div>
   </div>
 
@@ -414,7 +500,7 @@
     <div class="v2-grid" style="margin-top:10px;">
       <div class="v2-field"><label>使用数量</label><input type="number" id="useStockQty" min="0.01" step="0.01"></div>
       <div class="v2-field"><label>单位</label><input id="useStockUnit" readonly></div>
-      <div class="v2-field"><label>日期</label><input type="date" id="useStockDate"></div>
+      <div class="v2-field use-stock-date-field"><label>日期</label><input type="date" id="useStockDate"></div>
       <div class="v2-field"><label>用途</label><input id="useStockSource" placeholder="例如：晚餐 / 番茄炒蛋"></div>
       <div class="v2-field full-row"><label>备注</label><input id="useStockNote" placeholder="选填"></div>
     </div>
@@ -492,7 +578,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycby99fgVjbWFhtlWootN2KtZLN6fMRU0Vd31yKi29esBWkgJjCUWmkyi9I27DJDmft8/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -930,7 +1016,9 @@
       document.getElementById('useStockDate').value=new Date().toISOString().slice(0,10);
       document.getElementById('useStockSource').value='';
       document.getElementById('useStockNote').value='';
-      document.getElementById('useStockModal').style.display='flex';
+      const useModal=document.getElementById('useStockModal');
+      useModal.style.display='flex';
+      useModal.scrollTop=0;
     }
     async function confirmUseStock(){
       const idx=Number(document.getElementById('useStockIndex').value), item=inventory[idx];
@@ -955,7 +1043,9 @@
         document.getElementById('stockHistoryTitle').textContent=`📒 ${item.name} · 库存 ${item.qty}${item.unit||''}`;
         document.getElementById('stockHistoryBody').innerHTML=`<div class="v2-stat" style="margin-bottom:10px;">采购累计 <b>${purchased}${escapeHtml(item.unit||'')}</b> · 已使用 <b>${used}${escapeHtml(item.unit||'')}</b></div>`+
           (rows.length?rows.map(x=>`<div style="padding:8px;border-bottom:1px solid #e6eee2;"><b>${escapeHtml(x.date)}</b> · ${x.type==='PURCHASE'?'采购':'使用'} · <strong>${Number(x.qty)>0?'+':''}${Number(x.qty)}${escapeHtml(x.unit)}</strong><div class="v2-small">${escapeHtml(x.source||'')}${x.note?' · '+escapeHtml(x.note):''}</div></div>`).join(''):'<div class="v2-small">暂无流水记录</div>');
-        document.getElementById('stockHistoryModal').style.display='flex';
+        const historyModal=document.getElementById('stockHistoryModal');
+        historyModal.style.display='flex';
+        historyModal.scrollTop=0;
       }catch(e){alert('读取库存记录失败：'+e.message);}
     }
 
@@ -995,6 +1085,12 @@
       document.getElementById('cancelUseStockBtn').addEventListener('click',()=>document.getElementById('useStockModal').style.display='none');
       document.getElementById('confirmUseStockBtn').addEventListener('click',confirmUseStock);
       document.getElementById('closeStockHistoryBtn').addEventListener('click',()=>document.getElementById('stockHistoryModal').style.display='none');
+      document.getElementById('useStockModal').addEventListener('click',e=>{
+        if(e.target.id==='useStockModal') e.currentTarget.style.display='none';
+      });
+      document.getElementById('stockHistoryModal').addEventListener('click',e=>{
+        if(e.target.id==='stockHistoryModal') e.currentTarget.style.display='none';
+      });
       document.getElementById('closeInventoryBtn').addEventListener('click',closeInventoryModal);
       document.getElementById('addInventoryItemBtn').addEventListener('click',addInventoryItemUI);
       document.getElementById('inventorySearch').addEventListener('input',renderInventoryGrid);
