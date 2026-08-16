@@ -162,170 +162,38 @@
       .inventory-card{padding:8px;min-height:108px}
       .record-panel{max-height:62vh}
     }
-    @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(an1fr))；}
+    @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 
     /* v2.2.1 UI fixes */
-    /* iPhone：修复采购日期与渠道类型重叠 */
-    #purchasePanel .purchase-date-field {
-      min-width: 0 !important;
-      padding-right: 6px !important;
+    .purchase-date-field,.purchase-source-type-field{min-width:0!important;width:100%!important;max-width:100%!important}
+    #purchaseDate,#purchaseSourceType{display:block;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+    #purchaseDate{-webkit-appearance:none;appearance:none}
+    #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:100%}
+    #purchasePanel .v2-field{width:100%;min-width:0!important;max-width:100%;overflow:hidden}
+    #purchasePanel input,#purchasePanel select,#purchasePanel textarea{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+    .family-add-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+    .family-add-toggle{width:38px;height:38px;min-width:38px;border:none;border-radius:50%;background:var(--spring-deep);color:#fff;font-size:1.45rem;line-height:1;font-weight:400;cursor:pointer;box-shadow:0 5px 14px rgba(45,106,79,.25);display:flex;align-items:center;justify-content:center;padding:0}
+    .family-add-toggle.open{transform:rotate(45deg)}
+    #familyMemberForm{display:none;margin-top:8px}
+    #familyMemberForm.open{display:block;animation:slideUp .2s ease}
+    @media(max-width:600px){
+      #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
+      #purchaseDate,#purchaseSourceType{font-size:.82rem!important;padding-left:8px!important;padding-right:8px!important}
     }
-    
-    #purchasePanel .purchase-source-type-field {
-      min-width: 0 !important;
-      padding-left: 6px !important;
-    }
-    
-    #purchasePanel #purchaseDate {
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    
-      -webkit-appearance: none !important;
-      appearance: none !important;
-    }
-    
-    #purchasePanel #purchaseSourceType {
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-    
-    /* ===== 采购表单双栏 ===== */
-    #purchasePanel .v2-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-    
-      /* 左右距离 */
-      column-gap: 12px !important;
-    
-      /* 上下距离 */
-      row-gap: 18px !important;
-    
-      width: 100%;
-    }
-    
-    
-    /* 默认每个项目占一格 */
-    #purchasePanel .v2-field {
-      grid-column: auto;
-      width: 100%;
-      min-width: 0;
-      max-width: 100%;
-      margin: 0 !important;
-    }
-    
-    
-    /* 需要占整行的项目 */
-    #purchasePanel .v2-field.full-row,
-    #purchasePanel .full-row {
-      grid-column: 1 / -1 !important;
-    }
-    
-    
-    /* label 与输入框的距离 */
-    #purchasePanel .v2-field > label {
-      display: block;
-      margin-bottom: 6px;
-    }
-    
-    
-    /* 输入框统一宽度 */
-    #purchasePanel input,
-    #purchasePanel select,
-    #purchasePanel textarea {
-      display: block;
-      width: 100% !important;
-      min-width: 0 !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-    
-    
-    /* ===== 家庭成员 ===== */
-    
-    .family-add-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-    
-    .family-add-toggle {
-      width: 38px;
-      height: 38px;
-      min-width: 38px;
-      border: none;
-      border-radius: 50%;
-      background: var(--spring-deep);
-      color: #fff;
-      font-size: 1.45rem;
-      line-height: 1;
-      font-weight: 400;
-      cursor: pointer;
-      box-shadow: 0 5px 14px rgba(45,106,79,.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-    }
-    
-    .family-add-toggle.open {
-      transform: rotate(45deg);
-    }
-    
-    #familyMemberForm {
-      display: none;
-      margin-top: 8px;
-    }
-    
-    #familyMemberForm.open {
-      display: block;
-      animation: slideUp .2s ease;
-    }
-    
-    
-    /* ===== 手机 ===== */
-    
-    @media (max-width: 600px) {
-    
-      #purchasePanel .v2-grid {
-        grid-template-columns:
-          minmax(0,1fr)
-          minmax(0,1fr) !important;
-    
-        /* 不要再用 gap:8px */
-        column-gap: 12px !important;
-        row-gap: 18px !important;
-      }
-    
-      #purchaseDate,
-      #purchaseSourceType {
-        font-size: .82rem !important;
-        padding-left: 8px !important;
-        padding-right: 8px !important;
-      }
-    }
-    
-    
-    /* 非常窄的手机才改一栏 */
-    @media (max-width: 340px) {
-    
-      #purchasePanel .v2-grid {
-        grid-template-columns: 1fr !important;
-        row-gap: 14px !important;
-      }
-    
-      #purchasePanel .v2-field.full-row,
-      #purchasePanel .full-row {
-        grid-column: 1 !important;
-      }
-    }
-  </style>
+    @media(max-width:340px){#purchasePanel .v2-grid{grid-template-columns:1fr!important}}
+
+  
+/* v2.3.1 compact purchase */
+#purchasePanel .purchase-compact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px 12px;width:100%;align-items:end}
+#purchasePanel .purchase-compact-grid .v2-field{min-width:0!important;width:100%!important;max-width:100%!important;overflow:visible}
+#purchasePanel .purchase-compact-grid .purchase-full{grid-column:1/-1}
+#purchasePanel .purchase-compact-grid input,#purchasePanel .purchase-compact-grid select,#purchasePanel .purchase-compact-grid textarea{display:block;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+#purchasePanel .purchase-branch-row{display:flex;gap:5px;align-items:center;width:100%;min-width:0}
+#purchasePanel .purchase-branch-row #purchaseBranch{flex:1 1 auto;width:100%!important;min-width:0!important}
+#purchasePanel #quickAddBranchBtn{width:38px!important;min-width:38px!important;max-width:38px!important;height:38px!important;flex:0 0 38px!important;padding:0!important;border-radius:50%!important}
+
+</style>
 </head>
 <body>
 <div class="app-container">
@@ -390,7 +258,7 @@
       </div>
       <div id="familyMemberForm">
         <div class="v2-grid" style="margin-top:8px;">
-          <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue宝"></div>
+          <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue"></div>
           <div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
           <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div>
           <div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
@@ -411,48 +279,28 @@
 
   <div id="purchasePanel" class="v2-panel">
     <h3 style="color:#2d6a4f;margin-bottom:8px;">🧾 记录采购</h3>
-    <div class="v2-grid">
-      <div class="v2-field purchase-date-field"><label>日期</label><input type="date" id="purchaseDate"></div>
-      <div class="v2-field purchase-source-type-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
-      <div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
-      <div class="v2-field"><label>分店 / 店铺</label><div style="display:flex;gap:6px;align-items:
-      <div style="display:flex;gap:5px;align-items:center;width:100%;">
-        <select
-          id="purchaseBranch"
-          style="flex:1 1 auto;min-width:0;width:100%;"
-        >
-          <option value="">请选择分店 / 店铺</option>
-        </select>
-        
-        <button
-          type="button"
-          class="btn btn-outline"
-          id="quickAddBranchBtn"
-          style="
-            width:38px;
-            min-width:38px;
-            height:38px;
-            padding:0;
-            flex:0 0 38px;
-            border-radius:50%;
-          "
-        >
-          ＋
-        </button>
-        </div>
+    <div class="purchase-compact-grid">
+<div class="v2-field"><label>日期</label><input type="date" id="purchaseDate"></div>
+<div class="v2-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
+<div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
+<div class="v2-field"><label>分店 / 店铺</label><div class="purchase-branch-row">
+          <div style="display:flex;gap:5px;align-items:center;width:100%;">
+          <select id="purchaseBranch" style="flex:1 1 auto;min-width:0;width:100%;"><option value="">请选择分店 / 店铺</option></select>
+          <button type="button" class="btn btn-outline" id="quickAddBranchBtn" style="width:38px； min-width:38px; height:38px; padding:0; flex:0 0 38px; border-radius:50%;">＋</button>
+        </div>        
         </div></div>
-      <div class="v2-field"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
-      <div class="v2-field"><label>数量</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1"></div>
-      <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
-      <div class="v2-field"><label>每份规格</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 500"></div>
-      <div class="v2-field"><label>规格单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option>g</option><option>kg</option><option>ml</option><option>L</option><option>pcs</option></select></div>
-      <div class="v2-field"><label>每份价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01"></div>
-      <div class="v2-field"><label>运费 (RM)</label><input type="number" id="purchaseShipping" min="0" step="0.01" value="0"></div>
-      <div class="v2-field"><label>优惠 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0"></div>
-      <div class="v2-field"><label>分类</label><select id="purchaseCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>调味</option><option>饮料</option><option>零食</option><option>主食</option><option>其他</option></select></div>
-      <div class="v2-field full-row"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
-      <div class="v2-field full-row"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
-    </div>
+<div class="v2-field purchase-full"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
+<div class="v2-field"><label>数量</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1"></div>
+<div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
+<div class="v2-field"><label>每份规格</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 500"></div>
+<div class="v2-field"><label>规格单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option>g</option><option>kg</option><option>ml</option><option>L</option><option>pcs</option></select></div>
+<div class="v2-field"><label>每份价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01"></div>
+<div class="v2-field"><label>分类</label><select id="purchaseCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>调味</option><option>饮料</option><option>零食</option><option>主食</option><option>其他</option></select></div>
+<div class="v2-field"><label>运费 (RM)</label><input type="number" id="purchaseShipping" min="0" step="0.01" value="0"></div>
+<div class="v2-field"><label>优惠 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0"></div>
+<div class="v2-field purchase-full"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
+<div class="v2-field purchase-full"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
+</div>
     <div id="purchaseTotalPreview" class="v2-stat" style="margin-top:10px;">预计实际支付：RM 0.00</div>
     <div class="v2-actions">
       <button class="btn" id="savePurchaseBtn">💾 保存采购</button>
@@ -490,7 +338,7 @@
 <div id="apiStatus" style="font-size:.72rem; text-align:center; margin-top:6px; color:#6a8f75;">
       🔄 正在连接 Google Sheets…
     </div>
-  <footer>🌿 春日家宴 · 家庭点餐系统</footer>
+  <footer>🌿🥗 Weekly Order System</footer>
 </div>
 
 
@@ -637,7 +485,7 @@
 <script>
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
+  const API_URL = 'ttps://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
