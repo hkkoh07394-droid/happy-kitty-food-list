@@ -290,18 +290,24 @@
         </div>        
         </div></div>
 <div class="v2-field purchase-full"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
-<div class="v2-field"><label>数量</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1"></div>
+<div class="v2-field"><label>购买份数</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1" placeholder="例如 1"></div>
 <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
-<div class="v2-field"><label>每份规格</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 500"></div>
-<div class="v2-field"><label>规格单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option>g</option><option>kg</option><option>ml</option><option>L</option><option>pcs</option></select></div>
-<div class="v2-field"><label>每份价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01"></div>
+<div class="v2-field"><label>每份分量</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 7"></div>
+<div class="v2-field"><label>分量单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option value="pcs">个 / 颗</option><option value="g">g</option><option value="kg">kg</option><option value="ml">ml</option><option value="L">L</option></select></div>
+<div class="v2-field"><label>小票价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01" placeholder="例如 4.00"></div>
 <div class="v2-field"><label>分类</label><select id="purchaseCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>调味</option><option>饮料</option><option>零食</option><option>主食</option><option>其他</option></select></div>
 <div class="v2-field"><label>运费 (RM)</label><input type="number" id="purchaseShipping" min="0" step="0.01" value="0"></div>
 <div class="v2-field"><label>优惠 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0"></div>
 <div class="v2-field purchase-full"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
 <div class="v2-field purchase-full"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
 </div>
-    <div id="purchaseTotalPreview" class="v2-stat" style="margin-top:10px;">预计实际支付：RM 0.00</div>
+    <div class="v2-small" style="margin-top:8px;">
+      💡 例：小票番茄 RM4.00，共 7颗 → 购买份数 1、小票价格 4.00、每份分量 7、分量单位「个 / 颗」。
+    </div>
+    <div id="purchaseTotalPreview" class="v2-stat" style="margin-top:8px;">
+      预计实际支付：<b>RM 0.00</b><br>
+      <span class="v2-small">填写「每份分量 + 分量单位」后自动计算换算价格</span>
+    </div>
     <div class="v2-actions">
       <button class="btn" id="savePurchaseBtn">💾 保存采购</button>
       <button class="btn btn-outline" id="clearPurchaseBtn">清空</button>
@@ -483,9 +489,10 @@
 </div>
 
 <script>
+  // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycby99fgVjbWFhtlWootN2KtZLN6fMRU0Vd31yKi29esBWkgJjCUWmkyi9I27DJDmft8/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -1180,29 +1187,71 @@
     }
 
     function normalizePreview(total, qty, size, unit){
-      if (!(qty>0) || !(size>0) || !unit) return null;
-      let base = '', amount = 0;
-      if(unit==='g'){base='kg'; amount=qty*size/1000;}
-      else if(unit==='kg'){base='kg'; amount=qty*size;}
-      else if(unit==='ml'){base='L'; amount=qty*size/1000;}
-      else if(unit==='L'){base='L'; amount=qty*size;}
-      else if(unit==='pcs'){base='个'; amount=qty*size;}
-      if(!base || !(amount>0)) return null;
-      return {base, cost: total/amount};
+      if (!(qty > 0) || !(size > 0) || !unit) return null;
+
+      let base = '';
+      let amount = 0;
+
+      if (unit === 'g') {
+        base = 'kg';
+        amount = qty * size / 1000;
+      } else if (unit === 'kg') {
+        base = 'kg';
+        amount = qty * size;
+      } else if (unit === 'ml') {
+        base = 'L';
+        amount = qty * size / 1000;
+      } else if (unit === 'L') {
+        base = 'L';
+        amount = qty * size;
+      } else if (unit === 'pcs' || unit === '个' || unit === '颗') {
+        base = '个';
+        amount = qty * size;
+      }
+
+      if (!base || !(amount > 0)) return null;
+
+      return {
+        base,
+        cost: total / amount,
+        totalAmount: amount
+      };
     }
 
     function updatePurchaseTotalPreview(){
-      const q = Number(document.getElementById('purchaseQty').value||0);
-      const p = Number(document.getElementById('purchaseUnitPrice').value||0);
-      const s = Number(document.getElementById('purchaseShipping').value||0);
-      const d = Number(document.getElementById('purchaseDiscount').value||0);
-      const size = Number(document.getElementById('purchasePackageSize').value||0);
-      const mu = document.getElementById('purchaseMeasureUnit').value;
-      const total = Math.max(0,q*p+s-d);
-      const norm = normalizePreview(total,q,size,mu);
+      const qty = Number(document.getElementById('purchaseQty').value || 0);
+      const receiptPrice = Number(document.getElementById('purchaseUnitPrice').value || 0);
+      const shipping = Number(document.getElementById('purchaseShipping').value || 0);
+      const discount = Number(document.getElementById('purchaseDiscount').value || 0);
+      const portionSize = Number(document.getElementById('purchasePackageSize').value || 0);
+      const measureUnit = document.getElementById('purchaseMeasureUnit').value;
+
+      // 小票价格模式：
+      // 实际支付 = 购买份数 × 小票价格 + 运费 - 优惠
+      const total = Math.max(0, qty * receiptPrice + shipping - discount);
+      const normalized = normalizePreview(total, qty, portionSize, measureUnit);
+
+      let detail = '填写「每份分量 + 分量单位」后自动计算换算价格';
+
+      if (normalized) {
+        let totalAmount;
+        if (normalized.base === '个') {
+          totalAmount = Number(normalized.totalAmount).toFixed(0);
+        } else {
+          totalAmount = Number(normalized.totalAmount)
+            .toFixed(3)
+            .replace(/\.0+$/, '')
+            .replace(/(\.\d*?)0+$/, '$1');
+        }
+
+        detail =
+          `总分量：${totalAmount} ${escapeHtml(normalized.base)} · ` +
+          `换算后：<strong>${money(normalized.cost)} / ${escapeHtml(normalized.base)}</strong>`;
+      }
+
       document.getElementById('purchaseTotalPreview').innerHTML =
-        `预计实际支付：<b>${money(total)}</b>` +
-        (norm ? `<br><span class="v2-small">换算后：${money(norm.cost)} / ${escapeHtml(norm.base)}</span>` : '');
+        `预计实际支付：<b>${money(total)}</b><br>` +
+        `<span class="v2-small">${detail}</span>`;
     }
 
     async function savePurchaseUI(){
@@ -1229,7 +1278,7 @@
         if (!purchase.item) return alert('请输入商品/食材');
         if (!purchase.source) return alert('请先选择或添加购买渠道');
         if (!(purchase.qty > 0)) return alert('数量必须大于 0');
-        if (purchase.unitPrice < 0) return alert('单价不能小于 0');
+        if (purchase.unitPrice < 0) return alert('小票价格不能小于 0');
         const data = await apiRequest('savePurchase', {purchase}, 'getPurchases');
         applyPurchaseState(data);
         renderSourceOptions(); renderMonthlyPurchaseSummary(); renderPriceComparison();
