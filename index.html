@@ -279,6 +279,15 @@
       }
     }
 
+
+    /* ===== v2.5 shared meal nutrition ===== */
+    .meal-share-card{background:#f7fbf4;border:1px solid #d6e8ce;border-radius:18px;padding:12px}
+    .meal-diners{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+    .meal-diner-chip{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #cfe3ca;border-radius:20px;padding:7px 10px;font-size:.8rem;font-weight:700;color:#2d6a4f}
+    .meal-diner-chip input{width:16px;height:16px;accent-color:var(--spring-deep)}
+    .member-nutrition-card{border:1px solid #d8ead0;border-radius:18px;padding:10px;background:#fbfef9}
+    .member-nutrition-card b{color:#2d6a4f}
+
 </style>
 </head>
 <body>
@@ -354,6 +363,31 @@
       </div>
     </div>
     <div id="familyStats" class="v2-grid"></div>
+    <div class="meal-share-card" style="margin-top:12px;">
+      <b style="color:#2d6a4f;">🍽️ 今日共同用餐</b>
+      <div class="v2-grid" style="margin-top:8px;">
+        <div class="v2-field">
+          <label>用餐日期</label>
+          <input type="date" id="nutritionMealDate">
+        </div>
+        <div class="v2-field">
+          <label>餐别</label>
+          <select id="nutritionMealType">
+            <option value="早餐">🌅 早餐</option>
+            <option value="午餐">☀️ 午餐</option>
+            <option value="晚餐" selected>🌙 晚餐</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:9px;">
+        <label style="font-size:.78rem;font-weight:700;color:#2d6a4f;">一起吃的人</label>
+        <div id="mealDiners" class="meal-diners"></div>
+      </div>
+      <div class="v2-actions">
+        <button class="btn" id="saveMealSettingsBtn">💾 保存用餐设置</button>
+      </div>
+      <div class="v2-small">最终决定中已勾选的菜会视为共同菜品，并平均分配给这里勾选的用餐成员。</div>
+    </div>
     <div style="margin-top:12px;">
       <b style="color:#2d6a4f;">今日最终菜单营养汇总</b>
       <div id="dailyNutrition"></div>
@@ -578,7 +612,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbzLAGNpEXCY4LYKN9iLq7zKuVaOT9er8DuZsoe6Q4l7jDrFFhXQHw_a2WT4h15Ewso/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -601,7 +635,7 @@
   async function apiRequest(action, payload = {}, refreshAction = null) {
     if (!API_URL || API_URL.includes('PASTE_YOUR_')) throw new Error('请先在 index.html 设置 API_URL');
 
-    if (['getAll','getInventory','getStockState','getFamilyMembers','getPurchases','getStores','getOrdersState'].includes(action)) {
+    if (['getAll','getInventory','getStockState','getFamilyMembers','getPurchases','getStores','getOrdersState','getMealSettings'].includes(action)) {
       return apiGet({ action });
     }
 
@@ -645,6 +679,7 @@
     priceHistory = Array.isArray(data.priceHistory) ? data.priceHistory : [];
     familyMembers = Array.isArray(data.familyMembers) ? data.familyMembers : [];
     nutritionRecords = Array.isArray(data.nutrition) ? data.nutrition : [];
+    mealSettings = Array.isArray(data.mealSettings) ? data.mealSettings : [];
 
     [...customDishes].sort((a,b)=>smartNameSort(a && a.name,b && b.name)).forEach(dish => {
       if (dish && dish.name && !dishCatalog.some(d => d.name === dish.name)) {
@@ -1218,34 +1253,87 @@
       };
     }
 
+    function getSelectedMealDiners(){
+      return [...document.querySelectorAll('#mealDiners input[type="checkbox"]:checked')].map(x=>x.value);
+    }
+
+    function renderMealDiners(){
+      const box=document.getElementById('mealDiners');
+      if(!box)return;
+      const date=document.getElementById('nutritionMealDate')?.value || formatDate(new Date());
+      const meal=document.getElementById('nutritionMealType')?.value || '晚餐';
+      const saved=mealSettings.find(x=>x.date===date && x.meal===meal);
+      const selectedNames=saved && saved.diners && saved.diners.length ? saved.diners : familyMembers.map(x=>x.name);
+      box.innerHTML=[...familyMembers].sort((a,b)=>smartNameSort(a.name,b.name)).map(m=>`
+        <label class="meal-diner-chip">
+          <input type="checkbox" value="${escapeHtml(m.name)}" ${selectedNames.includes(m.name)?'checked':''}>
+          ${escapeHtml(m.name)}
+        </label>`).join('') || '<span class="v2-small">请先添加家庭成员。</span>';
+      box.querySelectorAll('input').forEach(x=>x.addEventListener('change',renderDailyNutrition));
+    }
+
     function renderDailyNutrition(){
       const box = document.getElementById('dailyNutrition');
       if (!box) return;
-      const selected = finalDecisions.filter(x => x.selected);
+      const date = document.getElementById('nutritionMealDate')?.value || formatDate(new Date());
+      const meal = document.getElementById('nutritionMealType')?.value || '晚餐';
+      const diners = getSelectedMealDiners();
+
+      // Only final dishes for the chosen date. Who originally ordered the dish does NOT affect nutrition.
+      // De-duplicate by dish name because the same shared dish may have been requested by both people.
+      const selectedMap = new Map();
+      finalDecisions.filter(x => x.selected && x.date === date).forEach(x => {
+        if (!selectedMap.has(x.name)) selectedMap.set(x.name, x);
+      });
+      const selected = [...selectedMap.values()];
+
       if (!selected.length) {
-        box.innerHTML = '<div class="v2-small" style="margin-top:7px;">还没有勾选最终菜品。</div>';
+        box.innerHTML = `<div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} 还没有勾选最终菜品。</div>`;
         return;
       }
+
       const total = selected.reduce((a,x) => {
         const n = getDishNutrition(x.name);
         Object.keys(n).forEach(k => a[k] += Number(n[k]||0));
         return a;
       }, {calories:0,protein:0,carbs:0,fat:0,fiber:0,veggieServings:0,fruitServings:0});
+
       const missing = selected.filter(x => {
         const n = getDishNutrition(x.name);
         return !(n.protein || n.calories || n.carbs || n.fat || n.fiber);
       }).length;
+
+      const count = diners.length;
+      const per = {};
+      Object.keys(total).forEach(k=>per[k]=count ? total[k]/count : 0);
+
+      const memberCards = count ? diners.map(name=>{
+        const m=familyMembers.find(x=>x.name===name)||{};
+        const proteinTarget=Number(m.proteinSuggested||m.proteinMin||0);
+        const proteinPct=proteinTarget>0 ? Math.min(999,per.protein/proteinTarget*100) : 0;
+        return `<div class="member-nutrition-card">
+          <b>👤 ${escapeHtml(name)}</b>
+          <div class="v2-small">${escapeHtml(meal)}预计摄入 · 共同菜平均分配</div>
+          <div style="margin-top:6px;">🔥 ${per.calories.toFixed(0)} kcal　🥚 ${per.protein.toFixed(1)} g</div>
+          <div>🍚 ${per.carbs.toFixed(1)} g　🥑 ${per.fat.toFixed(1)} g　🌾 ${per.fiber.toFixed(1)} g</div>
+          ${proteinTarget>0?`<div class="nutrition-row"><span>蛋白质目标</span><div class="nutrition-bar"><span style="width:${Math.min(100,proteinPct).toFixed(0)}%"></span></div><span>${proteinPct.toFixed(0)}%</span></div>`:''}
+        </div>`;
+      }).join('') : '<div class="v2-warning">⚠️ 请至少勾选一位用餐成员。</div>';
+
       box.innerHTML = `
+        <div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} · ${escapeHtml(meal)} · ${count} 人共享 · ${selected.length} 道菜</div>
         <div class="v2-grid" style="margin-top:8px;">
-          <div class="v2-stat">🔥 热量<b>${total.calories.toFixed(0)} kcal</b></div>
-          <div class="v2-stat">🥚 蛋白质<b>${total.protein.toFixed(1)} g</b></div>
-          <div class="v2-stat">🍚 碳水<b>${total.carbs.toFixed(1)} g</b></div>
-          <div class="v2-stat">🥑 脂肪<b>${total.fat.toFixed(1)} g</b></div>
-          <div class="v2-stat">🌾 纤维<b>${total.fiber.toFixed(1)} g</b></div>
+          <div class="v2-stat">🔥 家庭总热量<b>${total.calories.toFixed(0)} kcal</b></div>
+          <div class="v2-stat">🥚 家庭总蛋白质<b>${total.protein.toFixed(1)} g</b></div>
+          <div class="v2-stat">🍚 家庭总碳水<b>${total.carbs.toFixed(1)} g</b></div>
+          <div class="v2-stat">🥑 家庭总脂肪<b>${total.fat.toFixed(1)} g</b></div>
+          <div class="v2-stat">🌾 家庭总纤维<b>${total.fiber.toFixed(1)} g</b></div>
           <div class="v2-stat">🥬 蔬菜份数<b>${total.veggieServings.toFixed(1)}</b></div>
-          <div class="v2-stat">🍎 水果份数<b>${total.fruitServings.toFixed(1)}</b></div>
         </div>
+        <div style="margin-top:10px;"><b style="color:#2d6a4f;">每人预计摄入</b></div>
+        <div class="v2-grid" style="margin-top:7px;">${memberCards}</div>
         ${missing ? `<div class="v2-warning" style="margin-top:8px;">⚠️ ${missing} 道最终菜品尚未录入营养数据，以上合计会低估实际摄入。</div>` : ''}
+        <div class="v2-small" style="margin-top:8px;">目前营养资料以整道菜约 2 人份、每人约 400ml 为估算基础；多人用餐时这里按勾选人数平均分配。</div>
       `;
     }
 
@@ -1556,6 +1644,7 @@
   let priceHistory = [];
   let familyMembers = [];
   let nutritionRecords = [];
+  let mealSettings = [];
 
     const today = new Date();
     const todayStr = formatDate(today);
@@ -1924,12 +2013,36 @@
           apiStatus.style.color = '#a66a00';
         }
         // Keep the local menu/UI usable even when API_URL is missing or the backend is unavailable.
-        renderSubcats();
+        
+    // v2.5 shared meal controls
+    const nutritionMealDateEl=document.getElementById('nutritionMealDate');
+    if(nutritionMealDateEl) nutritionMealDateEl.value=formatDate(new Date());
+    document.getElementById('nutritionMealType')?.addEventListener('change',()=>{renderMealDiners();renderDailyNutrition();});
+    nutritionMealDateEl?.addEventListener('change',()=>{renderMealDiners();renderDailyNutrition();});
+    document.getElementById('saveMealSettingsBtn')?.addEventListener('click',async e=>{
+      const btn=e.currentTarget;
+      const date=nutritionMealDateEl.value;
+      const meal=document.getElementById('nutritionMealType').value;
+      const diners=getSelectedMealDiners();
+      if(!diners.length){alert('请至少选择一位用餐成员');return;}
+      setSavingState(btn,true,'保存中…');
+      try{
+        const data=await apiRequest('saveMealSettings',{settings:{date,meal,diners}},'getMealSettings');
+        mealSettings=Array.isArray(data.mealSettings)?data.mealSettings:mealSettings;
+        alert('✅ 用餐设置已保存');
+        renderDailyNutrition();
+      }catch(err){alert('❌ 保存失败：'+err.message);}
+      finally{setSavingState(btn,false);}
+    });
+
+renderSubcats();
         renderMenu();
         initV2UI();
         initInventoryUI();
         renderInventoryGrid();
         renderFamilyStats();
+      renderMealDiners();
+      renderDailyNutrition();
         renderDailyNutrition();
         renderSourceOptions();
         renderMonthlyPurchaseSummary();
