@@ -274,35 +274,15 @@
       <div class="v2-field purchase-source-type-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
       <div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
       <div class="v2-field"><label>分店 / 店铺</label><div style="display:flex;gap:6px;align-items:center;">
-        <div style="display:flex;gap:5px;align-items:center;width:100%;">
-          <select
-            id="purchaseBranch"
-            style="flex:1 1 auto;min-width:0;width:100%;"
-          >
-            <option value="">请选择分店 / 店铺</option>
-          </select>
-        
-          <button
-            type="button"
-            class="btn btn-outline"
-            id="quickAddBranchBtn"
-            style="
-              width:38px;
-              min-width:38px;
-              height:38px;
-              padding:0;
-              flex:0 0 38px;
-              border-radius:50%;
-            "
-          >
-            ＋
-          </button>
+          <div style="display:flex;gap:6px;align-items:center;">
+          <select id="purchaseBranch" style="flex:1;min-width:0;"><option value="">请选择分店 / 店铺</option></select>
+          <button type="button" class="btn btn-outline" id="quickAddBranchBtn" style="padding:8px 10px;flex:0 0 auto;">＋</button>
         </div>
           
         </div></div>
       <div class="v2-field"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
       <div class="v2-field"><label>数量</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1"></div>
-      <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option><option>g</option></select></div>
+      <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
       <div class="v2-field"><label>每份规格</label><input type="number" id="purchasePackageSize" min="0" step="0.01" placeholder="例如 500"></div>
       <div class="v2-field"><label>规格单位</label><select id="purchaseMeasureUnit"><option value="">不换算</option><option>g</option><option>kg</option><option>ml</option><option>L</option><option>pcs</option></select></div>
       <div class="v2-field"><label>每份价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01"></div>
@@ -410,6 +390,30 @@
   </div>
 </div>
 
+
+<div id="useStockModal" class="modal-overlay" style="display:none;overflow-y:auto;">
+  <div class="modal-card" style="max-width:400px;text-align:left;">
+    <div class="emoji-big">🍳</div><h3>记录已使用</h3>
+    <input type="hidden" id="useStockIndex">
+    <div class="form-group"><label>食材</label><input id="useStockName" readonly style="width:100%;"></div>
+    <div class="v2-grid" style="margin-top:10px;">
+      <div class="v2-field"><label>使用数量</label><input type="number" id="useStockQty" min="0.01" step="0.01"></div>
+      <div class="v2-field"><label>单位</label><input id="useStockUnit" readonly></div>
+      <div class="v2-field"><label>日期</label><input type="date" id="useStockDate"></div>
+      <div class="v2-field"><label>用途</label><input id="useStockSource" placeholder="例如：晚餐 / 番茄炒蛋"></div>
+      <div class="v2-field full-row"><label>备注</label><input id="useStockNote" placeholder="选填"></div>
+    </div>
+    <div class="modal-actions"><button class="btn-modal-cancel" id="cancelUseStockBtn">取消</button><button class="btn-modal-confirm" id="confirmUseStockBtn">确认使用</button></div>
+  </div>
+</div>
+<div id="stockHistoryModal" class="modal-overlay" style="display:none;overflow-y:auto;">
+  <div class="modal-card" style="max-width:520px;text-align:left;">
+    <div class="emoji-big">📒</div><h3 id="stockHistoryTitle">库存记录</h3>
+    <div id="stockHistoryBody" style="max-height:55vh;overflow:auto;"></div>
+    <div class="modal-actions"><button class="btn-modal-confirm" id="closeStockHistoryBtn">关闭</button></div>
+  </div>
+</div>
+
 <div id="inventoryModal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
     <div class="inventory-toolbar">
@@ -472,7 +476,7 @@
 <script>
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxW3FmXjX6rigwHScq6-3sPv8DrPHzgnvhY_1wLO-vc5pdxbKEAGg2otfk9miRjkg/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -495,7 +499,7 @@
   async function apiRequest(action, payload = {}, refreshAction = null) {
     if (!API_URL || API_URL.includes('PASTE_YOUR_')) throw new Error('请先在 index.html 设置 API_URL');
 
-    if (['getAll','getInventory','getFamilyMembers','getPurchases','getStores','getOrdersState'].includes(action)) {
+    if (['getAll','getInventory','getStockState','getFamilyMembers','getPurchases','getStores','getOrdersState'].includes(action)) {
       return apiGet({ action });
     }
 
@@ -526,6 +530,7 @@
 
 
   function applyServerState(data) {
+    stockMovements = Array.isArray(data.stockMovements) ? data.stockMovements : stockMovements;
     inventory = Array.isArray(data.inventory) ? data.inventory.map(x =>
       typeof x === 'string' ? {id:'',name:x,qty:1,unit:'份',category:'其他'} : x
     ) : [];
@@ -565,6 +570,10 @@
     inventory = Array.isArray(data.inventory) ? data.inventory.map(x =>
       typeof x === 'string' ? {id:'',name:x,qty:1,unit:'份',category:'其他'} : x
     ) : [];
+  }
+  function applyStockState(data){
+    applyInventoryState(data);
+    stockMovements = Array.isArray(data.stockMovements) ? data.stockMovements : [];
   }
 
   function applyFamilyState(data) {
@@ -895,6 +904,45 @@
 
 
 
+
+    function openUseStockModal(idx){
+      const item=inventory[idx]; if(!item)return;
+      document.getElementById('useStockIndex').value=idx;
+      document.getElementById('useStockName').value=item.name;
+      document.getElementById('useStockQty').value='';
+      document.getElementById('useStockUnit').value=item.unit||'份';
+      document.getElementById('useStockDate').value=new Date().toISOString().slice(0,10);
+      document.getElementById('useStockSource').value='';
+      document.getElementById('useStockNote').value='';
+      document.getElementById('useStockModal').style.display='flex';
+    }
+    async function confirmUseStock(){
+      const idx=Number(document.getElementById('useStockIndex').value), item=inventory[idx];
+      const qty=Number(document.getElementById('useStockQty').value||0);
+      if(!item||!(qty>0))return alert('请输入使用数量');
+      if(qty>Number(item.qty||0))return alert('使用数量不能大于当前库存');
+      const usage={item:item.name,qty,unit:item.unit,date:document.getElementById('useStockDate').value,source:document.getElementById('useStockSource').value.trim(),note:document.getElementById('useStockNote').value.trim()};
+      try{
+        await apiRequest('useStock',{usage});
+        const data=await apiRequest('getStockState'); applyStockState(data);
+        renderInventoryGrid(); renderShoppingList();
+        document.getElementById('useStockModal').style.display='none';
+      }catch(e){alert('记录使用失败：'+e.message);}
+    }
+    async function showStockHistory(idx){
+      const item=inventory[idx]; if(!item)return;
+      try{
+        const data=await apiRequest('getStockState'); applyStockState(data);
+        const rows=stockMovements.filter(x=>String(x.item).trim().toLowerCase()===String(item.name).trim().toLowerCase()).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+        const purchased=rows.filter(x=>x.type==='PURCHASE').reduce((s,x)=>s+Number(x.qty||0),0);
+        const used=Math.abs(rows.filter(x=>x.type==='USAGE').reduce((s,x)=>s+Number(x.qty||0),0));
+        document.getElementById('stockHistoryTitle').textContent=`📒 ${item.name} · 库存 ${item.qty}${item.unit||''}`;
+        document.getElementById('stockHistoryBody').innerHTML=`<div class="v2-stat" style="margin-bottom:10px;">采购累计 <b>${purchased}${escapeHtml(item.unit||'')}</b> · 已使用 <b>${used}${escapeHtml(item.unit||'')}</b></div>`+
+          (rows.length?rows.map(x=>`<div style="padding:8px;border-bottom:1px solid #e6eee2;"><b>${escapeHtml(x.date)}</b> · ${x.type==='PURCHASE'?'采购':'使用'} · <strong>${Number(x.qty)>0?'+':''}${Number(x.qty)}${escapeHtml(x.unit)}</strong><div class="v2-small">${escapeHtml(x.source||'')}${x.note?' · '+escapeHtml(x.note):''}</div></div>`).join(''):'<div class="v2-small">暂无流水记录</div>');
+        document.getElementById('stockHistoryModal').style.display='flex';
+      }catch(e){alert('读取库存记录失败：'+e.message);}
+    }
+
     function inventoryEmoji(category){return {'蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟','主食':'🍚','调味':'🧂','饮品':'🥤','其他':'📦'}[category]||'📦';}
     function getInventoryItem(name){const n=String(name||'').trim().toLowerCase();return inventory.find(x=>String(x.name||'').trim().toLowerCase()===n)||null;}
     function updateInventoryCount(){const el=document.getElementById('inventoryCount');if(el)el.textContent=inventory.length;}
@@ -906,10 +954,14 @@
       grid.innerHTML=rows.map(item=>{const idx=inventory.indexOf(item);return `<div class="inventory-card">
         <div><div style="display:flex;justify-content:space-between;"><span class="inventory-emoji">${inventoryEmoji(item.category)}</span><span class="v2-small">${escapeHtml(item.category||'其他')}</span></div>
         <div class="inventory-name">${escapeHtml(item.name)}</div><div class="inventory-qty">库存 ${Number(item.qty||0)} ${escapeHtml(item.unit||'')}</div></div>
-        <div class="inventory-card-actions"><button class="inventory-mini-btn" data-minus="${idx}">−</button><button class="inventory-mini-btn" data-plus="${idx}">＋</button><button class="inventory-mini-btn" data-del="${idx}" style="color:#9b3333;">删</button></div>
+        <div class="inventory-card-actions">
+          <button class="inventory-mini-btn" data-use="${idx}">－使用</button>
+          <button class="inventory-mini-btn" data-history="${idx}">记录</button>
+          <button class="inventory-mini-btn" data-del="${idx}" style="color:#9b3333;">删</button>
+        </div>
       </div>`;}).join('');
-      grid.querySelectorAll('[data-minus]').forEach(b=>b.addEventListener('click',async()=>{const i=Number(b.dataset.minus);inventory[i].qty=Math.max(0,Number(inventory[i].qty||0)-1);await persistInventory();}));
-      grid.querySelectorAll('[data-plus]').forEach(b=>b.addEventListener('click',async()=>{const i=Number(b.dataset.plus);inventory[i].qty=Number(inventory[i].qty||0)+1;await persistInventory();}));
+      grid.querySelectorAll('[data-use]').forEach(b=>b.addEventListener('click',()=>openUseStockModal(Number(b.dataset.use))));
+      grid.querySelectorAll('[data-history]').forEach(b=>b.addEventListener('click',()=>showStockHistory(Number(b.dataset.history))));
       grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{inventory.splice(Number(b.dataset.del),1);await persistInventory();}));
     }
     async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory},'getInventory');applyInventoryState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
@@ -924,6 +976,9 @@
     let inventoryUiInitialized=false;
     function initInventoryUI(){if(inventoryUiInitialized)return;inventoryUiInitialized=true;
       document.getElementById('openInventoryBtn').addEventListener('click',openInventoryModal);
+      document.getElementById('cancelUseStockBtn').addEventListener('click',()=>document.getElementById('useStockModal').style.display='none');
+      document.getElementById('confirmUseStockBtn').addEventListener('click',confirmUseStock);
+      document.getElementById('closeStockHistoryBtn').addEventListener('click',()=>document.getElementById('stockHistoryModal').style.display='none');
       document.getElementById('closeInventoryBtn').addEventListener('click',closeInventoryModal);
       document.getElementById('addInventoryItemBtn').addEventListener('click',addInventoryItemUI);
       document.getElementById('inventorySearch').addEventListener('input',renderInventoryGrid);
@@ -1335,6 +1390,7 @@
 
 
     let inventory = [];
+  let stockMovements = [];
     let selectedDishes = new Set();
     let orders = [];
     let currentCategory = '全部';
