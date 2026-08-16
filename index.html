@@ -162,30 +162,166 @@
       .inventory-card{padding:8px;min-height:108px}
       .record-panel{max-height:62vh}
     }
-    @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:370px){.v2-grid{grid-template-columns:1fr}.full-row{grid-column:1!important}.inventory-grid{grid-template-columns:repeat(2,minmax(an1fr))；}
 
 
     /* v2.2.1 UI fixes */
-    .purchase-date-field,.purchase-source-type-field{min-width:0!important;width:100%!important;max-width:100%!important}
-    #purchaseDate,#purchaseSourceType{display:block;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
-    #purchaseDate{-webkit-appearance:none;appearance:none}
-    #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;width:100%}
-    #purchasePanel .v2-field{width:100%!important;max-width:100%!important;grid-column: 1 / -1;}
-    #purchasePanel input,#purchasePanel select,#purchasePanel textarea{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
-    #purchasePanel .v2-field {margin-bottom: 12px !important;}
-    #purchasePanel .v2-field > label {display: block;margin-bottom: 6px !important;}
-    #purchasePanel .v2-field:last-child {margin-bottom: 0 !important;}
-    .family-add-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
-    .family-add-toggle{width:38px;height:38px;min-width:38px;border:none;border-radius:50%;background:var(--spring-deep);color:#fff;font-size:1.45rem;line-height:1;font-weight:400;cursor:pointer;box-shadow:0 5px 14px rgba(45,106,79,.25);display:flex;align-items:center;justify-content:center;padding:0}
-    .family-add-toggle.open{transform:rotate(45deg)}
-    #familyMemberForm{display:none;margin-top:8px}
-    #familyMemberForm.open{display:block;animation:slideUp .2s ease}
-    @media(max-width:600px){
-      #purchasePanel .v2-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:8px!important}
-      #purchaseDate,#purchaseSourceType{font-size:.82rem!important;padding-left:8px!important;padding-right:8px!important}
+    /* ===== 采购记录最终布局 ===== */
+    
+    /* 日期 / 渠道类型 */
+    .purchase-date-field,
+    .purchase-source-type-field {
+      min-width: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
     }
-    @media(max-width:340px){#purchasePanel .v2-grid{grid-template-columns:1fr!important;gap:8px!important}}
-
+    
+    #purchaseDate,
+    #purchaseSourceType {
+      display: block;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    
+    #purchaseDate {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    
+    
+    /* ===== 采购表单双栏 ===== */
+    #purchasePanel .v2-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    
+      /* 左右距离 */
+      column-gap: 12px !important;
+    
+      /* 上下距离 */
+      row-gap: 16px !important;
+    
+      width: 100%;
+    }
+    
+    
+    /* 默认每个项目占一格 */
+    #purchasePanel .v2-field {
+      grid-column: auto;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      margin: 0 !important;
+    }
+    
+    
+    /* 需要占整行的项目 */
+    #purchasePanel .v2-field.full-row,
+    #purchasePanel .full-row {
+      grid-column: 1 / -1 !important;
+    }
+    
+    
+    /* label 与输入框的距离 */
+    #purchasePanel .v2-field > label {
+      display: block;
+      margin-bottom: 6px;
+    }
+    
+    
+    /* 输入框统一宽度 */
+    #purchasePanel input,
+    #purchasePanel select,
+    #purchasePanel textarea {
+      display: block;
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    
+    
+    /* ===== 家庭成员 ===== */
+    
+    .family-add-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    
+    .family-add-toggle {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      border: none;
+      border-radius: 50%;
+      background: var(--spring-deep);
+      color: #fff;
+      font-size: 1.45rem;
+      line-height: 1;
+      font-weight: 400;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(45,106,79,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+    
+    .family-add-toggle.open {
+      transform: rotate(45deg);
+    }
+    
+    #familyMemberForm {
+      display: none;
+      margin-top: 8px;
+    }
+    
+    #familyMemberForm.open {
+      display: block;
+      animation: slideUp .2s ease;
+    }
+    
+    
+    /* ===== 手机 ===== */
+    
+    @media (max-width: 600px) {
+    
+      #purchasePanel .v2-grid {
+        grid-template-columns:
+          minmax(0,1fr)
+          minmax(0,1fr) !important;
+    
+        /* 不要再用 gap:8px */
+        column-gap: 10px !important;
+        row-gap: 16px !important;
+      }
+    
+      #purchaseDate,
+      #purchaseSourceType {
+        font-size: .82rem !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
+    }
+    
+    
+    /* 非常窄的手机才改一栏 */
+    @media (max-width: 340px) {
+    
+      #purchasePanel .v2-grid {
+        grid-template-columns: 1fr !important;
+        row-gap: 14px !important;
+      }
+    
+      #purchasePanel .v2-field.full-row,
+      #purchasePanel .full-row {
+        grid-column: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
