@@ -577,6 +577,62 @@
       }
     }
 
+
+    /* ===== v2.6.6 mobile recipe detail ===== */
+    #mobileRecipeDetailModal{
+      z-index:420 !important;
+      padding:16px !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+
+    .mobile-recipe-detail-card{
+      width:min(330px,88vw);
+      max-height:72dvh;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+      background:#fff;
+      border:2px solid var(--spring-accent);
+      border-radius:20px;
+      box-shadow:0 18px 40px rgba(0,0,0,.28);
+      padding:14px 13px;
+      text-align:left;
+    }
+
+    .mobile-recipe-detail-title{
+      color:var(--spring-deep);
+      font-size:1rem;
+      font-weight:800;
+      margin-bottom:9px;
+    }
+
+    .mobile-recipe-detail-body{
+      font-size:.82rem;
+      line-height:1.5;
+      color:#294735;
+    }
+
+    .mobile-recipe-section{
+      background:#f7fbf4;
+      border:1px solid #d9e9d3;
+      border-radius:13px;
+      padding:8px 9px;
+      margin:6px 0;
+    }
+
+    .mobile-recipe-section b{
+      display:block;
+      color:#2d6a4f;
+      font-size:.74rem;
+      margin-bottom:2px;
+    }
+
+    @media (hover:hover) and (pointer:fine){
+      #mobileRecipeDetailModal{
+        display:none !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -810,6 +866,14 @@
     <div class="emoji-big">📒</div><h3 id="stockHistoryTitle">库存记录</h3>
     <div id="stockHistoryBody" style="max-height:55vh;overflow:auto;"></div>
     <div class="modal-actions"><button class="btn-modal-confirm" id="closeStockHistoryBtn">关闭</button></div>
+  </div>
+</div>
+
+
+<div id="mobileRecipeDetailModal" class="modal-overlay" style="display:none;">
+  <div class="mobile-recipe-detail-card">
+    <div class="mobile-recipe-detail-title" id="mobileRecipeDetailTitle">🍳 菜品详情</div>
+    <div class="mobile-recipe-detail-body" id="mobileRecipeDetailBody"></div>
   </div>
 </div>
 
@@ -1451,14 +1515,35 @@
     function showRecommendedDish(dishName){
       const dish=dishCatalog.find(d=>d.name===dishName);
       if(!dish)return;
-      const available=(dish.ingredients||[]).filter(ing=>inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
-      const missing=(dish.ingredients||[]).filter(ing=>!inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
-      alert(
-        `🍳 ${dish.name}\n\n`+
-        `库存已有：${available.length?available.join('、'):'无'}\n`+
-        `还缺：${missing.length?missing.join('、'):'无，主要材料已齐'}\n\n`+
-        `做法：${dish.method||'暂无做法'}`
+
+      const available=(dish.ingredients||[]).filter(
+        ing=>inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing))
       );
+      const missing=(dish.ingredients||[]).filter(
+        ing=>!inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing))
+      );
+
+      const modal=document.getElementById('mobileRecipeDetailModal');
+      const title=document.getElementById('mobileRecipeDetailTitle');
+      const body=document.getElementById('mobileRecipeDetailBody');
+
+      title.textContent=`🍳 ${dish.name}`;
+      body.innerHTML=`
+        <div class="mobile-recipe-section">
+          <b>库存已有</b>
+          <div>${available.length?available.map(escapeHtml).join('、'):'无'}</div>
+        </div>
+        <div class="mobile-recipe-section">
+          <b>还缺</b>
+          <div>${missing.length?missing.map(escapeHtml).join('、'):'无，主要材料已齐'}</div>
+        </div>
+        <div class="mobile-recipe-section">
+          <b>做法</b>
+          <div>${escapeHtml(dish.method||'暂无做法')}</div>
+        </div>
+        <div class="v2-small" style="margin-top:8px;text-align:center;">点击提示框外任意位置即可关闭</div>
+      `;
+      modal.style.display='flex';
     }
 
     function renderInventoryGrid(){
@@ -1923,6 +2008,11 @@
       document.getElementById('cancelQuickBranchBtn').addEventListener('click',()=>document.getElementById('quickBranchModal').style.display='none');
       document.getElementById('saveQuickBranchBtn').addEventListener('click',saveQuickBranch);
       document.getElementById('quickBranchModal').addEventListener('click',e=>{if(e.target.id==='quickBranchModal')e.currentTarget.style.display='none';});
+      document.getElementById('mobileRecipeDetailModal')?.addEventListener('click',e=>{
+        if(e.target.id==='mobileRecipeDetailModal'){
+          e.currentTarget.style.display='none';
+        }
+      });
       const toggleMemberFormBtn=document.getElementById('toggleMemberFormBtn');
       const familyMemberForm=document.getElementById('familyMemberForm');
       toggleMemberFormBtn.addEventListener('click',()=>{
