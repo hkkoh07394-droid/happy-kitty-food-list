@@ -287,6 +287,296 @@
     .confirmed-meal-group{margin:8px 0}.confirmed-menu-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed #dcebd7}.confirmed-menu-row .menu-meta{min-width:0;flex:1}.delete-menu-btn{border:1px solid #e1b9b9;background:#fff7f7;color:#9b3333;border-radius:14px;padding:5px 9px;font-size:.72rem;cursor:pointer;white-space:nowrap}
     .member-nutrition-card{border:1px solid #d8ead0;border-radius:18px;padding:10px;background:#fbfef9}.inventory-recommend-box{margin-top:12px;padding:10px;border-radius:18px;background:#f3faef;border:1px solid #d8ead0}.dish-recommend-chip{display:block;width:100%;text-align:left;border:1px solid #d5e7ce;background:#fff;border-radius:14px;padding:8px;margin:6px 0;color:#244b35}.dish-recommend-chip b{color:#2d6a4f}.match-stock{font-size:.68rem;color:#6a8f75;margin-top:2px}
 
+    .recommend-section-title{font-size:.78rem;font-weight:800;color:#2d6a4f;margin:4px 0 6px}
+
+    /* ===== v2.6.2 grouped inventory recommendations ===== */
+    .inventory-ingredient-recommend{
+      background:#fff;
+      border:1px solid #d5e7ce;
+      border-radius:16px;
+      padding:9px;
+      margin:7px 0;
+    }
+    .inventory-ingredient-title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:7px;
+    }
+    .inventory-ingredient-emoji{
+      font-size:1.55rem;
+      width:34px;
+      text-align:center;
+      flex:0 0 34px;
+    }
+    .inventory-ingredient-title b{
+      color:#244b35;
+      font-size:.9rem;
+    }
+    .inventory-ingredient-dishes{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .inventory-recommend-dish{
+      border:1px solid #cfe3ca;
+      background:#f8fcf6;
+      color:#2d6a4f;
+      border-radius:18px;
+      padding:6px 9px;
+      font-size:.74rem;
+      font-weight:700;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+    }
+    .inventory-recommend-ready{
+      font-size:.6rem;
+      background:#dff1d7;
+      color:#2d6a4f;
+      border-radius:9px;
+      padding:1px 5px;
+    }
+    .inventory-recommend-missing{
+      font-size:.6rem;
+      background:#fff3cd;
+      color:#8a5a00;
+      border-radius:9px;
+      padding:1px 5px;
+    }
+
+
+    /* ===== v2.6.3 compact inventory modal ===== */
+    #inventoryModal{
+      overflow:hidden !important;
+      align-items:center !important;
+      padding:8px !important;
+    }
+    #inventoryModal .modal-card{
+      width:min(720px,100%) !important;
+      height:auto !important;
+      max-height:calc(100dvh - 16px) !important;
+      overflow-y:auto !important;
+      overflow-x:hidden !important;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+      margin:0 auto !important;
+      padding:14px 10px 22px !important;
+    }
+    #inventoryModal .inventory-toolbar{
+      position:relative !important;
+      top:auto !important;
+      z-index:1 !important;
+      padding-bottom:8px;
+    }
+    #inventoryModal .inventory-grid{
+      grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+      gap:8px !important;
+      margin-top:10px;
+      padding-bottom:8px;
+    }
+    #inventoryModal .inventory-card{
+      min-height:0 !important;
+      height:auto !important;
+      padding:9px !important;
+      border-radius:16px;
+      justify-content:flex-start !important;
+      gap:7px;
+    }
+    .inventory-card-head{min-width:0}
+    #inventoryModal .inventory-name{
+      font-size:.88rem;
+      line-height:1.2;
+      word-break:break-word;
+    }
+    #inventoryModal .inventory-qty{
+      font-size:.72rem;
+      margin-top:2px;
+    }
+
+    /* Recommendations are now inside each inventory card */
+    .inventory-card-recs{
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+      align-items:center;
+      padding:6px 0;
+      border-top:1px dashed #dcebd7;
+      border-bottom:1px dashed #dcebd7;
+      min-height:31px;
+    }
+    .inventory-card-recs.empty{
+      color:#91a995;
+      font-size:.66rem;
+    }
+    .inventory-card-recs-label{
+      width:100%;
+      font-size:.66rem;
+      font-weight:800;
+      color:#2d6a4f;
+      margin-bottom:1px;
+    }
+    .inventory-card-recipe{
+      border:0;
+      background:#eef7e9;
+      color:#2d6a4f;
+      border-radius:12px;
+      padding:4px 6px;
+      font-size:.65rem;
+      line-height:1.15;
+      cursor:pointer;
+      max-width:100%;
+      white-space:normal;
+      text-align:left;
+    }
+
+    /* Three actions stay on one horizontal line */
+    #inventoryModal .inventory-card-actions{
+      display:grid !important;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:4px !important;
+      margin-top:0 !important;
+      width:100%;
+    }
+    #inventoryModal .inventory-mini-btn{
+      min-width:0;
+      width:100%;
+      padding:6px 2px !important;
+      border-radius:11px !important;
+      font-size:.65rem !important;
+      line-height:1.1;
+      white-space:nowrap !important;
+      writing-mode:horizontal-tb !important;
+      word-break:keep-all !important;
+    }
+    #inventoryModal .inventory-delete-btn{
+      color:#9b3333 !important;
+    }
+
+    @media(max-width:360px){
+      #inventoryModal .inventory-grid{
+        grid-template-columns:1fr !important;
+      }
+      #inventoryModal .inventory-card-recipe{
+        font-size:.7rem;
+      }
+    }
+
+
+    /* ===== v2.6.4 hidden pantry categories + desktop hover recipe details ===== */
+
+    /* Desktop: hover recipe button to see details; no JS alert */
+    @media (hover:hover) and (pointer:fine){
+      #inventoryModal .inventory-card{
+        overflow:visible !important;
+      }
+
+      #inventoryModal .inventory-card-recipe{
+        position:relative;
+      }
+
+      #inventoryModal .inventory-card-recipe::after{
+        content:attr(data-tooltip);
+        position:absolute;
+        left:50%;
+        bottom:calc(100% + 9px);
+        transform:translateX(-50%) translateY(4px);
+        width:260px;
+        max-width:min(320px,70vw);
+        white-space:pre-line;
+        text-align:left;
+        line-height:1.5;
+        padding:10px 12px;
+        border-radius:14px;
+        background:#1e3a2b;
+        color:#fff;
+        font-size:.72rem;
+        font-weight:500;
+        box-shadow:0 10px 28px rgba(0,0,0,.23);
+        opacity:0;
+        visibility:hidden;
+        pointer-events:none;
+        z-index:999;
+        transition:opacity .15s ease,transform .15s ease,visibility .15s;
+      }
+
+      #inventoryModal .inventory-card-recipe::before{
+        content:"";
+        position:absolute;
+        left:50%;
+        bottom:calc(100% + 3px);
+        transform:translateX(-50%);
+        border:6px solid transparent;
+        border-top-color:#1e3a2b;
+        opacity:0;
+        visibility:hidden;
+        z-index:1000;
+        pointer-events:none;
+      }
+
+      #inventoryModal .inventory-card-recipe:hover::after{
+        opacity:1;
+        visibility:visible;
+        transform:translateX(-50%) translateY(0);
+      }
+
+      #inventoryModal .inventory-card-recipe:hover::before{
+        opacity:1;
+        visibility:visible;
+      }
+    }
+
+
+    /* ===== v2.6.5 smaller, non-clipped desktop tooltip ===== */
+    @media (hover:hover) and (pointer:fine){
+      #inventoryModal .modal-card,
+      #inventoryModal .inventory-grid{
+        overflow-x:visible !important;
+      }
+
+      #inventoryModal .inventory-card-recipe::after{
+        left:0 !important;
+        right:auto !important;
+        bottom:calc(100% + 6px) !important;
+        transform:translateY(3px) !important;
+        width:190px !important;
+        max-width:220px !important;
+        max-height:150px !important;
+        overflow-y:auto !important;
+        box-sizing:border-box !important;
+        padding:7px 9px !important;
+        border-radius:10px !important;
+        font-size:.62rem !important;
+        line-height:1.35 !important;
+        white-space:pre-line !important;
+        word-break:break-word !important;
+        overflow-wrap:anywhere !important;
+        z-index:10020 !important;
+      }
+
+      #inventoryModal .inventory-card-recipe::before{
+        left:14px !important;
+        bottom:calc(100% + 0px) !important;
+        transform:none !important;
+        z-index:10021 !important;
+      }
+
+      #inventoryModal .inventory-card-recipe:hover::after{
+        transform:translateY(0) !important;
+      }
+
+      /* Right-column cards: open tooltip toward the left so it stays on-screen */
+      #inventoryModal .inventory-card:nth-child(even) .inventory-card-recipe::after{
+        left:auto !important;
+        right:0 !important;
+      }
+      #inventoryModal .inventory-card:nth-child(even) .inventory-card-recipe::before{
+        left:auto !important;
+        right:14px !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -538,7 +828,7 @@
       </div>
       <div class="v2-actions"><button class="btn" id="addInventoryItemBtn">➕ 加入库存</button></div>
       <div class="v2-field" style="margin-top:8px;"><label>🔎 搜索库存</label><input id="inventorySearch" placeholder="输入食材名称"></div>
-      <div class="inventory-recommend-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="color:#2d6a4f;">🍳 库存菜单推荐</b><span class="v2-small">按现有食材匹配</span></div><div id="inventoryDishRecommendations" style="margin-top:7px;"></div></div>
+      <div class="v2-small" style="margin:6px 2px 0;">调味、饮料、零食会继续参与菜单推荐，但不在库存卡中显示。</div>
     </div>
     <div id="inventoryGrid" class="inventory-grid"></div>
   </div>
@@ -587,7 +877,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxU5hVkBf63KYGXCz5kxfUm2HxRKj-o2zr5YVat8GYL5cqqNWFLAPaVuk4T1kGPC2E/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -1061,25 +1351,148 @@
 
     function inventoryEmoji(category){return {'蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟','主食':'🍚','调味':'🧂','饮品':'🥤','其他':'📦'}[category]||'📦';}
     function getInventoryItem(name){const n=String(name||'').trim().toLowerCase();return inventory.find(x=>String(x.name||'').trim().toLowerCase()===n)||null;}
-    function updateInventoryCount(){const el=document.getElementById('inventoryCount');if(el)el.textContent=inventory.length;}
-    function getInventoryDishRecommendations(limit=8){const stockNames=inventory.filter(x=>Number(x.qty||0)>0).map(x=>String(x.name||'').trim()).filter(Boolean);if(!stockNames.length)return[];return dishCatalog.map(d=>{const ingredients=(d.ingredients||[]).map(String),matched=ingredients.filter(ing=>stockNames.some(s=>ing.includes(s)||s.includes(ing))),missing=ingredients.filter(ing=>!matched.includes(ing)),score=ingredients.length?matched.length/ingredients.length:0;return{dish:d,matched,missing,score};}).filter(x=>x.matched.length>0).sort((a,b)=>b.score-a.score||b.matched.length-a.matched.length||smartNameSort(a.dish.name,b.dish.name)).slice(0,limit);}
-    function renderInventoryDishRecommendations(){const box=document.getElementById('inventoryDishRecommendations');if(!box)return;const recs=getInventoryDishRecommendations();if(!recs.length){box.innerHTML='<div class="v2-small">加入库存食材后，这里会自动推荐可以做的菜。</div>';return;}box.innerHTML=recs.map(r=>`<div class="dish-recommend-chip"><b>🍽 ${escapeHtml(r.dish.name)}</b><div class="match-stock">库存命中：${r.matched.map(escapeHtml).join('、')} · 匹配 ${Math.round(r.score*100)}%</div>${r.missing.length?`<div class="v2-small">还可能需要：${r.missing.slice(0,4).map(escapeHtml).join('、')}</div>`:'<div class="v2-good">✅ 主要食材库存已覆盖</div>'}</div>`).join('');}
+    function updateInventoryCount(){
+      const el=document.getElementById('inventoryCount');if(!el)return;
+      const hidden=new Set(['调味','饮料','饮品','零食']);
+      el.textContent=inventory.filter(x=>!hidden.has(String(x.category||'').trim())).length;
+    }
+    function normalizeIngredientName(v){
+      return String(v||'').trim().toLowerCase()
+        .replace(/\s+/g,'')
+        .replace(/[（(].*?[）)]/g,'')
+        .replace(/适量|少许|若干|一点|一些/g,'');
+    }
+
+    function stockMatchesIngredient(stockName,ingredientName){
+      const s=normalizeIngredientName(stockName),i=normalizeIngredientName(ingredientName);
+      if(!s||!i)return false;
+      return s===i || s.includes(i) || i.includes(s);
+    }
+
+    function getIngredientEmoji(item){
+      const cat=String(item.category||'');
+      const name=String(item.name||'');
+      if(/蛋/.test(name)||cat==='蛋奶')return '🥚';
+      if(/菜|瓜|豆|笋|菇|椒|葱|蒜|姜|白菜|菠菜|生菜|油麦菜|空心菜/.test(name)||cat==='蔬菜')return '🥬';
+      if(/肉|鸡|猪|牛|羊|排骨/.test(name)||cat==='肉类')return '🥩';
+      if(/鱼|虾|蟹|贝|蛤|鱿/.test(name)||cat==='水产')return '🐟';
+      if(/米|面|饭|粉|麦/.test(name)||cat==='主食')return '🍚';
+      if(/奶|芝士|黄油/.test(name))return '🥛';
+      if(/酱|油|盐|糖|醋|味噌|腐乳|辣酱/.test(name)||cat==='调味')return '🧂';
+      if(cat==='水果')return '🍎';
+      return inventoryEmoji(cat);
+    }
+
+    function getRecommendationsForInventoryItem(item,limit=4){
+      const stockName=String(item.name||'').trim();
+      const sNorm=normalizeIngredientName(stockName);
+      if(!sNorm)return [];
+
+      const allStock=inventory.filter(x=>Number(x.qty||0)>0);
+
+      return dishCatalog.map(d=>{
+        const dishName=String(d.name||'');
+        const ingredients=(d.ingredients||[]).map(String).filter(Boolean);
+
+        const directNameMatch=normalizeIngredientName(dishName).includes(sNorm) || sNorm.includes(normalizeIngredientName(dishName));
+        const exactIngredient=ingredients.some(ing=>normalizeIngredientName(ing)===sNorm);
+        const looseIngredient=ingredients.some(ing=>stockMatchesIngredient(stockName,ing));
+
+        if(!(directNameMatch||exactIngredient||looseIngredient))return null;
+
+        const matchedAll=ingredients.filter(ing=>allStock.some(st=>stockMatchesIngredient(st.name,ing)));
+        const missing=ingredients.filter(ing=>!allStock.some(st=>stockMatchesIngredient(st.name,ing)));
+        const coverage=ingredients.length?matchedAll.length/ingredients.length:0;
+
+        // Ranking:
+        // 1. Dish name itself closely matches stock item
+        // 2. Ingredient exact match
+        // 3. All listed ingredients available
+        // 4. Higher overall stock coverage
+        let rank=0;
+        if(directNameMatch)rank+=100;
+        if(exactIngredient)rank+=60;
+        if(missing.length===0)rank+=40;
+        rank+=coverage*20;
+
+        return {dish:d,directNameMatch,exactIngredient,matchedAll,missing,coverage,rank};
+      }).filter(Boolean)
+        .sort((a,b)=>b.rank-a.rank||b.coverage-a.coverage||smartNameSort(a.dish.name,b.dish.name))
+        .slice(0,limit);
+    }
+
+    function getCompactRecommendationsForItem(item,limit=3){
+      return getRecommendationsForInventoryItem(item,limit);
+    }
+
+    function recommendationCardHtml(item){
+      const recs=getCompactRecommendationsForItem(item,3);
+      if(!recs.length)return '<div class="inventory-card-recs empty">暂无推荐</div>';
+
+      return `<div class="inventory-card-recs">
+        <span class="inventory-card-recs-label">🍳 推荐</span>
+        ${recs.map(r=>{
+          const available=(r.dish.ingredients||[]).filter(ing=>inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
+          const missing=(r.dish.ingredients||[]).filter(ing=>!inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
+          const tooltip=[
+            `库存已有：${available.length?available.join('、'):'无'}`,
+            `还缺：${missing.length?missing.join('、'):'无，主要材料已齐'}`,
+            `做法：${r.dish.method||'暂无做法'}`
+          ].join('\n');
+          return `<button type="button"
+            class="inventory-card-recipe"
+            data-recommend-dish="${escapeHtml(r.dish.name)}"
+            data-tooltip="${escapeHtml(tooltip)}"
+            aria-label="${escapeHtml(r.dish.name)}">${escapeHtml(r.dish.name)}</button>`;
+        }).join('')}
+      </div>`;
+    }
+
+    function showRecommendedDish(dishName){
+      const dish=dishCatalog.find(d=>d.name===dishName);
+      if(!dish)return;
+      const available=(dish.ingredients||[]).filter(ing=>inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
+      const missing=(dish.ingredients||[]).filter(ing=>!inventory.some(st=>Number(st.qty||0)>0&&stockMatchesIngredient(st.name,ing)));
+      alert(
+        `🍳 ${dish.name}\n\n`+
+        `库存已有：${available.length?available.join('、'):'无'}\n`+
+        `还缺：${missing.length?missing.join('、'):'无，主要材料已齐'}\n\n`+
+        `做法：${dish.method||'暂无做法'}`
+      );
+    }
+
     function renderInventoryGrid(){
-      const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();renderInventoryDishRecommendations();
+      const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();
       const q=(document.getElementById('inventorySearch')?.value||'').trim().toLowerCase();
-      const rows=inventory.filter(x=>!q||String(x.name).toLowerCase().includes(q)).sort((a,b)=>smartNameSort(a.name,b.name));
+      const hiddenInventoryCategories=new Set(['调味','饮料','饮品','零食']);
+      const rows=inventory
+        .filter(x=>!hiddenInventoryCategories.has(String(x.category||'').trim()))
+        .filter(x=>!q||String(x.name).toLowerCase().includes(q))
+        .sort((a,b)=>smartNameSort(a.name,b.name));
       if(!rows.length){grid.innerHTML='<div class="v2-small" style="grid-column:1/-1;padding:16px;text-align:center;">暂无库存食材</div>';return;}
       grid.innerHTML=rows.map(item=>{const idx=inventory.indexOf(item);return `<div class="inventory-card">
-        <div><div style="display:flex;justify-content:space-between;"><span class="inventory-emoji">${inventoryEmoji(item.category)}</span><span class="v2-small">${escapeHtml(item.category||'其他')}</span></div>
-        <div class="inventory-name">${escapeHtml(item.name)}</div><div class="inventory-qty">库存 ${Number(item.qty||0)} ${escapeHtml(item.unit||'')}</div></div>
+        <div class="inventory-card-head">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:5px;">
+            <span class="inventory-emoji">${getIngredientEmoji(item)}</span>
+            <span class="v2-small">${escapeHtml(item.category||'其他')}</span>
+          </div>
+          <div class="inventory-name">${escapeHtml(item.name)}</div>
+          <div class="inventory-qty">库存 ${Number(item.qty||0)} ${escapeHtml(item.unit||'')}</div>
+        </div>
+        ${recommendationCardHtml(item)}
         <div class="inventory-card-actions">
           <button class="inventory-mini-btn" data-use="${idx}">－使用</button>
           <button class="inventory-mini-btn" data-history="${idx}">记录</button>
-          <button class="inventory-mini-btn" data-del="${idx}" style="color:#9b3333;">删</button>
+          <button class="inventory-mini-btn inventory-delete-btn" data-del="${idx}">删除</button>
         </div>
       </div>`;}).join('');
       grid.querySelectorAll('[data-use]').forEach(b=>b.addEventListener('click',()=>openUseStockModal(Number(b.dataset.use))));
       grid.querySelectorAll('[data-history]').forEach(b=>b.addEventListener('click',()=>showStockHistory(Number(b.dataset.history))));
+      grid.querySelectorAll('[data-recommend-dish]').forEach(b=>b.addEventListener('click',()=>{
+        const desktopHover=window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+        if(desktopHover)return;
+        showRecommendedDish(b.dataset.recommendDish);
+      }));
       grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{inventory.splice(Number(b.dataset.del),1);await persistInventory();}));
     }
     async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory},'getInventory');applyInventoryState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
@@ -1767,7 +2180,12 @@
     function renderFinalDecisions() {
       const container=document.getElementById('finalDecisionContainer'); if(!container)return;
       if(!finalDecisions.length){container.innerHTML='<p style="color:#888;font-size:.8rem;">暂无点餐记录</p>';return;}
-      const sorted=[...finalDecisions].sort((a,b)=>String(b.date).localeCompare(String(a.date))||smartNameSort(a.name,b.name));
+      const pending=finalDecisions.filter(item=>!item.selected);
+      if(!pending.length){
+        container.innerHTML='<p style="color:#888;font-size:0.8rem;">暂无待确认点单；已确认菜单请到「🥗 营养」查看。</p>';
+        return;
+      }
+      const sorted=[...pending].sort((a,b)=>String(b.date).localeCompare(String(a.date))||smartNameSort(a.name,b.name));
       container.innerHTML=sorted.map(item=>{const confirmed=!!item.selected;return `<div class="final-decision-item ${confirmed?'confirmed':''}"><input type="checkbox" data-id="${escapeHtml(item.id||'')}" ${confirmed||stagedFinalIds.has(item.id)?'checked':''} ${confirmed?'disabled':''}><span>${escapeHtml(item.name)} <span style="font-size:.7rem;color:#6a8f75;">(👤 ${escapeHtml(item.person)} | 📅 ${escapeHtml(item.date)})</span> ${confirmed?`<span class="meal-badge">${escapeHtml(item.meal||'已确认')}</span>`:''}</span></div>`;}).join('');
       container.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(cb=>cb.addEventListener('change',e=>{const id=e.target.dataset.id;if(e.target.checked)stagedFinalIds.add(id);else stagedFinalIds.delete(id);}));
     }
