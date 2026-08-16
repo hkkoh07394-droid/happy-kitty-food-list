@@ -280,13 +280,12 @@
     }
 
 
-    /* ===== v2.5 shared meal nutrition ===== */
-    .meal-share-card{background:#f7fbf4;border:1px solid #d6e8ce;border-radius:18px;padding:12px}
-    .meal-diners{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
-    .meal-diner-chip{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #cfe3ca;border-radius:20px;padding:7px 10px;font-size:.8rem;font-weight:700;color:#2d6a4f}
-    .meal-diner-chip input{width:16px;height:16px;accent-color:var(--spring-deep)}
-    .member-nutrition-card{border:1px solid #d8ead0;border-radius:18px;padding:10px;background:#fbfef9}
-    .member-nutrition-card b{color:#2d6a4f}
+    /* ===== v2.6 ===== */
+    .final-confirm-bar{display:flex;gap:7px;align-items:center;margin-top:9px}.final-confirm-bar select{flex:1;min-width:0;border:1px solid #b7d3b0;border-radius:18px;padding:8px;background:#fff}
+    .final-decision-item.confirmed{background:#f0f9ea;border-radius:14px;padding:7px}.meal-badge{display:inline-block;padding:2px 7px;border-radius:12px;background:#e6f3df;color:#2d6a4f;font-size:.68rem;font-weight:800}
+    .meal-share-card,.confirmed-menu-card{background:#f7fbf4;border:1px solid #d6e8ce;border-radius:18px;padding:12px}.meal-diners{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}.meal-diner-chip{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid #cfe3ca;border-radius:20px;padding:7px 10px;font-size:.8rem;font-weight:700;color:#2d6a4f}.meal-diner-chip input{width:16px!important;height:16px;accent-color:var(--spring-deep)}
+    .confirmed-meal-group{margin:8px 0}.confirmed-menu-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px dashed #dcebd7}.confirmed-menu-row .menu-meta{min-width:0;flex:1}.delete-menu-btn{border:1px solid #e1b9b9;background:#fff7f7;color:#9b3333;border-radius:14px;padding:5px 9px;font-size:.72rem;cursor:pointer;white-space:nowrap}
+    .member-nutrition-card{border:1px solid #d8ead0;border-radius:18px;padding:10px;background:#fbfef9}.inventory-recommend-box{margin-top:12px;padding:10px;border-radius:18px;background:#f3faef;border:1px solid #d8ead0}.dish-recommend-chip{display:block;width:100%;text-align:left;border:1px solid #d5e7ce;background:#fff;border-radius:14px;padding:8px;margin:6px 0;color:#244b35}.dish-recommend-chip b{color:#2d6a4f}.match-stock{font-size:.68rem;color:#6a8f75;margin-top:2px}
 
 </style>
 </head>
@@ -342,59 +341,30 @@
 
   <div id="nutritionPanel" class="v2-panel">
     <h3 style="color:#2d6a4f;margin-bottom:8px;">🥗 家庭营养</h3>
-
-    <div class="family-form-card">
-      <div class="family-add-header">
-        <div>
-          <b style="color:#2d6a4f;">家庭成员资料</b>
-          <div class="v2-small">点右边 ＋ 添加成员</div>
-        </div>
-        <button type="button" class="family-add-toggle" id="toggleMemberFormBtn" aria-label="添加家庭成员">＋</button>
-      </div>
-      <div id="familyMemberForm">
-        <div class="v2-grid" style="margin-top:8px;">
-          <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue"></div>
-          <div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
-          <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div>
-          <div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
-          <div class="v2-field"><label>体重 kg</label><input type="number" id="memberWeight" min="1" step="0.1"></div>
-          <div class="v2-field"><label>&nbsp;</label><button class="btn" id="saveMemberBtn">保存成员</button></div>
-        </div>
-      </div>
-    </div>
-    <div id="familyStats" class="v2-grid"></div>
-    <div class="meal-share-card" style="margin-top:12px;">
+    <div class="meal-share-card">
       <b style="color:#2d6a4f;">🍽️ 今日共同用餐</b>
       <div class="v2-grid" style="margin-top:8px;">
-        <div class="v2-field">
-          <label>用餐日期</label>
-          <input type="date" id="nutritionMealDate">
-        </div>
-        <div class="v2-field">
-          <label>餐别</label>
-          <select id="nutritionMealType">
-            <option value="早餐">🌅 早餐</option>
-            <option value="午餐">☀️ 午餐</option>
-            <option value="晚餐" selected>🌙 晚餐</option>
-          </select>
-        </div>
+        <div class="v2-field"><label>查看日期</label><input type="date" id="nutritionMealDate"></div>
+        <div class="v2-field"><label>营养计算餐别</label><select id="nutritionMealType"><option value="全天">📅 全天</option><option value="早餐">🌅 早餐</option><option value="午餐">☀️ 午餐</option><option value="晚餐" selected>🌙 晚餐</option></select></div>
       </div>
-      <div style="margin-top:9px;">
-        <label style="font-size:.78rem;font-weight:700;color:#2d6a4f;">一起吃的人</label>
-        <div id="mealDiners" class="meal-diners"></div>
-      </div>
-      <div class="v2-actions">
-        <button class="btn" id="saveMealSettingsBtn">💾 保存用餐设置</button>
-      </div>
-      <div class="v2-small">最终决定中已勾选的菜会视为共同菜品，并平均分配给这里勾选的用餐成员。</div>
+      <div style="margin-top:9px;"><label style="font-size:.78rem;font-weight:700;color:#2d6a4f;">一起吃的人</label><div id="mealDiners" class="meal-diners"></div></div>
+      <div class="v2-actions"><button class="btn" id="saveMealSettingsBtn">💾 保存用餐成员</button></div>
     </div>
-    <div style="margin-top:12px;">
-      <b style="color:#2d6a4f;">今日最终菜单营养汇总</b>
-      <div id="dailyNutrition"></div>
+    <div class="confirmed-menu-card" style="margin-top:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="color:#2d6a4f;">✅ 已确定菜单</b><span class="v2-small" id="confirmedMenuDateLabel"></span></div>
+      <div id="confirmedMenuList" style="margin-top:7px;"></div>
     </div>
-    <div class="v2-small" style="margin-top:8px;">
-      BMR 是静息能量估算，不等于每日热量目标；蛋白质最低值按 0.8 g/kg 作为一般成人参考，实际目标可按活动量和专业建议调整。
+    <div style="margin-top:12px;"><b style="color:#2d6a4f;">📊 营养计算</b><div id="dailyNutrition"></div></div>
+    <div class="family-form-card" style="margin-top:12px;">
+      <div class="family-add-header"><div><b style="color:#2d6a4f;">👨‍👩‍👧 家庭成员资料</b><div class="v2-small">需要时按右边 ＋ 新增成员。</div></div><button type="button" class="family-add-toggle" id="toggleMemberFormBtn" aria-label="添加家庭成员">＋</button></div>
+      <div id="familyStats" class="v2-grid" style="margin-top:8px;"></div>
+      <div id="familyMemberForm"><div class="v2-grid" style="margin-top:10px;">
+        <div class="v2-field"><label>名字</label><input id="memberName" placeholder="例如 Sue"></div><div class="v2-field"><label>性别</label><select id="memberSex"><option>女</option><option>男</option></select></div>
+        <div class="v2-field"><label>年龄</label><input type="number" id="memberAge" min="1"></div><div class="v2-field"><label>身高 cm</label><input type="number" id="memberHeight" min="1" step="0.1"></div>
+        <div class="v2-field"><label>体重 kg</label><input type="number" id="memberWeight" min="1" step="0.1"></div><div class="v2-field"><label>&nbsp;</label><button class="btn" id="saveMemberBtn">保存成员</button></div>
+      </div></div>
     </div>
+    <div class="v2-small" style="margin-top:8px;">最终菜单营养按共同用餐成员平均分配；内置菜品目前按整道菜约2人份、每人约400ml估算。</div>
   </div>
 
   <div id="purchasePanel" class="v2-panel">
@@ -484,10 +454,14 @@
   <div id="queryResult" class="query-result">暂无查询结果</div>
 
   <div class="final-decision-section">
-    <h4 style="margin-bottom:6px;">🎯 最终决定</h4>
+    <h4 style="margin-bottom:6px;">🎯 最终菜单确认</h4>
+    <div class="v2-small" style="margin-bottom:7px;">先勾选菜品，再选择早餐 / 午餐 / 晚餐，最后按确认。勾选不会立即保存。</div>
     <div id="finalDecisionContainer"></div>
-    <button class="btn" onclick="exportFinalDecision()"
-      style="width:80%; margin-top:8px; font-size:0.8rem;">📤 导出最终菜单</button>
+    <div class="final-confirm-bar">
+      <select id="finalMealType"><option value="">请选择餐别</option><option value="早餐">🌅 早餐</option><option value="午餐">☀️ 午餐</option><option value="晚餐">🌙 晚餐</option></select>
+      <button class="btn" id="confirmFinalMenuBtn">✅ 确认菜单</button>
+    </div>
+    <button class="btn btn-outline" onclick="exportFinalDecision()" style="width:80%; margin-top:8px; font-size:0.8rem;">📤 导出已确认菜单</button>
   </div>
 
   <div class="shopping-section">
@@ -564,6 +538,7 @@
       </div>
       <div class="v2-actions"><button class="btn" id="addInventoryItemBtn">➕ 加入库存</button></div>
       <div class="v2-field" style="margin-top:8px;"><label>🔎 搜索库存</label><input id="inventorySearch" placeholder="输入食材名称"></div>
+      <div class="inventory-recommend-box"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><b style="color:#2d6a4f;">🍳 库存菜单推荐</b><span class="v2-small">按现有食材匹配</span></div><div id="inventoryDishRecommendations" style="margin-top:7px;"></div></div>
     </div>
     <div id="inventoryGrid" class="inventory-grid"></div>
   </div>
@@ -612,7 +587,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbzLAGNpEXCY4LYKN9iLq7zKuVaOT9er8DuZsoe6Q4l7jDrFFhXQHw_a2WT4h15Ewso/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxU5hVkBf63KYGXCz5kxfUm2HxRKj-o2zr5YVat8GYL5cqqNWFLAPaVuk4T1kGPC2E/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -805,7 +780,7 @@
         const ingredients = new Map();
         
         dishes.forEach(dish => {
-          exportText += `  • ${dish.name} (👤 ${dish.person})\n`;
+          exportText += `  • ${dish.name} (${dish.meal||'未分类'} · 原点餐人 ${dish.person})\n`;
           if (dish.ingredients) {
             dish.ingredients.forEach(ing => {
               if (!ingredients.has(ing)) {
@@ -1087,8 +1062,10 @@
     function inventoryEmoji(category){return {'蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟','主食':'🍚','调味':'🧂','饮品':'🥤','其他':'📦'}[category]||'📦';}
     function getInventoryItem(name){const n=String(name||'').trim().toLowerCase();return inventory.find(x=>String(x.name||'').trim().toLowerCase()===n)||null;}
     function updateInventoryCount(){const el=document.getElementById('inventoryCount');if(el)el.textContent=inventory.length;}
+    function getInventoryDishRecommendations(limit=8){const stockNames=inventory.filter(x=>Number(x.qty||0)>0).map(x=>String(x.name||'').trim()).filter(Boolean);if(!stockNames.length)return[];return dishCatalog.map(d=>{const ingredients=(d.ingredients||[]).map(String),matched=ingredients.filter(ing=>stockNames.some(s=>ing.includes(s)||s.includes(ing))),missing=ingredients.filter(ing=>!matched.includes(ing)),score=ingredients.length?matched.length/ingredients.length:0;return{dish:d,matched,missing,score};}).filter(x=>x.matched.length>0).sort((a,b)=>b.score-a.score||b.matched.length-a.matched.length||smartNameSort(a.dish.name,b.dish.name)).slice(0,limit);}
+    function renderInventoryDishRecommendations(){const box=document.getElementById('inventoryDishRecommendations');if(!box)return;const recs=getInventoryDishRecommendations();if(!recs.length){box.innerHTML='<div class="v2-small">加入库存食材后，这里会自动推荐可以做的菜。</div>';return;}box.innerHTML=recs.map(r=>`<div class="dish-recommend-chip"><b>🍽 ${escapeHtml(r.dish.name)}</b><div class="match-stock">库存命中：${r.matched.map(escapeHtml).join('、')} · 匹配 ${Math.round(r.score*100)}%</div>${r.missing.length?`<div class="v2-small">还可能需要：${r.missing.slice(0,4).map(escapeHtml).join('、')}</div>`:'<div class="v2-good">✅ 主要食材库存已覆盖</div>'}</div>`).join('');}
     function renderInventoryGrid(){
-      const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();
+      const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();renderInventoryDishRecommendations();
       const q=(document.getElementById('inventorySearch')?.value||'').trim().toLowerCase();
       const rows=inventory.filter(x=>!q||String(x.name).toLowerCase().includes(q)).sort((a,b)=>smartNameSort(a.name,b.name));
       if(!rows.length){grid.innerHTML='<div class="v2-small" style="grid-column:1/-1;padding:16px;text-align:center;">暂无库存食材</div>';return;}
@@ -1253,89 +1230,11 @@
       };
     }
 
-    function getSelectedMealDiners(){
-      return [...document.querySelectorAll('#mealDiners input[type="checkbox"]:checked')].map(x=>x.value);
-    }
-
-    function renderMealDiners(){
-      const box=document.getElementById('mealDiners');
-      if(!box)return;
-      const date=document.getElementById('nutritionMealDate')?.value || formatDate(new Date());
-      const meal=document.getElementById('nutritionMealType')?.value || '晚餐';
-      const saved=mealSettings.find(x=>x.date===date && x.meal===meal);
-      const selectedNames=saved && saved.diners && saved.diners.length ? saved.diners : familyMembers.map(x=>x.name);
-      box.innerHTML=[...familyMembers].sort((a,b)=>smartNameSort(a.name,b.name)).map(m=>`
-        <label class="meal-diner-chip">
-          <input type="checkbox" value="${escapeHtml(m.name)}" ${selectedNames.includes(m.name)?'checked':''}>
-          ${escapeHtml(m.name)}
-        </label>`).join('') || '<span class="v2-small">请先添加家庭成员。</span>';
-      box.querySelectorAll('input').forEach(x=>x.addEventListener('change',renderDailyNutrition));
-    }
-
-    function renderDailyNutrition(){
-      const box = document.getElementById('dailyNutrition');
-      if (!box) return;
-      const date = document.getElementById('nutritionMealDate')?.value || formatDate(new Date());
-      const meal = document.getElementById('nutritionMealType')?.value || '晚餐';
-      const diners = getSelectedMealDiners();
-
-      // Only final dishes for the chosen date. Who originally ordered the dish does NOT affect nutrition.
-      // De-duplicate by dish name because the same shared dish may have been requested by both people.
-      const selectedMap = new Map();
-      finalDecisions.filter(x => x.selected && x.date === date).forEach(x => {
-        if (!selectedMap.has(x.name)) selectedMap.set(x.name, x);
-      });
-      const selected = [...selectedMap.values()];
-
-      if (!selected.length) {
-        box.innerHTML = `<div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} 还没有勾选最终菜品。</div>`;
-        return;
-      }
-
-      const total = selected.reduce((a,x) => {
-        const n = getDishNutrition(x.name);
-        Object.keys(n).forEach(k => a[k] += Number(n[k]||0));
-        return a;
-      }, {calories:0,protein:0,carbs:0,fat:0,fiber:0,veggieServings:0,fruitServings:0});
-
-      const missing = selected.filter(x => {
-        const n = getDishNutrition(x.name);
-        return !(n.protein || n.calories || n.carbs || n.fat || n.fiber);
-      }).length;
-
-      const count = diners.length;
-      const per = {};
-      Object.keys(total).forEach(k=>per[k]=count ? total[k]/count : 0);
-
-      const memberCards = count ? diners.map(name=>{
-        const m=familyMembers.find(x=>x.name===name)||{};
-        const proteinTarget=Number(m.proteinSuggested||m.proteinMin||0);
-        const proteinPct=proteinTarget>0 ? Math.min(999,per.protein/proteinTarget*100) : 0;
-        return `<div class="member-nutrition-card">
-          <b>👤 ${escapeHtml(name)}</b>
-          <div class="v2-small">${escapeHtml(meal)}预计摄入 · 共同菜平均分配</div>
-          <div style="margin-top:6px;">🔥 ${per.calories.toFixed(0)} kcal　🥚 ${per.protein.toFixed(1)} g</div>
-          <div>🍚 ${per.carbs.toFixed(1)} g　🥑 ${per.fat.toFixed(1)} g　🌾 ${per.fiber.toFixed(1)} g</div>
-          ${proteinTarget>0?`<div class="nutrition-row"><span>蛋白质目标</span><div class="nutrition-bar"><span style="width:${Math.min(100,proteinPct).toFixed(0)}%"></span></div><span>${proteinPct.toFixed(0)}%</span></div>`:''}
-        </div>`;
-      }).join('') : '<div class="v2-warning">⚠️ 请至少勾选一位用餐成员。</div>';
-
-      box.innerHTML = `
-        <div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} · ${escapeHtml(meal)} · ${count} 人共享 · ${selected.length} 道菜</div>
-        <div class="v2-grid" style="margin-top:8px;">
-          <div class="v2-stat">🔥 家庭总热量<b>${total.calories.toFixed(0)} kcal</b></div>
-          <div class="v2-stat">🥚 家庭总蛋白质<b>${total.protein.toFixed(1)} g</b></div>
-          <div class="v2-stat">🍚 家庭总碳水<b>${total.carbs.toFixed(1)} g</b></div>
-          <div class="v2-stat">🥑 家庭总脂肪<b>${total.fat.toFixed(1)} g</b></div>
-          <div class="v2-stat">🌾 家庭总纤维<b>${total.fiber.toFixed(1)} g</b></div>
-          <div class="v2-stat">🥬 蔬菜份数<b>${total.veggieServings.toFixed(1)}</b></div>
-        </div>
-        <div style="margin-top:10px;"><b style="color:#2d6a4f;">每人预计摄入</b></div>
-        <div class="v2-grid" style="margin-top:7px;">${memberCards}</div>
-        ${missing ? `<div class="v2-warning" style="margin-top:8px;">⚠️ ${missing} 道最终菜品尚未录入营养数据，以上合计会低估实际摄入。</div>` : ''}
-        <div class="v2-small" style="margin-top:8px;">目前营养资料以整道菜约 2 人份、每人约 400ml 为估算基础；多人用餐时这里按勾选人数平均分配。</div>
-      `;
-    }
+    function getSelectedMealDiners(){return [...document.querySelectorAll('#mealDiners input[type="checkbox"]:checked')].map(x=>x.value);}
+    function renderMealDiners(){const box=document.getElementById('mealDiners');if(!box)return;const date=document.getElementById('nutritionMealDate')?.value||formatDate(new Date());const meal=document.getElementById('nutritionMealType')?.value||'晚餐';const lookup=meal==='全天'?'晚餐':meal;const saved=mealSettings.find(x=>x.date===date&&x.meal===lookup);const selectedNames=saved?.diners?.length?saved.diners:familyMembers.map(x=>x.name);box.innerHTML=[...familyMembers].sort((a,b)=>smartNameSort(a.name,b.name)).map(m=>`<label class="meal-diner-chip"><input type="checkbox" value="${escapeHtml(m.name)}" ${selectedNames.includes(m.name)?'checked':''}>${escapeHtml(m.name)}</label>`).join('')||'<span class="v2-small">请先在下方添加家庭成员。</span>';box.querySelectorAll('input').forEach(x=>x.addEventListener('change',renderDailyNutrition));}
+    function confirmedMenusForDate(date){return finalDecisions.filter(x=>x.selected&&x.date===date&&x.meal);}
+    function renderConfirmedMenus(){const box=document.getElementById('confirmedMenuList');if(!box)return;const date=document.getElementById('nutritionMealDate')?.value||formatDate(new Date());const label=document.getElementById('confirmedMenuDateLabel');if(label)label.textContent=date;const items=confirmedMenusForDate(date);if(!items.length){box.innerHTML='<div class="v2-small">这一天还没有确定菜单。</div>';return;}box.innerHTML=['早餐','午餐','晚餐'].map(meal=>{const rows=items.filter(x=>x.meal===meal);if(!rows.length)return '';return `<div class="confirmed-meal-group"><b>${meal==='早餐'?'🌅':meal==='午餐'?'☀️':'🌙'} ${meal}</b>${rows.map(x=>`<div class="confirmed-menu-row"><div class="menu-meta"><strong>${escapeHtml(x.name)}</strong><div class="v2-small">原点餐人：${escapeHtml(x.person||'')}</div></div><button class="delete-menu-btn" data-delete-menu="${escapeHtml(x.id)}">删除</button></div>`).join('')}</div>`;}).join('');box.querySelectorAll('[data-delete-menu]').forEach(btn=>btn.addEventListener('click',async()=>{if(!confirm('从已确定菜单中删除这道菜？原点餐记录会保留。'))return;btn.disabled=true;try{const data=await apiRequest('deleteConfirmedMenu',{id:btn.dataset.deleteMenu},'getOrdersState');applyOrdersState(data);renderFinalDecisions();renderShoppingList();renderConfirmedMenus();renderDailyNutrition();}catch(err){alert('删除菜单失败：'+err.message);btn.disabled=false;}}));}
+    function renderDailyNutrition(){const box=document.getElementById('dailyNutrition');if(!box)return;const date=document.getElementById('nutritionMealDate')?.value||formatDate(new Date());const meal=document.getElementById('nutritionMealType')?.value||'晚餐';const diners=getSelectedMealDiners();let selected=confirmedMenusForDate(date);if(meal!=='全天')selected=selected.filter(x=>x.meal===meal);const seen=new Map();selected.forEach(x=>{const key=(x.meal||'')+'|'+x.name;if(!seen.has(key))seen.set(key,x);});selected=[...seen.values()];if(!selected.length){box.innerHTML=`<div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} · ${escapeHtml(meal)} 尚无已确定菜单。</div>`;return;}const total=selected.reduce((a,x)=>{const n=getDishNutrition(x.name);Object.keys(n).forEach(k=>a[k]+=Number(n[k]||0));return a;},{calories:0,protein:0,carbs:0,fat:0,fiber:0,veggieServings:0,fruitServings:0});const missing=selected.filter(x=>{const n=getDishNutrition(x.name);return !(n.protein||n.calories||n.carbs||n.fat||n.fiber);}).length;const count=diners.length,per={};Object.keys(total).forEach(k=>per[k]=count?total[k]/count:0);const cards=count?diners.map(name=>{const m=familyMembers.find(x=>x.name===name)||{},target=Number(m.proteinSuggested||m.proteinMin||0),pct=target>0?per.protein/target*100:0;return `<div class="member-nutrition-card"><b>👤 ${escapeHtml(name)}</b><div class="v2-small">${escapeHtml(meal)}预计摄入</div><div style="margin-top:5px;">🔥 ${per.calories.toFixed(0)} kcal · 🥚 ${per.protein.toFixed(1)}g</div><div>🍚 ${per.carbs.toFixed(1)}g · 🥑 ${per.fat.toFixed(1)}g · 🌾 ${per.fiber.toFixed(1)}g</div>${target>0?`<div class="nutrition-row"><span>蛋白质</span><div class="nutrition-bar"><span style="width:${Math.min(100,pct).toFixed(0)}%"></span></div><span>${pct.toFixed(0)}%</span></div>`:''}</div>`;}).join(''):'<div class="v2-warning">⚠️ 请勾选共同用餐成员。</div>';box.innerHTML=`<div class="v2-small" style="margin-top:7px;">${escapeHtml(date)} · ${escapeHtml(meal)} · ${count}人共享 · ${selected.length}道菜</div><div class="v2-grid" style="margin-top:8px;"><div class="v2-stat">🔥 家庭总热量<b>${total.calories.toFixed(0)} kcal</b></div><div class="v2-stat">🥚 家庭总蛋白质<b>${total.protein.toFixed(1)} g</b></div><div class="v2-stat">🍚 家庭总碳水<b>${total.carbs.toFixed(1)} g</b></div><div class="v2-stat">🥑 家庭总脂肪<b>${total.fat.toFixed(1)} g</b></div><div class="v2-stat">🌾 家庭总纤维<b>${total.fiber.toFixed(1)} g</b></div><div class="v2-stat">🥬 蔬菜份数<b>${total.veggieServings.toFixed(1)}</b></div></div><div style="margin-top:9px;"><b style="color:#2d6a4f;">每人预计摄入</b></div><div class="v2-grid" style="margin-top:7px;">${cards}</div>${missing?`<div class="v2-warning" style="margin-top:8px;">⚠️ ${missing}道菜尚无营养资料。</div>`:''}`;}
 
     function renderMonthlyPurchaseSummary(){
       const box = document.getElementById('monthlyPurchaseSummary');
@@ -1591,7 +1490,7 @@
           document.querySelectorAll('.v2-nav button').forEach(b=>b.classList.remove('active'));
           document.getElementById(id).classList.add('active'); btn.classList.add('active');
           if(id==='menuPanel'){renderSubcats();renderMenu();}
-          if(id==='nutritionPanel'){renderFamilyStats();renderDailyNutrition();}
+          if(id==='nutritionPanel'){renderMealDiners();renderConfirmedMenus();renderDailyNutrition();renderFamilyStats();}
           if(id==='purchasePanel'){renderSourceOptions();renderMonthlyPurchaseSummary();}
           if(id==='pricePanel')renderPriceComparison();
           if(id==='storePanel')renderStoreList();
@@ -1600,6 +1499,7 @@
       ['purchaseQty','purchaseUnitPrice','purchaseShipping','purchaseDiscount','purchasePackageSize'].forEach(id=>document.getElementById(id).addEventListener('input',updatePurchaseTotalPreview));
       document.getElementById('purchaseMeasureUnit').addEventListener('change',updatePurchaseTotalPreview);
       document.getElementById('purchaseSourceType').addEventListener('change',renderSourceOptions);
+      document.getElementById('confirmFinalMenuBtn')?.addEventListener('click',confirmStagedFinalMenu);
       document.getElementById('savePurchaseBtn').addEventListener('click',savePurchaseUI);
       document.getElementById('clearPurchaseBtn').addEventListener('click',clearPurchaseForm);
       document.getElementById('comparePriceBtn').addEventListener('click',renderPriceComparison);
@@ -1619,6 +1519,10 @@
         if(willOpen)setTimeout(()=>document.getElementById('memberName').focus(),100);
       });
       document.getElementById('saveMemberBtn').addEventListener('click',saveFamilyMemberUI);
+      const nutritionMealDateEl=document.getElementById('nutritionMealDate');if(nutritionMealDateEl)nutritionMealDateEl.value=formatDate(new Date());
+      nutritionMealDateEl?.addEventListener('change',()=>{renderMealDiners();renderConfirmedMenus();renderDailyNutrition();});
+      document.getElementById('nutritionMealType')?.addEventListener('change',()=>{renderMealDiners();renderDailyNutrition();});
+      document.getElementById('saveMealSettingsBtn')?.addEventListener('click',async e=>{const date=nutritionMealDateEl.value;let meal=document.getElementById('nutritionMealType').value;if(meal==='全天')meal='晚餐';const diners=getSelectedMealDiners();if(!diners.length)return alert('请至少选择一位用餐成员');const btn=e.currentTarget;setSavingState(btn,true,'保存中…');try{const data=await apiRequest('saveMealSettings',{settings:{date,meal,diners}},'getMealSettings');mealSettings=Array.isArray(data.mealSettings)?data.mealSettings:mealSettings;alert('✅ 用餐成员已保存');}catch(err){alert('保存失败：'+err.message);}finally{setSavingState(btn,false);}});
       clearPurchaseForm();
     }
 
@@ -1639,6 +1543,7 @@
     let currentSubcat = '全部';
     let shoppingItems = [];
     let finalDecisions = [];
+  let stagedFinalIds = new Set();
   let purchases = [];
   let stores = [];
   let priceHistory = [];
@@ -1860,38 +1765,19 @@
     }
 
     function renderFinalDecisions() {
-      const container = document.getElementById('finalDecisionContainer');
-      if (!container) return;
-      if (finalDecisions.length === 0) {
-        container.innerHTML = '<p style="color:#888; font-size:0.8rem;">暂无多人点餐记录</p>';
-        return;
-      }
-      container.innerHTML = finalDecisions.map(item => `
-        <div class="final-decision-item">
-          <input type="checkbox" data-id="${escapeHtml(item.id || '')}" ${item.selected ? 'checked' : ''}>
-          <span>${escapeHtml(item.name)} <span style="font-size:0.7rem; color:#6a8f75;">(👤 ${escapeHtml(item.person)} | 📅 ${escapeHtml(item.date)})</span></span>
-        </div>
-      `).join('');
-      container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', async e => {
-          const id = e.target.dataset.id;
-          e.target.disabled = true;
-          try {
-            const data = await apiRequest('updateFinalDecision', { id, selected: e.target.checked }, 'getOrdersState');
-            applyOrdersState(data);
-            renderFinalDecisions();
-            renderShoppingList();
-            renderDailyNutrition();
-          } catch (err) {
-            e.target.checked = !e.target.checked;
-            alert('❌ 更新最终决定失败：' + err.message);
-          } finally {
-            e.target.disabled = false;
-          }
-        });
-      });
+      const container=document.getElementById('finalDecisionContainer'); if(!container)return;
+      if(!finalDecisions.length){container.innerHTML='<p style="color:#888;font-size:.8rem;">暂无点餐记录</p>';return;}
+      const sorted=[...finalDecisions].sort((a,b)=>String(b.date).localeCompare(String(a.date))||smartNameSort(a.name,b.name));
+      container.innerHTML=sorted.map(item=>{const confirmed=!!item.selected;return `<div class="final-decision-item ${confirmed?'confirmed':''}"><input type="checkbox" data-id="${escapeHtml(item.id||'')}" ${confirmed||stagedFinalIds.has(item.id)?'checked':''} ${confirmed?'disabled':''}><span>${escapeHtml(item.name)} <span style="font-size:.7rem;color:#6a8f75;">(👤 ${escapeHtml(item.person)} | 📅 ${escapeHtml(item.date)})</span> ${confirmed?`<span class="meal-badge">${escapeHtml(item.meal||'已确认')}</span>`:''}</span></div>`;}).join('');
+      container.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(cb=>cb.addEventListener('change',e=>{const id=e.target.dataset.id;if(e.target.checked)stagedFinalIds.add(id);else stagedFinalIds.delete(id);}));
     }
 
+    async function confirmStagedFinalMenu(){
+      const ids=[...stagedFinalIds], meal=document.getElementById('finalMealType').value; if(!ids.length)return alert('请先勾选要加入最终菜单的菜品'); if(!meal)return alert('请选择早餐、午餐或晚餐');
+      const dates=[...new Set(finalDecisions.filter(x=>ids.includes(x.id)).map(x=>x.date))]; if(dates.length>1)return alert('一次只能确认同一天的菜单，请分日期确认');
+      const btn=document.getElementById('confirmFinalMenuBtn');setSavingState(btn,true,'确认中…');
+      try{const data=await apiRequest('confirmFinalMenu',{ids,meal},'getOrdersState');applyOrdersState(data);stagedFinalIds.clear();renderFinalDecisions();renderShoppingList();renderConfirmedMenus();renderDailyNutrition();alert(`✅ 已确认${meal}菜单`);}catch(err){alert('确认菜单失败：'+err.message);}finally{setSavingState(btn,false);}
+    }
 
     function openPurchaseFromShopping(itemName){
       const purchasePanel = document.getElementById('purchasePanel');
@@ -2013,35 +1899,14 @@
           apiStatus.style.color = '#a66a00';
         }
         // Keep the local menu/UI usable even when API_URL is missing or the backend is unavailable.
-        
-    // v2.5 shared meal controls
-    const nutritionMealDateEl=document.getElementById('nutritionMealDate');
-    if(nutritionMealDateEl) nutritionMealDateEl.value=formatDate(new Date());
-    document.getElementById('nutritionMealType')?.addEventListener('change',()=>{renderMealDiners();renderDailyNutrition();});
-    nutritionMealDateEl?.addEventListener('change',()=>{renderMealDiners();renderDailyNutrition();});
-    document.getElementById('saveMealSettingsBtn')?.addEventListener('click',async e=>{
-      const btn=e.currentTarget;
-      const date=nutritionMealDateEl.value;
-      const meal=document.getElementById('nutritionMealType').value;
-      const diners=getSelectedMealDiners();
-      if(!diners.length){alert('请至少选择一位用餐成员');return;}
-      setSavingState(btn,true,'保存中…');
-      try{
-        const data=await apiRequest('saveMealSettings',{settings:{date,meal,diners}},'getMealSettings');
-        mealSettings=Array.isArray(data.mealSettings)?data.mealSettings:mealSettings;
-        alert('✅ 用餐设置已保存');
-        renderDailyNutrition();
-      }catch(err){alert('❌ 保存失败：'+err.message);}
-      finally{setSavingState(btn,false);}
-    });
-
-renderSubcats();
+        renderSubcats();
         renderMenu();
         initV2UI();
         initInventoryUI();
         renderInventoryGrid();
         renderFamilyStats();
       renderMealDiners();
+      renderConfirmedMenus();
       renderDailyNutrition();
         renderDailyNutrition();
         renderSourceOptions();
