@@ -633,6 +633,134 @@
       }
     }
 
+
+    /* ===== v2.7 mobile viewport stability ===== */
+    html{
+      -webkit-text-size-adjust:100%;
+      text-size-adjust:100%;
+      overflow-x:hidden;
+    }
+    body{
+      overflow-x:hidden;
+      max-width:100vw;
+    }
+    .app-container,
+    .header,
+    .order-section,
+    .v2-nav,
+    .v2-panel,
+    .modal-overlay,
+    .modal-card{
+      max-width:100%;
+      box-sizing:border-box;
+    }
+
+    @media(max-width:600px){
+      /* iOS Safari auto-zooms focused fields below 16px */
+      input,
+      select,
+      textarea,
+      button{
+        font-size:16px;
+      }
+
+      .v2-field input,
+      .v2-field select,
+      .v2-field textarea,
+      .form-group input,
+      .form-group select,
+      .form-group textarea,
+      #purchaseDate,
+      #purchaseSourceType{
+        font-size:16px !important;
+      }
+
+      .app-container{
+        width:100%;
+        max-width:100vw;
+        margin:0;
+      }
+
+      .v2-grid,
+      #purchasePanel .v2-grid,
+      #purchasePanel .purchase-compact-grid{
+        min-width:0;
+        max-width:100%;
+      }
+
+      .v2-panel{
+        width:100%;
+        min-width:0;
+      }
+    }
+
+    /* Custom purchase calendar */
+    #purchaseCalendarModal{
+      z-index:430 !important;
+      padding:14px !important;
+      align-items:center !important;
+      justify-content:center !important;
+    }
+    .purchase-calendar-card{
+      width:min(330px,92vw);
+      background:#fff;
+      border:2px solid var(--spring-accent);
+      border-radius:22px;
+      padding:13px;
+      box-shadow:0 20px 46px rgba(0,0,0,.28);
+    }
+    .purchase-calendar-head{
+      display:grid;
+      grid-template-columns:38px 1fr 38px;
+      align-items:center;
+      gap:6px;
+      color:var(--spring-deep);
+      text-align:center;
+      margin-bottom:9px;
+    }
+    .calendar-nav-btn{
+      width:36px;
+      height:36px;
+      border:1px solid #cfe3ca;
+      border-radius:50%;
+      background:#f6fbf3;
+      color:#2d6a4f;
+      font-size:1.35rem;
+      cursor:pointer;
+    }
+    .purchase-calendar-week,
+    .purchase-calendar-days{
+      display:grid;
+      grid-template-columns:repeat(7,minmax(0,1fr));
+      gap:4px;
+    }
+    .purchase-calendar-week span{
+      text-align:center;
+      font-size:.7rem;
+      font-weight:700;
+      color:#6a8f75;
+      padding:3px 0;
+    }
+    .calendar-empty{min-height:34px}
+    .calendar-day{
+      min-width:0;
+      height:35px;
+      border:0;
+      border-radius:11px;
+      background:#f7fbf4;
+      color:#294735;
+      cursor:pointer;
+      font-size:.8rem;
+    }
+    .calendar-day.today{
+      outline:1px solid #7fbf7f;
+    }
+    .calendar-day.selected{
+      background:var(--spring-deep);
+      color:#fff;
+      font-weight:800;
+    }
+
 </style>
 </head>
 <body>
@@ -677,6 +805,7 @@
       <button class="cat-btn" data-cat="肉类">🍖 肉类</button>
       <button class="cat-btn" data-cat="蛋类">🥚 蛋类</button>
       <button class="cat-btn" data-cat="豆腐类">🧈 豆腐</button>
+      <button class="cat-btn" data-cat="汤类">🍲 汤类</button>
     </div>
     <div id="subcatContainer" class="subcat-nav"></div>
     <div style="display:flex;justify-content:center;margin:8px 0;">
@@ -716,7 +845,7 @@
   <div id="purchasePanel" class="v2-panel">
     <h3 style="color:#2d6a4f;margin-bottom:8px;">🧾 记录采购</h3>
     <div class="purchase-compact-grid">
-<div class="v2-field"><label>日期</label><input type="date" id="purchaseDate"></div>
+<div class="v2-field"><label>日期</label><input type="text" id="purchaseDate" readonly inputmode="none" placeholder="选择日期"></div>
 <div class="v2-field"><label>渠道类型</label><select id="purchaseSourceType"><option>Supermarket</option><option>Marketplace</option><option>Online Store</option><option>Other</option></select></div>
 <div class="v2-field"><label>渠道 / 超市</label><select id="purchaseSource"></select></div>
 <div class="v2-field"><label>分店 / 店铺</label><div class="purchase-branch-row">
@@ -870,6 +999,22 @@
 </div>
 
 
+
+<div id="purchaseCalendarModal" class="modal-overlay" style="display:none;">
+  <div class="purchase-calendar-card">
+    <div class="purchase-calendar-head">
+      <button type="button" class="calendar-nav-btn" id="purchaseCalPrev">‹</button>
+      <b id="purchaseCalTitle"></b>
+      <button type="button" class="calendar-nav-btn" id="purchaseCalNext">›</button>
+    </div>
+    <div class="purchase-calendar-week">
+      <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+    </div>
+    <div id="purchaseCalendarDays" class="purchase-calendar-days"></div>
+    <div class="v2-small" style="text-align:center;margin-top:7px;">点日期后会自动关闭</div>
+  </div>
+</div>
+
 <div id="mobileRecipeDetailModal" class="modal-overlay" style="display:none;">
   <div class="mobile-recipe-detail-card">
     <div class="mobile-recipe-detail-title" id="mobileRecipeDetailTitle">🍳 菜品详情</div>
@@ -941,7 +1086,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxkBqmU-5fbXHZYCE9PAT0RoWF3p8BuJzBPfBM28lkyZEU3XC2wtNlIysM6CJAqVvY/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbywkSaKnT_QrExKlkJAFSDbS_yaQzNWnYVkbu6GlK3OMf4KsBtAVii31m-TRnT-VRg/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -1168,6 +1313,55 @@
     }
   }
     
+
+    let purchaseCalendarCursor = new Date();
+
+    function parseLocalDateValue(value){
+      const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      return m ? new Date(Number(m[1]),Number(m[2])-1,Number(m[3])) : new Date();
+    }
+
+    function openPurchaseCalendar(){
+      const input=document.getElementById('purchaseDate');
+      purchaseCalendarCursor=parseLocalDateValue(input.value);
+      renderPurchaseCalendar();
+      const modal=document.getElementById('purchaseCalendarModal');
+      modal.style.display='flex';
+    }
+
+    function closePurchaseCalendar(){
+      document.getElementById('purchaseCalendarModal').style.display='none';
+    }
+
+    function renderPurchaseCalendar(){
+      const y=purchaseCalendarCursor.getFullYear();
+      const m=purchaseCalendarCursor.getMonth();
+      document.getElementById('purchaseCalTitle').textContent=`${y}年 ${m+1}月`;
+
+      const first=new Date(y,m,1);
+      const last=new Date(y,m+1,0);
+      const offset=first.getDay();
+      const selected=document.getElementById('purchaseDate').value;
+      const today=formatDate(new Date());
+
+      let htmlDays='';
+      for(let i=0;i<offset;i++) htmlDays+='<span class="calendar-empty"></span>';
+
+      for(let d=1;d<=last.getDate();d++){
+        const value=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        htmlDays+=`<button type="button" class="calendar-day ${value===selected?'selected':''} ${value===today?'today':''}" data-date="${value}">${d}</button>`;
+      }
+
+      const box=document.getElementById('purchaseCalendarDays');
+      box.innerHTML=htmlDays;
+      box.querySelectorAll('[data-date]').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+          document.getElementById('purchaseDate').value=btn.dataset.date;
+          closePurchaseCalendar();
+        });
+      });
+    }
+
   // ========== 主程序 ==========
     const dishCatalog = [
       { name: "凉拌黄瓜", method: "黄瓜拍碎，加蒜醋生抽香油", rating: 4, cat: "青菜", subcat: "凉拌", ingredients: ["黄瓜","大蒜","醋","生抽","香油"] },
@@ -1271,6 +1465,18 @@
       { name: "韩式辣豆腐", method: "豆腐加辣酱炖煮", rating: 4, cat: "豆腐类", subcat: "汤煲", ingredients: ["豆腐","韩式辣酱"] },
       { name: "豆腐蒸蛋", method: "豆腐垫底蒸蛋", rating: 4, cat: "豆腐类", subcat: "蒸制", ingredients: ["豆腐","鸡蛋"] },
       { name: "味噌烤豆腐", method: "豆腐抹味噌烤", rating: 4, cat: "豆腐类", subcat: "烤制", ingredients: ["豆腐","味噌"] },
+      { name: "ABC汤", method: "鸡肉或排骨焯水，与马铃薯、胡萝卜、番茄、洋葱一起小火煲至蔬菜软甜，盐调味。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["鸡肉", "马铃薯", "胡萝卜", "番茄", "洋葱", "盐"], calories: 420, protein: 30, carbs: 45, fat: 14, fiber: 8, veggieServings: 3.0, fruitServings: 0 },
+      { name: "莲藕排骨汤", method: "排骨焯水，莲藕切块，可加红枣；加水煲约1.5小时，盐调味。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["排骨", "莲藕", "红枣", "盐"], calories: 620, protein: 42, carbs: 38, fat: 32, fiber: 7, veggieServings: 2.0, fruitServings: 0 },
+      { name: "老黄瓜排骨汤", method: "排骨焯水，老黄瓜去籽切块，与红枣一同慢煲约1.5小时。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["排骨", "老黄瓜", "红枣", "盐"], calories: 500, protein: 38, carbs: 22, fat: 28, fiber: 5, veggieServings: 2.0, fruitServings: 0 },
+      { name: "西洋菜排骨汤", method: "排骨焯水，先煲至出味，再加入西洋菜煮至软，盐调味。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["排骨", "西洋菜", "红枣", "盐"], calories: 480, protein: 38, carbs: 16, fat: 28, fiber: 6, veggieServings: 3.0, fruitServings: 0 },
+      { name: "黑豆排骨汤", method: "黑豆洗净浸泡，排骨焯水，与黑豆、红枣一起慢煲约1.5至2小时。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["排骨", "黑豆", "红枣", "盐"], calories: 620, protein: 45, carbs: 32, fat: 32, fiber: 8, veggieServings: 1.0, fruitServings: 0 },
+      { name: "药材鸡汤", method: "鸡肉焯水，与党参、枸杞、红枣等药材一起小火煲约1小时。", rating: 5, cat: "汤类", subcat: "马来西亚家常", ingredients: ["鸡肉", "党参", "枸杞", "红枣", "盐"], calories: 520, protein: 52, carbs: 12, fat: 28, fiber: 2, veggieServings: 0.5, fruitServings: 0 },
+      { name: "冬瓜排骨汤", method: "排骨焯水先煲约40分钟，再放冬瓜煮软，盐和白胡椒调味。", rating: 4, cat: "汤类", subcat: "中式", ingredients: ["排骨", "冬瓜", "盐", "白胡椒"], calories: 480, protein: 38, carbs: 18, fat: 26, fiber: 4, veggieServings: 2.0, fruitServings: 0 },
+      { name: "萝卜排骨汤", method: "排骨焯水，与白萝卜、姜片一起煲至萝卜透明软甜，盐调味。", rating: 4, cat: "汤类", subcat: "中式", ingredients: ["排骨", "白萝卜", "姜", "盐"], calories: 470, protein: 38, carbs: 18, fat: 25, fiber: 4, veggieServings: 2.0, fruitServings: 0 },
+      { name: "番茄马铃薯牛肉汤", method: "牛肉焯水或煎香，与番茄、马铃薯、洋葱慢炖至牛肉软嫩。", rating: 5, cat: "汤类", subcat: "中式", ingredients: ["牛肉", "番茄", "马铃薯", "洋葱", "盐"], calories: 580, protein: 45, carbs: 45, fat: 24, fiber: 7, veggieServings: 3.0, fruitServings: 0 },
+      { name: "日式味噌汤", method: "高汤煮热，加入豆腐和海带；关小火后化开味噌，避免大滚。", rating: 4, cat: "汤类", subcat: "日式", ingredients: ["味噌", "豆腐", "海带", "高汤"], calories: 180, protein: 12, carbs: 18, fat: 7, fiber: 4, veggieServings: 1.5, fruitServings: 0 },
+      { name: "韩式辛奇汤", method: "辛奇与猪肉炒香，加水或高汤煮开，加入豆腐和葱煮至入味。", rating: 5, cat: "汤类", subcat: "韩式", ingredients: ["辛奇", "猪肉", "豆腐", "葱", "高汤"], calories: 420, protein: 28, carbs: 24, fat: 24, fiber: 5, veggieServings: 2.0, fruitServings: 0 },
+      { name: "肉骨茶", method: "排骨焯水，与肉骨茶药材包、蒜头慢煲至肉软，酱油和盐调整味道。", rating: 5, cat: "汤类", subcat: "马来西亚地道", ingredients: ["排骨", "肉骨茶药材包", "蒜", "酱油", "盐"], calories: 700, protein: 55, carbs: 20, fat: 42, fiber: 3, veggieServings: 0.5, fruitServings: 0 },
     ];
 
     const subcatMap = {
@@ -1278,7 +1484,8 @@
       '青菜': ['清炒', '腐乳炒', '干锅', '上汤'],
       '肉类': ['鸡肉', '猪肉', '牛肉', '鱼', '虾'],
       '蛋类': ['炒蛋', '蒸蛋', '煎蛋', '煮蛋'],
-      '豆腐类': ['麻婆', '家常', '凉拌', '汤煲', '红烧', '烤制', '炸制', '蒸制', '甜品']
+      '豆腐类': ['麻婆', '家常', '凉拌', '汤煲', '红烧', '烤制', '炸制', '蒸制', '甜品'],
+      '汤类': ['马来西亚家常', '马来西亚地道', '中式', '日式', '韩式']
     };
 
 
@@ -1998,6 +2205,10 @@
       document.getElementById('purchaseMeasureUnit').addEventListener('change',updatePurchaseTotalPreview);
       document.getElementById('purchaseSourceType').addEventListener('change',renderSourceOptions);
       document.getElementById('confirmFinalMenuBtn')?.addEventListener('click',confirmStagedFinalMenu);
+      document.getElementById('purchaseDate').addEventListener('click',openPurchaseCalendar);
+      document.getElementById('purchaseCalPrev').addEventListener('click',()=>{purchaseCalendarCursor.setMonth(purchaseCalendarCursor.getMonth()-1);renderPurchaseCalendar();});
+      document.getElementById('purchaseCalNext').addEventListener('click',()=>{purchaseCalendarCursor.setMonth(purchaseCalendarCursor.getMonth()+1);renderPurchaseCalendar();});
+      document.getElementById('purchaseCalendarModal').addEventListener('click',e=>{if(e.target.id==='purchaseCalendarModal')closePurchaseCalendar();});
       document.getElementById('savePurchaseBtn').addEventListener('click',savePurchaseUI);
       document.getElementById('clearPurchaseBtn').addEventListener('click',clearPurchaseForm);
       document.getElementById('comparePriceBtn').addEventListener('click',renderPriceComparison);
