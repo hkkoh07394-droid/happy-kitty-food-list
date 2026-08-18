@@ -761,6 +761,56 @@
       font-weight:800;
     }
 
+
+    /* ===== v2.7.1 diverse/custom inventory emoji ===== */
+    .inventory-emoji-edit{
+      border:0 !important;
+      background:transparent !important;
+      padding:0 !important;
+      cursor:pointer;
+      line-height:1;
+    }
+    #inventoryEmojiModal{
+      z-index:440 !important;
+      align-items:center !important;
+      justify-content:center !important;
+      padding:14px !important;
+    }
+    .inventory-emoji-picker-card{
+      width:min(360px,92vw);
+      max-height:72dvh;
+      overflow-y:auto;
+      background:#fff;
+      border:2px solid var(--spring-accent);
+      border-radius:22px;
+      padding:13px;
+      box-shadow:0 20px 46px rgba(0,0,0,.28);
+    }
+    .inventory-emoji-choices{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:7px;
+      margin-top:12px;
+    }
+    .inventory-emoji-choice{
+      min-width:0;
+      height:48px;
+      border:1px solid #d5e7ce;
+      border-radius:14px;
+      background:#f8fcf6;
+      font-size:1.35rem;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+    }
+    .inventory-emoji-choice span{
+      font-size:.55rem;
+      color:#6a8f75;
+    }
+
 </style>
 </head>
 <body>
@@ -866,14 +916,7 @@
 <div class="v2-field purchase-full"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
 <div class="v2-field purchase-full"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
 </div>
-    <div class="v2-small" style="margin-top:8px;">
-      💡 例：小票番茄 RM4.00，共 7颗 → 购买份数 1、小票价格 4.00、每份分量 7、分量单位「个 / 颗」。
-    </div>
-    <div id="purchaseTotalPreview" class="v2-stat" style="margin-top:8px;">
-      预计实际支付：<b>RM 0.00</b><br>
-      <span class="v2-small">填写「每份分量 + 分量单位」后自动计算换算价格</span>
-    </div>
-    <div class="v2-actions">
+<div class="v2-actions">
       <button class="btn" id="savePurchaseBtn">💾 保存采购</button>
       <button class="btn btn-outline" id="clearPurchaseBtn">清空</button>
     </div>
@@ -1022,6 +1065,20 @@
   </div>
 </div>
 
+
+<div id="inventoryEmojiModal" class="modal-overlay" style="display:none;">
+  <div class="inventory-emoji-picker-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <div>
+        <b style="color:#2d6a4f;">🎨 选择库存 Emoji</b>
+        <div class="v2-small" id="inventoryEmojiPickerName"></div>
+      </div>
+      <button type="button" class="btn-modal-cancel" id="closeInventoryEmojiBtn">✕</button>
+    </div>
+    <div id="inventoryEmojiChoices" class="inventory-emoji-choices"></div>
+  </div>
+</div>
+
 <div id="inventoryModal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
     <div class="inventory-toolbar">
@@ -1034,6 +1091,7 @@
         <div class="v2-field"><label>数量</label><input type="number" id="inventoryQty" min="0" step="0.1" value="1"></div>
         <div class="v2-field"><label>单位</label><select id="inventoryUnit"><option>个</option><option>盒</option><option>包</option><option>瓶</option><option>kg</option><option>g</option><option>L</option><option>ml</option><option>份</option></select></div>
         <div class="v2-field"><label>分类</label><select id="inventoryCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>调味</option><option>饮料</option><option>零食</option><option>主食</option><option>其他</option></select></div>
+<div class="v2-field full-row"><label>Emoji（可选）</label><select id="inventoryEmojiInput"><option value="">✨ 自动识别</option><option>🥚</option><option>🍅</option><option>🥕</option><option>🥔</option><option>🌽</option><option>🥦</option><option>🥬</option><option>🌶️</option><option>🍄</option><option>🧅</option><option>🧄</option><option>🍆</option><option>🥒</option><option>🪷</option><option>🫘</option><option>🍗</option><option>🥩</option><option>🐟</option><option>🦐</option><option>🦀</option><option>🦪</option><option>🦑</option><option>🍚</option><option>🍜</option><option>🍞</option><option>🥛</option><option>🧀</option><option>🍎</option><option>🍌</option><option>🍊</option><option>🍋</option><option>🍉</option><option>🧂</option><option>🥤</option><option>🍪</option><option>📦</option></select></div>
       </div>
       <div class="v2-actions"><button class="btn" id="addInventoryItemBtn">➕ 加入库存</button></div>
       <div class="v2-field" style="margin-top:8px;"><label>🔎 搜索库存</label><input id="inventorySearch" placeholder="输入食材名称"></div>
@@ -1086,7 +1144,7 @@
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbywkSaKnT_QrExKlkJAFSDbS_yaQzNWnYVkbu6GlK3OMf4KsBtAVii31m-TRnT-VRg/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbztGq6CjDRpWqg8RiMF-dPwgQCpKSE_Ei_dtUNSdHfRaza8zZzGZQg46civOvSGvbw/exec';
 
   function apiGet(params = {}) {
     return new Promise((resolve, reject) => {
@@ -1641,17 +1699,54 @@
     }
 
     function getIngredientEmoji(item){
-      const cat=String(item.category||'');
-      const name=String(item.name||'');
-      if(/蛋/.test(name)||cat==='蛋奶')return '🥚';
-      if(/菜|瓜|豆|笋|菇|椒|葱|蒜|姜|白菜|菠菜|生菜|油麦菜|空心菜/.test(name)||cat==='蔬菜')return '🥬';
-      if(/肉|鸡|猪|牛|羊|排骨/.test(name)||cat==='肉类')return '🥩';
-      if(/鱼|虾|蟹|贝|蛤|鱿/.test(name)||cat==='水产')return '🐟';
-      if(/米|面|饭|粉|麦/.test(name)||cat==='主食')return '🍚';
-      if(/奶|芝士|黄油/.test(name))return '🥛';
+      if(item && String(item.emoji||'').trim()) return String(item.emoji).trim();
+      const cat=String(item?.category||'');
+      const name=String(item?.name||'').trim();
+
+      if(/鸡蛋|咸蛋|皮蛋|鸭蛋|鹌鹑蛋|蛋/.test(name))return '🥚';
+      if(/番茄|西红柿/.test(name))return '🍅';
+      if(/胡萝卜/.test(name))return '🥕';
+      if(/马铃薯|土豆/.test(name))return '🥔';
+      if(/玉米/.test(name))return '🌽';
+      if(/西兰花|花椰菜/.test(name))return '🥦';
+      if(/辣椒|青椒|红椒|彩椒/.test(name))return '🌶️';
+      if(/香菇|蘑菇|金针菇|杏鲍菇|菇/.test(name))return '🍄';
+      if(/洋葱/.test(name))return '🧅';
+      if(/蒜/.test(name))return '🧄';
+      if(/茄子/.test(name))return '🍆';
+      if(/黄瓜|老黄瓜/.test(name))return '🥒';
+      if(/莲藕/.test(name))return '🪷';
+      if(/黑豆|黄豆|红豆|绿豆|豆类/.test(name))return '🫘';
+      if(/油麦菜|西洋菜|菠菜|生菜|白菜|青菜|空心菜|芥蓝|菜心|菜/.test(name))return '🥬';
+
+      if(/虾/.test(name))return '🦐';
+      if(/蟹|螃蟹/.test(name))return '🦀';
+      if(/蚝|牡蛎|蛤|贝/.test(name))return '🦪';
+      if(/鱿鱼|墨鱼/.test(name))return '🦑';
+      if(/鱼|三文鱼|鲑鱼/.test(name))return '🐟';
+
+      if(/鸡腿|鸡翅|鸡肉|鸡胸|鸡/.test(name))return '🍗';
+      if(/猪|排骨|牛|羊|肉/.test(name))return '🥩';
+
+      if(/面包|吐司/.test(name))return '🍞';
+      if(/面|粉|河粉|米粉|意面/.test(name))return '🍜';
+      if(/米|饭/.test(name))return '🍚';
+
+      if(/芝士|奶酪/.test(name))return '🧀';
+      if(/牛奶|鲜奶|豆奶|奶/.test(name))return '🥛';
+
+      if(/苹果/.test(name))return '🍎';
+      if(/香蕉/.test(name))return '🍌';
+      if(/橙|柑/.test(name))return '🍊';
+      if(/柠檬/.test(name))return '🍋';
+      if(/西瓜/.test(name))return '🍉';
+
       if(/酱|油|盐|糖|醋|味噌|腐乳|辣酱/.test(name)||cat==='调味')return '🧂';
-      if(cat==='水果')return '🍎';
-      return inventoryEmoji(cat);
+
+      return {
+        '蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟',
+        '主食':'🍚','调味':'🧂','饮料':'🥤','饮品':'🥤','零食':'🍪','其他':'📦'
+      }[cat] || '📦';
     }
 
     function getRecommendationsForInventoryItem(item,limit=4){
@@ -1753,7 +1848,33 @@
       modal.style.display='flex';
     }
 
-    function renderInventoryGrid(){
+    
+    const INVENTORY_EMOJI_CHOICES=[
+      '', '🥚','🍅','🥕','🥔','🌽','🥦','🥬','🌶️','🍄','🧅','🧄','🍆','🥒','🪷','🫘',
+      '🍗','🥩','🐟','🦐','🦀','🦪','🦑','🍚','🍜','🍞','🥛','🧀',
+      '🍎','🍌','🍊','🍋','🍉','🧂','🥤','🍪','📦'
+    ];
+    let inventoryEmojiEditIndex=-1;
+
+    function openInventoryEmojiPicker(idx){
+      const item=inventory[idx]; if(!item)return;
+      inventoryEmojiEditIndex=idx;
+      document.getElementById('inventoryEmojiPickerName').textContent=`${item.name} · 当前 ${getIngredientEmoji(item)}`;
+      const box=document.getElementById('inventoryEmojiChoices');
+      box.innerHTML=INVENTORY_EMOJI_CHOICES.map(e=>`
+        <button type="button" class="inventory-emoji-choice" data-emoji-choice="${escapeHtml(e)}">
+          ${e || '✨'}<span>${e?'':'自动'}</span>
+        </button>`).join('');
+      box.querySelectorAll('[data-emoji-choice]').forEach(btn=>btn.addEventListener('click',async()=>{
+        const item=inventory[inventoryEmojiEditIndex]; if(!item)return;
+        item.emoji=btn.dataset.emojiChoice||'';
+        document.getElementById('inventoryEmojiModal').style.display='none';
+        await persistInventory();
+      }));
+      document.getElementById('inventoryEmojiModal').style.display='flex';
+    }
+
+function renderInventoryGrid(){
       const grid=document.getElementById('inventoryGrid');if(!grid)return;updateInventoryCount();
       const q=(document.getElementById('inventorySearch')?.value||'').trim().toLowerCase();
       const hiddenInventoryCategories=new Set(['调味','饮料','饮品','零食']);
@@ -1765,7 +1886,7 @@
       grid.innerHTML=rows.map(item=>{const idx=inventory.indexOf(item);return `<div class="inventory-card">
         <div class="inventory-card-head">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:5px;">
-            <span class="inventory-emoji">${getIngredientEmoji(item)}</span>
+            <button type="button" class="inventory-emoji inventory-emoji-edit" data-emoji-edit="${idx}" title="更换 Emoji">${getIngredientEmoji(item)}</button>
             <span class="v2-small">${escapeHtml(item.category||'其他')}</span>
           </div>
           <div class="inventory-name">${escapeHtml(item.name)}</div>
@@ -1778,6 +1899,7 @@
           <button class="inventory-mini-btn inventory-delete-btn" data-del="${idx}">删除</button>
         </div>
       </div>`;}).join('');
+      grid.querySelectorAll('[data-emoji-edit]').forEach(b=>b.addEventListener('click',()=>openInventoryEmojiPicker(Number(b.dataset.emojiEdit))));
       grid.querySelectorAll('[data-use]').forEach(b=>b.addEventListener('click',()=>openUseStockModal(Number(b.dataset.use))));
       grid.querySelectorAll('[data-history]').forEach(b=>b.addEventListener('click',()=>showStockHistory(Number(b.dataset.history))));
       grid.querySelectorAll('[data-recommend-dish]').forEach(b=>b.addEventListener('click',()=>{
@@ -1789,10 +1911,10 @@
     }
     async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory},'getInventory');applyInventoryState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
     async function addInventoryItemUI(){
-      const name=document.getElementById('inventoryName').value.trim(),qty=Number(document.getElementById('inventoryQty').value||0),unit=document.getElementById('inventoryUnit').value,category=document.getElementById('inventoryCategory').value;
+      const name=document.getElementById('inventoryName').value.trim(),qty=Number(document.getElementById('inventoryQty').value||0),unit=document.getElementById('inventoryUnit').value,category=document.getElementById('inventoryCategory').value,emoji=document.getElementById('inventoryEmojiInput').value;
       if(!name)return alert('请输入食材名称');if(qty<0)return alert('数量不能小于 0');
-      const existing=getInventoryItem(name);if(existing){existing.qty=qty;existing.unit=unit;existing.category=category;}else inventory.push({id:'',name,qty,unit,category});
-      await persistInventory();document.getElementById('inventoryName').value='';document.getElementById('inventoryQty').value='1';
+      const existing=getInventoryItem(name);if(existing){existing.qty=qty;existing.unit=unit;existing.category=category;}else inventory.push({id:'',name,qty,unit,category,emoji});
+      await persistInventory();document.getElementById('inventoryName').value='';document.getElementById('inventoryQty').value='1';document.getElementById('inventoryEmojiInput').value='';
     }
     function openInventoryModal(){renderInventoryGrid();document.getElementById('inventoryModal').style.display='flex';document.body.style.overflow='hidden';}
     function closeInventoryModal(){document.getElementById('inventoryModal').style.display='none';document.body.style.overflow='';}
@@ -1809,6 +1931,8 @@
         if(e.target.id==='stockHistoryModal') e.currentTarget.style.display='none';
       });
       document.getElementById('closeInventoryBtn').addEventListener('click',closeInventoryModal);
+      document.getElementById('closeInventoryEmojiBtn').addEventListener('click',()=>document.getElementById('inventoryEmojiModal').style.display='none');
+      document.getElementById('inventoryEmojiModal').addEventListener('click',e=>{if(e.target.id==='inventoryEmojiModal')e.currentTarget.style.display='none';});
       document.getElementById('addInventoryItemBtn').addEventListener('click',addInventoryItemUI);
       document.getElementById('inventorySearch').addEventListener('input',renderInventoryGrid);
       document.getElementById('inventoryModal').addEventListener('click',e=>{if(e.target.id==='inventoryModal')closeInventoryModal();});
@@ -2007,39 +2131,7 @@
     }
 
     function updatePurchaseTotalPreview(){
-      const qty = Number(document.getElementById('purchaseQty').value || 0);
-      const receiptPrice = Number(document.getElementById('purchaseUnitPrice').value || 0);
-      const shipping = Number(document.getElementById('purchaseShipping').value || 0);
-      const discount = Number(document.getElementById('purchaseDiscount').value || 0);
-      const portionSize = Number(document.getElementById('purchasePackageSize').value || 0);
-      const measureUnit = document.getElementById('purchaseMeasureUnit').value;
-
-      // 小票价格模式：
-      // 实际支付 = 购买份数 × 小票价格 + 运费 - 优惠
-      const total = Math.max(0, qty * receiptPrice + shipping - discount);
-      const normalized = normalizePreview(total, qty, portionSize, measureUnit);
-
-      let detail = '填写「每份分量 + 分量单位」后自动计算换算价格';
-
-      if (normalized) {
-        let totalAmount;
-        if (normalized.base === '个') {
-          totalAmount = Number(normalized.totalAmount).toFixed(0);
-        } else {
-          totalAmount = Number(normalized.totalAmount)
-            .toFixed(3)
-            .replace(/\.0+$/, '')
-            .replace(/(\.\d*?)0+$/, '$1');
-        }
-
-        detail =
-          `总分量：${totalAmount} ${escapeHtml(normalized.base)} · ` +
-          `换算后：<strong>${money(normalized.cost)} / ${escapeHtml(normalized.base)}</strong>`;
-      }
-
-      document.getElementById('purchaseTotalPreview').innerHTML =
-        `预计实际支付：<b>${money(total)}</b><br>` +
-        `<span class="v2-small">${detail}</span>`;
+      // v2.7.1: preview intentionally disabled.
     }
 
     async function savePurchaseUI(){
@@ -2201,8 +2293,6 @@
           if(id==='storePanel')renderStoreList();
         });
       });
-      ['purchaseQty','purchaseUnitPrice','purchaseShipping','purchaseDiscount','purchasePackageSize'].forEach(id=>document.getElementById(id).addEventListener('input',updatePurchaseTotalPreview));
-      document.getElementById('purchaseMeasureUnit').addEventListener('change',updatePurchaseTotalPreview);
       document.getElementById('purchaseSourceType').addEventListener('change',renderSourceOptions);
       document.getElementById('confirmFinalMenuBtn')?.addEventListener('click',confirmStagedFinalMenu);
       document.getElementById('purchaseDate').addEventListener('click',openPurchaseCalendar);
