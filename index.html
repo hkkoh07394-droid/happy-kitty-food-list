@@ -7539,9 +7539,628 @@ textarea::placeholder{
 #jointTestPanel .jt-ok{color:#86efac}
 #jointTestPanel .jt-fail{color:#fca5a5}
 
+
+/* =========================================================
+   Part 7.0 · Canonical Nutrition Dashboard
+   ========================================================= */
+.canonical-nutrition-dashboard{margin-top:12px;padding:13px;border-radius:18px;background:#141a22;border:1px solid #2d3845}
+.canonical-nutrition-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.canonical-nutrition-head b{color:#e8edf3!important}
+.canonical-nutrition-source{font-size:.58rem;color:#73808c;margin-top:3px}
+.canonical-nutrition-status{font-size:.61rem;font-weight:800;color:#8fd0ab}
+.canonical-nutrition-status.warn{color:#e6b66e}
+.canonical-member-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:9px}
+.canonical-member-card{padding:11px;border-radius:15px;background:#19212a;border:1px solid #2c3743}
+.canonical-member-title{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:8px}
+.canonical-member-title b{color:#e2e8ee!important}
+.canonical-kcal{color:#8fd0ab;font-weight:900;font-size:.8rem}
+.canonical-macro-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.canonical-macro{padding:7px 5px;border-radius:11px;background:#151b23;border:1px solid #293440;text-align:center}
+.canonical-macro span{display:block;color:#74808d;font-size:.54rem}
+.canonical-macro b{display:block;color:#dce3ea!important;font-size:.67rem;margin-top:2px}
+.canonical-mini-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.canonical-mini-chip{padding:5px 7px;border-radius:999px;background:#202833;border:1px solid #303b48;color:#aab5c1;font-size:.57rem}
+.canonical-meal-list{display:grid;gap:6px;margin-top:10px}
+.canonical-meal-row{padding:8px 9px;border-radius:12px;background:#171e27;border:1px solid #293440}
+.canonical-meal-row-head{display:flex;justify-content:space-between;gap:8px;color:#dce3ea;font-size:.64rem;font-weight:800}
+.canonical-meal-items{color:#788493;font-size:.57rem;margin-top:3px}
+.canonical-unresolved{margin-top:9px;padding:8px;border-radius:12px;background:#2b241b;border:1px solid #55452e;color:#e5bd7d;font-size:.61rem}
+
+
+/* Part 7.1 · Weekly Nutrition Trends */
+.weekly-nutrition-dashboard{margin-top:12px;padding:13px;border-radius:18px;background:#141a22;border:1px solid #2d3845}
+.weekly-nutrition-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.weekly-nutrition-head b{color:#e8edf3!important}
+.weekly-nutrition-sub{font-size:.58rem;color:#73808c;margin-top:3px}
+.weekly-member-list{display:grid;gap:10px}
+.weekly-member-card{padding:11px;border-radius:15px;background:#19212a;border:1px solid #2c3743}
+.weekly-member-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.weekly-member-top b{color:#e2e8ee!important}
+.weekly-avg{font-size:.6rem;color:#91d2ad}
+.weekly-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.weekly-summary-cell{padding:7px 5px;border-radius:11px;background:#151b23;border:1px solid #293440;text-align:center}
+.weekly-summary-cell span{display:block;color:#74808d;font-size:.52rem}
+.weekly-summary-cell b{display:block;color:#dce3ea!important;font-size:.65rem;margin-top:2px}
+.weekly-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;align-items:end;height:92px;margin-top:10px}
+.weekly-day{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.weekly-bar-track{height:65px;width:100%;max-width:26px;border-radius:8px;background:#202833;display:flex;align-items:flex-end;overflow:hidden;border:1px solid #303b48}
+.weekly-bar-fill{width:100%;min-height:2px;background:linear-gradient(180deg,#8fd0ab,#4d8f6f);border-radius:7px 7px 0 0}
+.weekly-day.incomplete .weekly-bar-track{border-color:#725e3f}
+.weekly-day.no-data .weekly-bar-track{opacity:.35;border-style:dashed}
+.weekly-day-label{font-size:.49rem;color:#778493}
+.weekly-day-value{font-size:.48rem;color:#9ba7b3}
+.weekly-metric-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.weekly-metric-btn{border:1px solid #303b48;background:#202833;color:#9aa6b2;border-radius:999px;padding:5px 8px;font-size:.55rem;cursor:pointer}
+.weekly-metric-btn.active{background:#294638;color:#bce8cc;border-color:#456c58}
+.weekly-incomplete{margin-top:9px;padding:8px;border-radius:12px;background:#2b241b;border:1px solid #55452e;color:#e5bd7d;font-size:.59rem}
+@media(max-width:650px){.weekly-summary-grid{grid-template-columns:repeat(2,1fr)}}
+
+
+/* Part 7.2 · Monthly Nutrition Trends */
+.monthly-nutrition-dashboard{margin-top:12px;padding:13px;border-radius:18px;background:#141a22;border:1px solid #2d3845}
+.monthly-nutrition-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+.monthly-nutrition-head b{color:#e8edf3!important}
+.monthly-sub{font-size:.58rem;color:#73808c;margin-top:3px}
+.monthly-member-list{display:grid;gap:10px}
+.monthly-member-card{padding:11px;border-radius:15px;background:#19212a;border:1px solid #2c3743}
+.monthly-member-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.monthly-member-top b{color:#e2e8ee!important}
+.monthly-coverage{font-size:.6rem;color:#91d2ad}
+.monthly-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.monthly-summary-cell{padding:7px 5px;border-radius:11px;background:#151b23;border:1px solid #293440;text-align:center}
+.monthly-summary-cell span{display:block;color:#74808d;font-size:.52rem}
+.monthly-summary-cell b{display:block;color:#dce3ea!important;font-size:.65rem;margin-top:2px}
+.monthly-rate-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.monthly-rate{padding:8px;border-radius:11px;background:#202833;border:1px solid #303b48}
+.monthly-rate-head{display:flex;justify-content:space-between;gap:6px;font-size:.54rem;color:#9ca8b4}
+.monthly-rate-track{height:6px;background:#131920;border-radius:999px;overflow:hidden;margin-top:5px}
+.monthly-rate-fill{height:100%;background:linear-gradient(90deg,#4d8f6f,#8fd0ab)}
+.monthly-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.monthly-day{aspect-ratio:1/1;border-radius:8px;background:#202833;border:1px solid #303b48;display:flex;align-items:center;justify-content:center;font-size:.49rem;color:#a7b1bc}
+.monthly-day.no-data{opacity:.35;border-style:dashed}
+.monthly-day.incomplete{background:#2b241b;border-color:#725e3f;color:#e5bd7d}
+.monthly-day.complete{background:#1e3028;border-color:#365844;color:#bde6cc}
+@media(max-width:650px){
+  .monthly-summary-grid,.monthly-rate-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Part 7.3 · Nutrition Insight Dashboard · READ ONLY */
+.nutrition-insight-dashboard{margin-top:12px;padding:13px;border-radius:18px;background:#141a22;border:1px solid #2d3845}
+.insight-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.insight-head b{color:#e8edf3!important}.insight-sub{font-size:.58rem;color:#73808c;margin-top:3px}
+.insight-member-list{display:grid;gap:10px;margin-top:10px}.insight-member{padding:11px;border-radius:15px;background:#19212a;border:1px solid #2c3743}.insight-member-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.insight-member-top b{color:#e2e8ee!important}.insight-badge{font-size:.56rem;color:#91d2ad}
+.insight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.insight-card{padding:8px;border-radius:11px;background:#151b23;border:1px solid #293440}.insight-card span{display:block;font-size:.51rem;color:#74808d}.insight-card b{display:block;font-size:.66rem;color:#dce3ea!important;margin-top:2px}.insight-card small{display:block;font-size:.49rem;color:#8996a3;margin-top:2px}
+.insight-priority{margin-top:8px;padding:8px;border-radius:11px;background:#202833;border:1px solid #303b48;font-size:.57rem;color:#aeb8c2}.insight-priority strong{color:#e4c27f}.insight-note{margin-top:9px;font-size:.53rem;color:#74808d}
+@media(max-width:650px){.insight-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Part 8.0 · Ingredient Readiness Forecast */
+.readiness-status{font-size:.58rem;font-weight:850;white-space:nowrap}
+.readiness-status.shortage{color:#efb06f}
+.readiness-status.missing{color:#e88d8d}
+.readiness-shopping-tag{
+ display:inline-block;margin-top:3px;padding:2px 5px;border-radius:999px;
+ background:#2b2a20;border:1px solid #4a4630;color:#d9bf78;font-size:.49rem
+}
+
+
+/* Part 8.1 · Daily Meal Workflow */
+.daily-workflow-card{grid-column:1/-1}
+.daily-workflow-list{display:grid;gap:7px;margin-top:8px}
+.daily-workflow-row{
+ display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:9px;align-items:center;
+ padding:9px 10px;border:1px solid rgba(255,255,255,.07);border-radius:12px;
+ background:rgba(255,255,255,.025)
+}
+.daily-workflow-meal{font-weight:850}
+.daily-workflow-main b{display:block;font-size:.76rem}
+.daily-workflow-main span{display:block;margin-top:2px;font-size:.58rem;opacity:.72}
+.daily-workflow-state{font-size:.57rem;font-weight:850;white-space:nowrap}
+.daily-workflow-state.ready{color:#8fd0ab}
+.daily-workflow-state.pending{color:#efc078}
+.daily-workflow-state.empty{opacity:.55}
+@media(max-width:680px){
+ .daily-workflow-row{grid-template-columns:60px minmax(0,1fr)}
+ .daily-workflow-state{grid-column:2}
+}
+
+
+/* Part 8.2 · Next Meal Quick View */
+.next-meal-quick-card{grid-column:1/-1}
+.next-meal-quick-view{margin-top:8px}
+.next-meal-box{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;
+  padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.07);
+  background:rgba(255,255,255,.025)
+}
+.next-meal-title{font-weight:900;font-size:.82rem}
+.next-meal-meta{margin-top:3px;font-size:.59rem;opacity:.72;line-height:1.45}
+.next-meal-dishes{margin-top:7px;display:flex;flex-wrap:wrap;gap:5px}
+.next-meal-chip{
+  padding:4px 7px;border-radius:999px;background:#202833;border:1px solid #303b48;
+  color:#aeb8c4;font-size:.55rem
+}
+.next-meal-state{text-align:right;font-size:.58rem;font-weight:850}
+.next-meal-state.ready{color:#8fd0ab}
+.next-meal-state.pending{color:#efc078}
+.next-meal-empty{font-size:.61rem;opacity:.65;padding:8px 2px}
+@media(max-width:680px){
+  .next-meal-box{grid-template-columns:1fr}
+  .next-meal-state{text-align:left}
+}
+
+
+/* Part 8.4 · Home Action Center */
+.home-action-center-card{grid-column:1/-1}
+.home-action-center{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:8px}
+.home-action-btn{
+  border:1px solid rgba(255,255,255,.08);background:#19212a;color:#dce3ea;
+  border-radius:13px;padding:10px;text-align:left;cursor:pointer;min-height:78px
+}
+.home-action-btn:hover{background:#202a35}
+.home-action-btn b{display:block;font-size:.68rem}
+.home-action-btn span{display:block;margin-top:4px;font-size:.55rem;opacity:.7;line-height:1.35}
+.home-action-btn .action-state{margin-top:6px;font-size:.54rem;font-weight:850}
+.home-action-btn.urgent{border-color:#74563a;background:#2a231c}
+.home-action-btn.urgent .action-state{color:#efc078}
+.home-action-btn.ready .action-state{color:#8fd0ab}
+.home-action-btn.neutral .action-state{color:#9ba7b3}
+@media(max-width:720px){.home-action-center{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* =========================================================
+   Part 8.4.1 · Responsive UI De-duplication
+   Desktop = information first
+   Mobile  = action/todo first
+   ========================================================= */
+
+/* Duplicate right-rail shortcut block is unnecessary on all layouts.
+   Inventory already exists in header / mobile action center.
+   Shopping already exists in record/shopping surfaces. */
+.right-rail .quick-actions-card{
+  display:none !important;
+}
+
+/* Desktop/tablet landscape:
+   keep left navigation + header inventory + right-rail summaries.
+   Home action center is intentionally mobile-only. */
+@media(min-width:1024px){
+  .home-action-center-card{
+    display:none !important;
+  }
+
+  /* These right-rail cards remain as information summaries,
+     but their duplicate navigation buttons are removed. */
+  #sidebarStartOrderBtn,
+  #sidebarNutritionDetailBtn{
+    display:none !important;
+  }
+
+  /* Keep 今日点单 / 今日营养 content itself visible. */
+  .right-rail .today-order-card,
+  .right-rail .nutrition-card{
+    display:block !important;
+  }
+}
+
+/* Mobile/tablet portrait:
+   Action Center becomes the primary quick-action surface.
+   Hide duplicate header/floating shortcuts. */
+@media(max-width:1023px){
+  .home-action-center-card{
+    display:block !important;
+  }
+
+  .header .inventory-box{
+    display:none !important;
+  }
+
+  .floating-record-btn{
+    display:none !important;
+  }
+
+  /* If right rail is ever surfaced in responsive mode,
+     suppress duplicate action buttons there as well. */
+  #sidebarStartOrderBtn,
+  #sidebarNutritionDetailBtn{
+    display:none !important;
+  }
+}
+
+
+/* =========================================================
+   Part 8.4.2 · Home visual simplification
+   Keep only the large outer card frame.
+   ========================================================= */
+
+/* Nested heading cards: no second frame. */
+#homePanel .today-card > .today-card.dashboard-clickable-head{
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  min-height:0 !important;
+  margin:0 0 9px !important;
+}
+
+/* All content rows become flat list rows instead of mini cards. */
+#homePanel .today-menu-row,
+#homePanel .dashboard-smart-row,
+#homePanel .dashboard-future-row,
+#homePanel .dashboard-inventory-row,
+#homePanel .dashboard-person-nutrition,
+#homePanel .daily-workflow-row,
+#homePanel .next-meal-box{
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  padding:8px 0 !important;
+}
+
+/* Use a quiet separator, not another box. */
+#homePanel .today-menu-row + .today-menu-row,
+#homePanel .dashboard-smart-row + .dashboard-smart-row,
+#homePanel .dashboard-future-row + .dashboard-future-row,
+#homePanel .dashboard-inventory-row + .dashboard-inventory-row,
+#homePanel .dashboard-person-nutrition + .dashboard-person-nutrition,
+#homePanel .daily-workflow-row + .daily-workflow-row{
+  border-top:1px solid rgba(255,255,255,.055) !important;
+}
+
+/* Next-meal dish labels are text, not pills. */
+#homePanel .next-meal-chip{
+  border:0 !important;
+  background:transparent !important;
+  border-radius:0 !important;
+  padding:0 !important;
+  color:#aeb8c4 !important;
+}
+#homePanel .next-meal-chip + .next-meal-chip::before{
+  content:" · ";
+  color:#66717d;
+  margin:0 4px;
+}
+
+/* Mobile action center: flat action rows inside one outer frame. */
+#homePanel .home-action-center{
+  gap:0 !important;
+}
+#homePanel .home-action-btn{
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  min-height:64px !important;
+  padding:9px 4px !important;
+}
+#homePanel .home-action-btn + .home-action-btn{
+  border-top:1px solid rgba(255,255,255,.055) !important;
+}
+#homePanel .home-action-btn:hover{
+  background:rgba(255,255,255,.025) !important;
+}
+
+/* Cleaner home typography without emoji dependence. */
+#homePanel .today-card-head b,
+#homePanel .dashboard-clickable-head b{
+  letter-spacing:.01em;
+}
+
+
+/* =========================================================
+   Part 8.4.3 · Action cards + compact Family Nutrition
+   ========================================================= */
+
+/* 1) 今日行动中心：只给 4 个 action 加框，恢复辨识度 */
+#homePanel .home-action-center{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:9px !important;
+}
+#homePanel .home-action-btn{
+  border:1px solid #34414f !important;
+  border-radius:14px !important;
+  background:#18212a !important;
+  box-shadow:none !important;
+  min-height:82px !important;
+  padding:12px !important;
+}
+#homePanel .home-action-btn + .home-action-btn{
+  border-top:1px solid #34414f !important;
+}
+#homePanel .home-action-btn:hover{
+  background:#1d2833 !important;
+  border-color:#465668 !important;
+}
+#homePanel .home-action-btn b{
+  color:#eef3f8 !important;
+}
+#homePanel .home-action-btn .v2-small,
+#homePanel .home-action-btn span{
+  color:#aeb9c5 !important;
+}
+#homePanel .home-action-btn .home-action-state,
+#homePanel .home-action-btn strong{
+  opacity:1 !important;
+}
+@media(max-width:560px){
+  #homePanel .home-action-center{grid-template-columns:1fr !important}
+  #homePanel .home-action-btn{min-height:68px !important}
+}
+
+/* 2) 家庭营养：保留输入 + canonical 今日结果；移除重复展示层 */
+#nutritionPanel > .confirmed-menu-card,
+#nutritionPanel > div:has(> #dailyNutrition),
+#nutrition20Card{
+  display:none !important;
+}
+
+/* 营养页顶部更紧凑 */
+#nutritionPanel > h3{margin-bottom:7px !important}
+#nutritionPanel .meal-share-card{margin-bottom:8px !important}
+
+/* 3) Weekly + Monthly + Insight 合并成一个可折叠区 */
+#nutritionTrendBundle{
+  margin-top:12px;
+  border:1px solid #303b48;
+  border-radius:17px;
+  background:#141a22;
+  overflow:hidden;
+}
+#nutritionTrendBundle > summary{
+  list-style:none;
+  cursor:pointer;
+  padding:12px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  color:#e4eaf0;
+  font-weight:850;
+  user-select:none;
+}
+#nutritionTrendBundle > summary::-webkit-details-marker{display:none}
+#nutritionTrendBundle > summary::after{
+  content:"展开";
+  color:#8f9baa;
+  font-size:.62rem;
+  font-weight:800;
+}
+#nutritionTrendBundle[open] > summary{
+  border-bottom:1px solid #2a3541;
+}
+#nutritionTrendBundle[open] > summary::after{content:"收起"}
+#nutritionTrendBundle .nutrition-trend-sub{
+  display:block;
+  margin-top:2px;
+  color:#7f8b98;
+  font-size:.61rem;
+  font-weight:650;
+}
+#nutritionTrendBundle .nutrition-trend-body{
+  padding:0 10px 10px;
+}
+#nutritionTrendBundle #weeklyNutritionDashboard,
+#nutritionTrendBundle #monthlyNutritionDashboard,
+#nutritionTrendBundle #nutritionInsightDashboard{
+  margin-top:10px !important;
+}
+
+/* canonical 今日营养作为主结果，减少多层视觉重量 */
+#canonicalNutritionDashboard{
+  margin-top:10px !important;
+}
+
+
+/* =========================================================
+   Part 8.4.4 · Compact Monthly Calendar + Weekly Doughnut
+   ========================================================= */
+
+/* Monthly member calendar: two people side-by-side on wider screens. */
+#monthlyNutritionDashboard .monthly-member-list{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+#monthlyNutritionDashboard .monthly-member-card{
+  min-width:0 !important;
+  padding:10px !important;
+}
+#monthlyNutritionDashboard .monthly-summary-grid,
+#monthlyNutritionDashboard .monthly-rate-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:5px !important;
+}
+#monthlyNutritionDashboard .monthly-summary-cell,
+#monthlyNutritionDashboard .monthly-rate{
+  padding:6px !important;
+}
+#monthlyNutritionDashboard .monthly-calendar{
+  gap:3px !important;
+  margin:8px auto 0 !important;
+  max-width:310px !important;
+}
+#monthlyNutritionDashboard .monthly-day{
+  aspect-ratio:1/1 !important;
+  border-radius:6px !important;
+  font-size:.46rem !important;
+}
+@media(max-width:760px){
+  #monthlyNutritionDashboard .monthly-member-list{
+    grid-template-columns:1fr !important;
+  }
+  #monthlyNutritionDashboard .monthly-calendar{
+    max-width:280px !important;
+  }
+}
+
+/* Weekly trend becomes a compact doughnut view. */
+#weeklyNutritionDashboard .weekly-member-list{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+}
+#weeklyNutritionDashboard .weekly-member-card{
+  min-width:0 !important;
+  padding:10px !important;
+}
+.weekly-doughnut-layout{
+  display:grid;
+  grid-template-columns:104px minmax(0,1fr);
+  gap:12px;
+  align-items:center;
+  margin-top:9px;
+}
+.weekly-doughnut{
+  --weekly-pct:0%;
+  width:96px;
+  height:96px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  position:relative;
+  background:conic-gradient(#79c79a 0 var(--weekly-pct),#27313d var(--weekly-pct) 100%);
+}
+.weekly-doughnut::after{
+  content:"";
+  position:absolute;
+  inset:13px;
+  border-radius:50%;
+  background:#19212a;
+  border:1px solid #303b48;
+}
+.weekly-doughnut-center{
+  position:relative;
+  z-index:1;
+  text-align:center;
+}
+.weekly-doughnut-center strong{
+  display:block;
+  color:#eef3f7 !important;
+  font-size:1rem;
+  line-height:1;
+}
+.weekly-doughnut-center span{
+  display:block;
+  color:#8e9aa7;
+  font-size:.52rem;
+  margin-top:4px;
+}
+.weekly-doughnut-info{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
+}
+.weekly-doughnut-info>div{
+  padding:6px 7px;
+  border-radius:10px;
+  background:#151b23;
+  border:1px solid #293440;
+}
+.weekly-doughnut-info span{
+  display:block;
+  color:#74808d;
+  font-size:.49rem;
+}
+.weekly-doughnut-info b{
+  display:block;
+  color:#dce3ea !important;
+  font-size:.62rem;
+  margin-top:2px;
+}
+.weekly-mini-days{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:4px;
+  margin-top:9px;
+}
+.weekly-mini-day{
+  text-align:center;
+  padding:5px 2px;
+  border-radius:8px;
+  background:#202833;
+  border:1px solid #303b48;
+}
+.weekly-mini-day span{
+  display:block;
+  font-size:.45rem;
+  color:#7f8b97;
+}
+.weekly-mini-day b{
+  display:block;
+  margin-top:2px;
+  font-size:.49rem;
+  color:#cbd3dc !important;
+}
+.weekly-mini-day.no-data{
+  opacity:.35;
+  border-style:dashed;
+}
+.weekly-mini-day.incomplete{
+  border-color:#725e3f;
+  background:#2b241b;
+}
+.weekly-mini-day.complete{
+  border-color:#365844;
+}
+#weeklyNutritionDashboard .weekly-bars,
+#weeklyNutritionDashboard .weekly-summary-grid{
+  display:none !important;
+}
+@media(max-width:760px){
+  #weeklyNutritionDashboard .weekly-member-list{
+    grid-template-columns:1fr !important;
+  }
+}
+@media(max-width:430px){
+  .weekly-doughnut-layout{
+    grid-template-columns:86px minmax(0,1fr);
+    gap:9px;
+  }
+  .weekly-doughnut{
+    width:80px;
+    height:80px;
+  }
+  .weekly-doughnut::after{inset:11px}
+}
+
+
+/* =========================================================
+   Part 8.4.5 · Menu Detail + Weekly Tabs Fix
+   ========================================================= */
+
+/* Menu "详情" must open on desktop too.
+   Older mobile-only CSS forced this modal to display:none!important
+   whenever hover/fine-pointer was detected. */
+@media (hover:hover) and (pointer:fine){
+  #mobileRecipeDetailModal[style*="display: flex"],
+  #mobileRecipeDetailModal[style*="display:flex"]{
+    display:flex !important;
+  }
+}
+
+/* Give the weekly metric buttons clear spacing and wrapping. */
+#weeklyNutritionDashboard .weekly-metric-tabs{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  gap:6px !important;
+  align-items:center !important;
+  margin-top:9px !important;
+  margin-bottom:9px !important;
+}
+#weeklyNutritionDashboard .weekly-metric-btn{
+  margin:0 !important;
+  white-space:nowrap !important;
+}
+
+/* Slight separation before first member card. */
+#weeklyNutritionDashboard .weekly-member-list{
+  margin-top:4px !important;
+}
+
 </style>
 </head>
-<body data-app-build="6.12.8-final-menu-stock-transaction">
+<body data-app-build="8.4.5-menu-detail-weekly-spacing-fix">
 <div class="app-container">
   
   <div class="header">
@@ -7677,10 +8296,40 @@ textarea::placeholder{
     </div>
 
     <div class="today-dashboard-grid">
+      <section class="today-card home-action-center-card">
+        <div class="today-card-head">
+          <div>
+            <b>今日行动中心</b>
+            <div class="v2-small" id="homeActionCenterSummary">正在整理今天需要处理的事情…</div>
+          </div>
+        </div>
+        <div id="homeActionCenter" class="home-action-center"></div>
+      </section>
+
+      <section class="today-card daily-workflow-card">
+        <div class="today-card-head">
+          <div>
+            <b>今日用餐流程</b>
+            <div class="v2-small" id="dashboardWorkflowSummary">今天 · 检查中…</div>
+          </div>
+        </div>
+        <div id="dashboardDailyWorkflow" class="daily-workflow-list"></div>
+      </section>
+
+      <section class="today-card next-meal-quick-card">
+        <div class="today-card-head">
+          <div>
+            <b>下一顿已确认菜单</b>
+            <div class="v2-small" id="nextMealQuickSummary">未来 7 天 · 检查中…</div>
+          </div>
+        </div>
+        <div id="nextMealQuickView" class="next-meal-quick-view"></div>
+      </section>
+
       <section class="today-card today-menu-card">
         <div class="today-card dashboard-clickable-head" data-dashboard-card="menu" tabindex="0" role="button">
           <div>
-            <b>🍱 今天吃什么</b>
+            <b>今天吃什么</b>
             <div class="v2-small" id="dashboardTodayMenuCount">0 道已确认</div>
           </div>
           
@@ -7691,7 +8340,7 @@ textarea::placeholder{
       <section class="today-card today-nutrition-card">
         <div class="today-card dashboard-clickable-head" data-dashboard-card="nutrition" tabindex="0" role="button">
           <div>
-            <b>🥗 今天营养</b>
+            <b>今天营养</b>
             <div class="v2-small">按每餐实际用餐成员分配</div>
           </div>
           
@@ -7702,7 +8351,7 @@ textarea::placeholder{
       <section class="today-card smart-buy-card">
         <div class="today-card dashboard-clickable-head" data-dashboard-card="shopping" tabindex="0" role="button">
           <div>
-            <b>🛒 智能购买清单</b>
+            <b>智能购买清单</b>
             <div class="v2-small">只看今天之后的已确认菜单</div>
           </div>
           
@@ -7713,7 +8362,7 @@ textarea::placeholder{
       <section class="today-card future-menu-card">
         <div class="today-card dashboard-clickable-head" data-dashboard-card="future" tabindex="0" role="button">
           <div>
-            <b>📅 未来菜单</b>
+            <b>未来菜单</b>
             <div class="v2-small" id="dashboardFutureMenuSummary">未来 7 天</div>
           </div>
         </div>
@@ -7723,12 +8372,22 @@ textarea::placeholder{
       <section class="today-card inventory-watch-card">
         <div class="today-card dashboard-clickable-head" data-dashboard-card="inventory" tabindex="0" role="button">
           <div>
-            <b>📦 库存提醒</b>
+            <b>库存提醒</b>
             <div class="v2-small">低库存与未来菜单预留</div>
           </div>
           
         </div>
         <div id="dashboardInventoryWatch" class="dashboard-inventory-watch"></div>
+      </section>
+
+      <section class="today-card ingredient-readiness-card">
+        <div class="today-card-head">
+          <div>
+            <b>未来 7 天备料</b>
+            <div class="v2-small" id="dashboardIngredientReadinessSummary">读取中…</div>
+          </div>
+        </div>
+        <div id="dashboardIngredientReadiness" class="dashboard-inventory-watch"></div>
       </section>
     </div>
   </div>
@@ -7742,22 +8401,22 @@ textarea::placeholder{
     </div>
         <div class="menu-record-toolbar">
       <button type="button" id="menuOpenRecordBtn" class="menu-record-btn">
-        📋 查看 / 确定点单
+        查看 / 确定点单
         <span id="menuPendingOrderCount" class="menu-record-count">0</span>
       </button>
     </div>
 <div class="category-nav" id="categoryNav">
-      <button class="cat-btn active" data-cat="全部">🥗 全部</button>
-      <button class="cat-btn" data-cat="主食">🍚 主食</button>
-      <button class="cat-btn" data-cat="青菜">🥬 青菜</button>
-      <button class="cat-btn" data-cat="肉类">🍖 肉类</button>
-      <button class="cat-btn" data-cat="蛋类">🥚 蛋类</button>
-      <button class="cat-btn" data-cat="豆腐类">🧈 豆腐</button>
-      <button class="cat-btn" data-cat="汤类">🍲 汤类</button>
+      <button class="cat-btn active" data-cat="全部">全部</button>
+      <button class="cat-btn" data-cat="主食">主食</button>
+      <button class="cat-btn" data-cat="青菜">青菜</button>
+      <button class="cat-btn" data-cat="肉类">肉类</button>
+      <button class="cat-btn" data-cat="蛋类">蛋类</button>
+      <button class="cat-btn" data-cat="豆腐类">豆腐</button>
+      <button class="cat-btn" data-cat="汤类">汤类</button>
     </div>
     <div id="subcatContainer" class="subcat-nav"></div>
     <div style="display:flex;justify-content:center;margin:8px 0;">
-      <button class="btn" id="addDishBtn" style="background:#4c956c;">➕ 添加自定义菜品</button>
+      <button class="btn" id="addDishBtn" style="background:#4c956c;">添加自定义菜品</button>
     </div>
     <div class="menu-toolbar"><span class="v2-small" id="menuResultCount"></span></div>
     <div id="menuGrid" class="menu-grid"></div>
@@ -8168,7 +8827,7 @@ textarea::placeholder{
   </div>
 </div>
 
-<div id="mobileRecipeDetailModal" class="modal-overlay" style="display:none;">
+<div id="mobileRecipeDetailModal" class="modal-overlay" style="display:none;" aria-hidden="true">
   <div class="mobile-recipe-detail-card">
     <div class="mobile-recipe-detail-title" id="mobileRecipeDetailTitle">🍳 菜品详情</div>
     <div class="mobile-recipe-detail-body" id="mobileRecipeDetailBody"></div>
@@ -8299,12 +8958,17 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbx-uTZ0bfhvbPtF4cKqYLesnBjrhVpFH8Kv8gj4KIPb0VHNRMycytHEYvAuyv_SFyg/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyLjtMecqrddh3sevuRb8td15fR0LHH3TR7zaHgJECi-eMjCNMb2McU9l3VktdzEiM/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
   // Only diagnostics / overlap-integrity checks use a 30s timeout.
   const CHECK_TIMEOUT_MS=30000;
+  // Final integrity audit intentionally aggregates several full-workbook audits.
+  // It can exceed the normal 30s diagnostic budget on Apps Script cold starts.
+  const CHECK_TIMEOUT_OVERRIDES=Object.freeze({
+    getFinalSystemIntegrityAudit:120000
+  });
   const CHECK_ACTIONS=new Set([
     'getDuplicatePurchaseStock',
     'getMenuStockIntegrity',
@@ -8315,6 +8979,24 @@ textarea::placeholder{
     'getOrderFinalConsistency',
     'getFinalStockCycleAudit',
     'getFinalMenuStockReadiness',
+    'getStockLedgerCleanupPreview',
+    'getPurchaseStableLedgerPreview',
+    'getLegacyPurchaseCleanupPreview',
+    'getLegacyPurchaseMatcherPreview',
+    'getCanonicalStockLedgerAudit',
+    'getUsageLedgerPreview',
+    'getUsageSourceMatcherPreview',
+    'getUsageLedgerAudit',
+    'getRestoreLedgerAudit',
+    'getMultiCycleLedgerAudit',
+    'getFinalStockIntegrationAudit',
+    'getFinalUsageLifecycleAudit',
+    'getControlledRestorePreflight',
+    'getControlledReconfirmPreflight',
+    'getStockAppliedFlagReconcilePreview',
+    'getRestoreLedgerPreview',
+    'getUsageCanonicalizationPreview',
+    'getFinalLegacyPurchaseCleanupPreview',
     'getPurchasePriceCycleAudit',
     'getShoppingLoopAudit',
     'getHistoricalStockReconcilePreview',
@@ -8323,7 +9005,7 @@ textarea::placeholder{
     'getNutritionFinalConsistencyAudit',
     'getCrossPageSyncAudit',
     'getCoreDataProbe'
-  ]);
+  ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast']);
   function apiConnectionStatus(){
     const raw=typeof API_URL==='undefined' ? '' : String(API_URL||'').trim();
     const configured=!!raw && !raw.includes('PASTE_YOUR_');
@@ -8338,7 +9020,11 @@ textarea::placeholder{
   }
 
   function apiTimeoutForAction(action){
-    return CHECK_ACTIONS.has(String(action||'')) ? CHECK_TIMEOUT_MS : 0;
+    const key=String(action||'');
+    if(Object.prototype.hasOwnProperty.call(CHECK_TIMEOUT_OVERRIDES,key)){
+      return Number(CHECK_TIMEOUT_OVERRIDES[key]||0);
+    }
+    return CHECK_ACTIONS.has(key) ? CHECK_TIMEOUT_MS : 0;
   }
   function apiBoundaryLog(type,detail={}){
     try{
@@ -8360,6 +9046,7 @@ textarea::placeholder{
   }
 
 function apiGet(params = {}) {
+    if (typeof params === 'string') params = { action: params };
     return new Promise((resolve, reject) => {
       if (!API_URL || API_URL.includes('PASTE_YOUR_')) {
         reject(new Error('请先在 index.html 设置 API_URL'));
@@ -8373,11 +9060,25 @@ function apiGet(params = {}) {
       let settled=false;
       const timeoutMs=apiTimeoutForAction(action);
       const timer=timeoutMs>0 ? setTimeout(()=>{
-        if(settled)return; settled=true; cleanup();
+        if(settled)return;
+        settled=true;
+
+        // Keep a temporary no-op callback after timeout. Apps Script JSONP may
+        // complete after the client timeout; deleting the callback immediately
+        // causes an unrelated "gsCallback_xxx is not defined" browser error.
+        try{window[callbackName]=()=>{};}catch(_){}
+        if(timer)clearTimeout(timer);
+        try{script.remove();}catch(_){}
+        setTimeout(()=>{try{delete window[callbackName]}catch(_){}},180000);
+
         apiBoundaryLog('api-timeout',{action,method:'GET',elapsedMs:Date.now()-startedAt,timeoutMs});
         reject(new Error(`检查请求超过 ${Math.round(timeoutMs/1000)} 秒（${action}）。请稍后重试。`));
       },timeoutMs) : null;
-      function cleanup(){if(timer)clearTimeout(timer);try{delete window[callbackName]}catch(_){}script.remove();}
+      function cleanup(){
+        if(timer)clearTimeout(timer);
+        try{delete window[callbackName]}catch(_){}
+        try{script.remove();}catch(_){}
+      }
       window[callbackName]=data=>{
         if(settled)return; settled=true; cleanup();
         const elapsedMs=Date.now()-startedAt;
@@ -8415,9 +9116,9 @@ async function apiRequest(action,payload={},refreshAction=null){
     const readActions=[
       'ping','getAll','getInventory','getStockState','getDuplicatePurchaseStock','getFamilyMembers',
       'getPurchases','getStores','getOrdersState','getMealSettings','getDishRecipes',
-      'getExternalFoods','getAppStateSnapshot','healthCheck','getApiContract','getMenuStockIntegrity','getWorkbookLayout','getPretestAudit','getSmokeTest','getFunctionalReadiness','getOrderFinalConsistency','getFinalStockCycleAudit','getFinalMenuStockReadiness','getPurchasePriceCycleAudit','getShoppingLoopAudit','getHistoricalStockReconcilePreview','getHistoricalStockForensicPreview','getExternalDiningAudit','getNutritionFinalConsistencyAudit','getCrossPageSyncAudit','getFinalIntegrationAudit','getJointTestReport','getReleaseReadiness','getCoreDataProbe'
-    ];
-    if(readActions.includes(action))return apiGet({action});
+      'getExternalFoods','getAppStateSnapshot','healthCheck','getApiContract','getMenuStockIntegrity','getWorkbookLayout','getPretestAudit','getSmokeTest','getFunctionalReadiness','getOrderFinalConsistency','getFinalStockCycleAudit','getFinalMenuStockReadiness','getStockLedgerCleanupPreview','getPurchaseStableLedgerPreview','getLegacyPurchaseCleanupPreview','getLegacyPurchaseMatcherPreview','getFinalLegacyPurchaseCleanupPreview','getCanonicalStockLedgerAudit','getUsageLedgerPreview','getUsageSourceMatcherPreview','getUsageCanonicalizationPreview','getUsageLedgerAudit','getRestoreLedgerPreview','getRestoreLedgerAudit','getMultiCycleLedgerAudit','getFinalStockIntegrationAudit','getFinalUsageLifecycleAudit','getControlledRestorePreflight','getControlledReconfirmPreflight','getStockAppliedFlagReconcilePreview','previewRestoreForFinalDecision','previewFinalMenuStock','getPurchasePriceCycleAudit','getShoppingLoopAudit','getHistoricalStockReconcilePreview','getHistoricalStockForensicPreview','getExternalDiningAudit','getNutritionFinalConsistencyAudit','getCrossPageSyncAudit','getFinalIntegrationAudit','getJointTestReport','getReleaseReadiness','getCoreDataProbe'
+    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast'];
+    if(readActions.includes(action))return apiGet({action,...payload});
 
     const timeoutMs=apiTimeoutForAction(action);
     const controller=timeoutMs>0 ? new AbortController() : null;
@@ -8726,7 +9427,8 @@ async function refreshFromServer(){
       purchaseCalendarCursor=parseLocalDateValue(input.value);
       renderPurchaseCalendar();
       const modal=document.getElementById('purchaseCalendarModal');
-      modal.style.display='flex';
+      modal.style.setProperty('display','flex','important');
+      modal.setAttribute('aria-hidden','false');
     }
 
     function closePurchaseCalendar(){
@@ -10546,6 +11248,32 @@ async function refreshAllAppState(){
     function renderTodayDashboard(){
       const today=part32TodayKey();
       const menus=(finalDecisions||[]).filter(x=>x.selected&&x.date===today);
+
+      const workflowBox=document.getElementById('dashboardDailyWorkflow');
+      const workflowSummary=document.getElementById('dashboardWorkflowSummary');
+      if(workflowBox){
+        const defs=[['早餐',''],['午餐',''],['晚餐','']];
+        let confirmedMeals=0;
+        workflowBox.innerHTML=defs.map(([meal,icon])=>{
+          const mealMenus=menus.filter(x=>String(x.meal||'')===meal);
+          const diners=getSavedMealDiners(today,meal);
+          if(mealMenus.length)confirmedMeals++;
+          const applied=mealMenus.length>0 && mealMenus.every(x=>!!x.stockApplied);
+          const names=mealMenus.map(x=>x.name).filter(Boolean);
+          const state=!mealMenus.length?'未确认':(applied?'库存已处理':'菜单已确认');
+          const cls=!mealMenus.length?'empty':(applied?'ready':'pending');
+          const detail=!mealMenus.length
+            ? `${diners.length?`用餐：${diners.join('、')}`:'尚未设置用餐成员'}`
+            : `${names.slice(0,3).join('、')}${names.length>3?` 等 ${names.length} 道`:''} · ${diners.length?diners.join('、'):'未设置用餐成员'}`;
+          return `<div class="daily-workflow-row">
+            <div class="daily-workflow-meal">${meal}</div>
+            <div class="daily-workflow-main"><b>${mealMenus.length?`${mealMenus.length} 道已确认`:'尚无菜单'}</b><span>${escapeHtml(detail)}</span></div>
+            <div class="daily-workflow-state ${cls}">${state}</div>
+          </div>`;
+        }).join('');
+        if(workflowSummary)workflowSummary.textContent=`今天 · ${confirmedMeals}/3 餐已有确认菜单`;
+      }
+
       const count=document.getElementById('dashboardTodayMenuCount');
       if(count)count.textContent=`${menus.length} 道已确认`;
       const menu=document.getElementById('dashboardTodayMenus');
@@ -11632,6 +12360,401 @@ async backendProbe(){
             return {success:false,error:err?.message||String(err)};
           }
         },
+        async previewFinalMenuStock(id){
+          try{
+            return await apiRequest('previewFinalMenuStock',{id});
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async finalLegacyPurchaseCleanupPreview(){
+          try{
+            return await apiRequest('getFinalLegacyPurchaseCleanupPreview');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async cleanupMatchedLegacyPurchases(){
+          try{
+            return await apiRequest('cleanupMatchedLegacyPurchases');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async usageCanonicalizationPreview(){
+          try{return await apiRequest('getUsageCanonicalizationPreview');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async canonicalizeLegacyUsage(){
+          try{return await apiRequest('canonicalizeLegacyUsage');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async restoreLedgerPreview(){
+          try{return await apiRequest('getRestoreLedgerPreview');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async previewRestoreForFinalDecision(id){
+          try{
+            return await apiRequest('previewRestoreForFinalDecision',{id});
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async stockAppliedFlagReconcilePreview(){
+          try{return await apiRequest('getStockAppliedFlagReconcilePreview');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async reconcileStockAppliedFlags(){
+          try{return await apiRequest('reconcileStockAppliedFlags');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledReconfirmPreflight(id,meal){
+          try{return await apiRequest('getControlledReconfirmPreflight',{id,meal});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runControlledReconfirm(id,meal,token){
+          try{return await apiRequest('runControlledReconfirm',{id,meal,token});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledRestorePreflight(id){
+          try{return await apiRequest('getControlledRestorePreflight',{id});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runControlledRestoreCancel(id,token){
+          try{return await apiRequest('runControlledRestoreCancel',{id,token});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async finalUsageLifecycleAudit(){
+          try{return await apiRequest('getFinalUsageLifecycleAudit');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionCellFormatRepairPreflight(){
+          try{return await apiGet({action:'getNutritionCellFormatRepairPreflight'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runNutritionCellFormatRepair(token){
+          try{return await apiRequest('runNutritionCellFormatRepair',{token});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionCellFormatRepairAudit(){
+          try{return await apiGet({action:'getNutritionCellFormatRepairAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledNutritionRepairPreflight(){
+          try{return await apiGet({action:'getControlledNutritionRepairPreflight'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runControlledNutritionSchemaRepair(token){
+          try{return await apiRequest('runControlledNutritionSchemaRepair',{token});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledNutritionRepairAudit(){
+          try{return await apiGet({action:'getControlledNutritionRepairAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledNutritionRepairPreview(){
+          try{return await apiGet({action:'getControlledNutritionRepairPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionSchemaProvenancePreflight(){
+          try{return await apiGet({action:'getNutritionSchemaProvenancePreflight'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionDataModelAudit(){
+          try{return await apiGet({action:'getNutritionDataModelAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionSourceAudit(){
+          try{return await apiGet({action:'getNutritionSourceAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionIntegrationDiagnostic(){
+          try{return await apiGet({action:'getNutritionIntegrationDiagnostic'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledNutritionEntryPreview(payload){
+          try{return await apiGet({action:'previewControlledNutritionEntry',...(payload||{})});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async applyControlledNutritionEntry(payload){
+          try{return await apiRequest('applyControlledNutritionEntry',payload);}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async hotpotNutritionMealCorrectionPreview(){
+          try{return await apiGet({action:'previewHotpotNutritionMealCorrection'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async applyHotpotNutritionMealCorrection(token){
+          try{return await apiRequest('applyHotpotNutritionMealCorrection',{token:token||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async hotpotNutritionMealCorrectionAudit(){
+          try{return await apiGet({action:'getHotpotNutritionMealCorrectionAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionOutlierTraceAudit(date){
+          try{return await apiGet({action:'getNutritionOutlierTraceAudit',date:date||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async canonicalNutritionMonthlyTrend(month,asOfDate){
+          try{return await apiGet({action:'getCanonicalNutritionMonthlyTrend',month:month||'',asOfDate:asOfDate||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async homeActionCenterSnapshot(date){
+          try{
+            if(typeof window.getHomeActionCenterSnapshot!=='function'){
+              return {success:false,error:'getHomeActionCenterSnapshot is unavailable'};
+            }
+            return window.getHomeActionCenterSnapshot(date);
+          }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async releaseAcceptanceTest(options){
+          const startedAt=new Date().toISOString();
+          const cfg=options||{};
+          const frontendBuild=String(
+            document.body?.dataset?.appBuild ||
+            document.documentElement?.dataset?.appBuild ||
+            ''
+          );
+          const today=cfg.date||((typeof part32TodayKey==='function')?part32TodayKey():new Date().toISOString().slice(0,10));
+          const forwardDays=Math.max(1,Math.min(30,Number(cfg.forwardDays||7)));
+          const checks=[];
+          const add=(name,required,ok,result,error)=>{
+            checks.push({
+              name,
+              required:!!required,
+              success:!!ok,
+              status:ok?'PASS':(required?'FAIL':'WARN'),
+              result:result??null,
+              error:error?String(error):null
+            });
+          };
+          const run=async(name,required,fn,validator)=>{
+            try{
+              const result=await fn();
+              const ok=validator?!!validator(result):!!result?.success;
+              add(name,required,ok,result,ok?null:(result?.error||'CHECK_FAILED'));
+            }catch(err){
+              add(name,required,false,null,err?.message||String(err));
+            }
+          };
+
+          // Frontend build / self-check: no mutation.
+          await run('frontendSelfCheck',true,async()=>{
+            const build=frontendBuild;
+            const missing=[];
+            if(!window.SpringFamilyDiagnostics)missing.push('SpringFamilyDiagnostics');
+            ['homeActionCenterSnapshot','dailyMealWorkflow','nextMealQuickView','ingredientReadinessForecast','finalSystemIntegrityAudit']
+              .forEach(k=>{if(typeof window.SpringFamilyDiagnostics?.[k]!=='function')missing.push(k);});
+            if(typeof window.renderHomeActionCenter!=='function')missing.push('renderHomeActionCenter');
+            if(typeof window.getHomeActionCenterSnapshot!=='function')missing.push('getHomeActionCenterSnapshot');
+            if(!document.querySelector('.home-action-center-card'))missing.push('homeActionCenterCard');
+            if(!document.querySelector('.right-rail'))missing.push('rightRail');
+            if(!document.querySelector('#homePanel .today-menu-card'))missing.push('homeTodayMenuCard');
+            if(!document.querySelector('#homePanel .next-meal-quick-card'))missing.push('homeNextMealCard');
+            if(typeof window.renderNextMealQuickView!=='function')missing.push('renderNextMealQuickView');
+            if(typeof window.getNextMealQuickViewLocal!=='function')missing.push('getNextMealQuickViewLocal');
+            return {success:missing.length===0,build,missing};
+          },r=>r?.success===true && !!r?.build && r?.build===frontendBuild);
+
+          await run('homeActionCenter',true,
+            ()=>window.SpringFamilyDiagnostics.homeActionCenterSnapshot(today),
+            r=>r?.success===true && r?.readOnly===true);
+
+          await run('dailyMealWorkflow',true,
+            ()=>window.SpringFamilyDiagnostics.dailyMealWorkflow(today),
+            r=>r?.success===true && r?.readOnly===true);
+
+          await run('nextMealQuickView',true,
+            ()=>window.SpringFamilyDiagnostics.nextMealQuickView(today,forwardDays),
+            r=>r?.success===true && r?.readOnly===true);
+
+          await run('ingredientReadinessForecast',true,
+            ()=>window.SpringFamilyDiagnostics.ingredientReadinessForecast(today,forwardDays),
+            r=>r?.success===true && r?.readOnly===true);
+
+          // Authoritative backend integrity audit remains the release gate.
+          await run('finalSystemIntegrityAudit',true,
+            ()=>window.SpringFamilyDiagnostics.finalSystemIntegrityAudit(),
+            r=>r?.success===true && r?.clean===true &&
+               r?.baselineStatus==='ACCEPTED_CLEAN_BASELINE' &&
+               Number(r?.summary?.failed||0)===0);
+
+          const failed=checks.filter(x=>x.status==='FAIL');
+          const warnings=checks.filter(x=>x.status==='WARN');
+          const passed=checks.filter(x=>x.status==='PASS');
+          const audit=checks.find(x=>x.name==='finalSystemIntegrityAudit')?.result||null;
+          return {
+            success:failed.length===0,
+            build:frontendBuild,
+            readOnly:true,
+            mutation:false,
+            startedAt,
+            finishedAt:new Date().toISOString(),
+            date:today,
+            forwardDays,
+            releaseStatus:failed.length===0?'RELEASE_ACCEPTED':'RELEASE_BLOCKED',
+            summary:{
+              checks:checks.length,
+              passed:passed.length,
+              failed:failed.length,
+              warnings:warnings.length,
+              baselineStatus:audit?.baselineStatus||null
+            },
+            checks,
+            failedChecks:failed.map(x=>({name:x.name,error:x.error})),
+            warningChecks:warnings.map(x=>({name:x.name,error:x.error}))
+          };
+        },
+        async nextMealQuickView(startDate,forwardDays){
+          try{
+            if(typeof window.getNextMealQuickViewLocal!=='function'){
+              return {success:false,error:'getNextMealQuickViewLocal is unavailable'};
+            }
+            return window.getNextMealQuickViewLocal(startDate,forwardDays);
+          }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async dailyMealWorkflow(date){
+          try{
+            const d=date||((typeof part32TodayKey==='function')?part32TodayKey():new Date().toISOString().slice(0,10));
+            const defs=['早餐','午餐','晚餐'];
+            const rows=defs.map(meal=>{
+              const items=(Array.isArray(finalDecisions)?finalDecisions:[]).filter(x=>x.selected&&x.date===d&&String(x.meal||'')===meal);
+              const diners=(typeof getSavedMealDiners==='function')?getSavedMealDiners(d,meal):[];
+              return {meal,selectedFinalRows:items.length,dishes:items.map(x=>x.name),diners,stockApplied:items.length>0&&items.every(x=>!!x.stockApplied)};
+            });
+            return {success:true,build:document.body?.dataset?.appBuild||document.documentElement?.dataset?.appBuild||'8.1-daily-meal-workflow',readOnly:true,date:d,summary:{mealsWithConfirmedMenu:rows.filter(x=>x.selectedFinalRows>0).length,totalSelectedFinalRows:rows.reduce((s,x)=>s+x.selectedFinalRows,0)},meals:rows};
+          }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async ingredientReadinessForecast(startDate,forwardDays){
+          try{return await apiGet({action:'getIngredientReadinessForecast',startDate:startDate||'',forwardDays:forwardDays||7});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionInsightDashboard(month,asOfDate){
+          try{return await apiGet({action:'getNutritionInsightDashboard',month:month||'',asOfDate:asOfDate||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async canonicalNutritionWeeklyTrend(endDate){
+          try{return await apiGet({action:'getCanonicalNutritionWeeklyTrend',endDate:endDate||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async canonicalNutritionDashboard(date){
+          try{return await apiGet({action:'getCanonicalNutritionDashboard',date:date||''});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async finalSystemIntegrityAudit(){
+          try{return await apiGet({action:'getFinalSystemIntegrityAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledNutritionEntryAudit(){
+          try{return await apiGet({action:'getControlledNutritionEntryAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async pendingNutritionResolutionPreview(){
+          try{return await apiGet({action:'getPendingNutritionResolutionPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async partialNutritionReconciliationPreflight(){
+          try{return await apiGet({action:'getPartialNutritionReconciliationPreflight'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runPartialNutritionReconciliation(token){
+          try{return await apiRequest('runPartialNutritionReconciliation',{token});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async partialNutritionReconciliationAudit(){
+          try{return await apiGet({action:'getPartialNutritionReconciliationAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionReconciliationPreviewV2(){
+          try{return await apiGet({action:'getNutritionReconciliationPreviewV2'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionReconciliationPreview(){
+          try{return await apiGet({action:'getNutritionReconciliationPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async applyNutritionReconciliation(){
+          try{return await apiRequest('applyNutritionReconciliation',{});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async nutritionReconciliationAudit(){
+          try{return await apiGet({action:'getNutritionReconciliationAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async finalStockIntegrationAudit(){
+          try{return await apiRequest('getFinalStockIntegrationAudit');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async multiCycleLedgerAudit(){
+          try{return await apiRequest('getMultiCycleLedgerAudit');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async restoreLedgerAudit(){
+          try{return await apiRequest('getRestoreLedgerAudit');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async usageLedgerAudit(){
+          try{return await apiRequest('getUsageLedgerAudit');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async usageSourceMatcherPreview(){
+          try{return await apiRequest('getUsageSourceMatcherPreview');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async usageLedgerPreview(){
+          try{return await apiRequest('getUsageLedgerPreview');}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async canonicalStockLedgerAudit(){
+          try{
+            return await apiRequest('getCanonicalStockLedgerAudit');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async legacyPurchaseMatcherPreview(){
+          try{
+            return await apiRequest('getLegacyPurchaseMatcherPreview');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async cleanupExactLegacyPurchases(){
+          try{
+            return await apiRequest('cleanupExactLegacyPurchases');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async legacyPurchaseCleanupPreview(){
+          try{
+            return await apiRequest('getLegacyPurchaseCleanupPreview');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async purchaseStableLedgerPreview(){
+          try{
+            return await apiRequest('getPurchaseStableLedgerPreview');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async reconcilePurchaseStableLedger(){
+          try{
+            return await apiRequest('reconcilePurchaseStableLedger');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async stockLedgerCleanupPreview(){
+          try{
+            return await apiRequest('getStockLedgerCleanupPreview');
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
         async finalMenuStockReadiness(){
           try{
             return await apiRequest('getFinalMenuStockReadiness');
@@ -12110,7 +13233,8 @@ updateShellRightDate();
       document.getElementById('quickBranchModal').addEventListener('click',e=>{if(e.target.id==='quickBranchModal')e.currentTarget.style.display='none';});
       document.getElementById('mobileRecipeDetailModal')?.addEventListener('click',e=>{
         if(e.target.id==='mobileRecipeDetailModal'){
-          e.currentTarget.style.display='none';
+          e.currentTarget.style.setProperty('display','none','important');
+          e.currentTarget.setAttribute('aria-hidden','true');
         }
       });
       const toggleMemberFormBtn=document.getElementById('toggleMemberFormBtn');
@@ -13786,6 +14910,40 @@ function renderSidebarFamilyAvatars(){
         order:()=>SpringFamilyDiagnostics.orderFinalConsistencyCheck(),
         stock:()=>SpringFamilyDiagnostics.finalStockCycleCheck(),
         stockready:()=>SpringFamilyDiagnostics.finalMenuStockReadiness(),
+        ledger:()=>SpringFamilyDiagnostics.stockLedgerCleanupPreview(),
+        stableledger:()=>SpringFamilyDiagnostics.purchaseStableLedgerPreview(),
+        legacycleanup:()=>SpringFamilyDiagnostics.legacyPurchaseCleanupPreview(),
+        legacymatch:()=>SpringFamilyDiagnostics.legacyPurchaseMatcherPreview(),
+        finallegacy:()=>SpringFamilyDiagnostics.finalLegacyPurchaseCleanupPreview(),
+        ledgeraudit:()=>SpringFamilyDiagnostics.canonicalStockLedgerAudit(),
+        usageledger:()=>SpringFamilyDiagnostics.usageLedgerPreview(),
+        usagematcher:()=>SpringFamilyDiagnostics.usageSourceMatcherPreview(),
+        usageplan:()=>SpringFamilyDiagnostics.usageCanonicalizationPreview(),
+        usageaudit:()=>SpringFamilyDiagnostics.usageLedgerAudit(),
+        restorepreview:()=>SpringFamilyDiagnostics.restoreLedgerPreview(),
+        restoreaudit:()=>SpringFamilyDiagnostics.restoreLedgerAudit(),
+        multicycle:()=>SpringFamilyDiagnostics.multiCycleLedgerAudit(),
+        stockintegration:()=>SpringFamilyDiagnostics.finalStockIntegrationAudit(),
+        nutritiondiag:()=>SpringFamilyDiagnostics.nutritionIntegrationDiagnostic(),
+        nutritionsource:()=>SpringFamilyDiagnostics.nutritionSourceAudit(),
+        nutritiondatamodel:()=>SpringFamilyDiagnostics.nutritionDataModelAudit(),
+        nutritionprovenance:()=>SpringFamilyDiagnostics.nutritionSchemaProvenancePreflight(),
+        nutritionrepairpreview:()=>SpringFamilyDiagnostics.controlledNutritionRepairPreview(),
+        nutritionrepairpreflight:()=>SpringFamilyDiagnostics.controlledNutritionRepairPreflight(),
+        nutritionformatpreflight:()=>SpringFamilyDiagnostics.nutritionCellFormatRepairPreflight(),
+        nutritionformataudit:()=>SpringFamilyDiagnostics.nutritionCellFormatRepairAudit(),
+        nutritionrepairaudit:()=>SpringFamilyDiagnostics.controlledNutritionRepairAudit(),
+        finalsystemaudit:()=>SpringFamilyDiagnostics.finalSystemIntegrityAudit(),
+        nutritionreconcile:()=>SpringFamilyDiagnostics.nutritionReconciliationPreview(),
+        nutritionreconcilev2:()=>SpringFamilyDiagnostics.nutritionReconciliationPreviewV2(),
+        partialnutritionpreflight:()=>SpringFamilyDiagnostics.partialNutritionReconciliationPreflight(),
+        partialnutritionaudit:()=>SpringFamilyDiagnostics.partialNutritionReconciliationAudit(),
+        pendingnutritionpreview:()=>SpringFamilyDiagnostics.pendingNutritionResolutionPreview(),
+        nutritionaudit:()=>SpringFamilyDiagnostics.nutritionReconciliationAudit(),
+        lifecycleaudit:()=>SpringFamilyDiagnostics.finalUsageLifecycleAudit(),
+        restorepreflight:()=>SpringFamilyDiagnostics.controlledRestorePreflight('f250cf79-6866-477c-af1f-9318d66a16f9'),
+        reconfirmpreflight:()=>SpringFamilyDiagnostics.controlledReconfirmPreflight('f250cf79-6866-477c-af1f-9318d66a16f9','午餐'),
+        stockflag:()=>SpringFamilyDiagnostics.stockAppliedFlagReconcilePreview(),
         forensic:()=>SpringFamilyDiagnostics.historicalStockForensicPreview(),
         purchase:()=>SpringFamilyDiagnostics.purchasePriceCycleCheck(),
         shopping:()=>SpringFamilyDiagnostics.shoppingLoopCheck(),
@@ -13861,6 +15019,40 @@ function renderSidebarFamilyAvatars(){
     <button type="button" data-jt="order">Order → Final</button>
     <button type="button" data-jt="stock">Final → Stock</button>
     <button type="button" data-jt="stockready">Stock Readiness</button>
+    <button type="button" data-jt="ledger">Ledger Cleanup Preview</button>
+    <button type="button" data-jt="stableledger">Purchase Stable Ledger</button>
+    <button type="button" data-jt="legacycleanup">Legacy Purchase Cleanup</button>
+    <button type="button" data-jt="legacymatch">Legacy Purchase Matcher</button>
+    <button type="button" data-jt="finallegacy">Final Legacy Preview</button>
+    <button type="button" data-jt="ledgeraudit">Canonical Ledger Audit</button>
+    <button type="button" data-jt="usageledger">Usage Ledger Preview</button>
+    <button type="button" data-jt="usagematcher">Usage Source Matcher</button>
+    <button type="button" data-jt="usageplan">Usage Canonical Plan</button>
+    <button type="button" data-jt="usageaudit">Usage Ledger Audit</button>
+    <button type="button" data-jt="restorepreview">Restore Ledger Preview</button>
+    <button type="button" data-jt="restoreaudit">Restore Ledger Audit</button>
+    <button type="button" data-jt="multicycle">Multi-cycle Ledger Audit</button>
+    <button type="button" data-jt="stockintegration">Final Stock Integration Audit</button>
+    <button type="button" data-jt="nutritiondiag">Nutrition Diagnostic</button>
+    <button type="button" data-jt="nutritionsource">Nutrition Source Audit</button>
+    <button type="button" data-jt="nutritiondatamodel">Nutrition Data Model Audit</button>
+    <button type="button" data-jt="nutritionprovenance">Nutrition Schema & Provenance Preflight</button>
+    <button type="button" data-jt="nutritionrepairpreview">Controlled Nutrition Repair Preview</button>
+    <button type="button" data-jt="nutritionrepairpreflight">Nutrition Repair Preflight</button>
+    <button type="button" data-jt="nutritionformatpreflight">Nutrition Format Repair Preflight</button>
+    <button type="button" data-jt="nutritionformataudit">Nutrition Format Repair Audit</button>
+    <button type="button" data-jt="nutritionrepairaudit">Nutrition Repair Audit</button>
+    <button type="button" data-jt="finalsystemaudit">Final System Integrity Audit</button>
+    <button type="button" data-jt="nutritionreconcile">Nutrition Reconcile Preview</button>
+    <button type="button" data-jt="nutritionreconcilev2">Nutrition Reconcile Preview V2</button>
+    <button type="button" data-jt="partialnutritionpreflight">Partial Nutrition Preflight</button>
+    <button type="button" data-jt="partialnutritionaudit">Partial Nutrition Audit</button>
+    <button type="button" data-jt="pendingnutritionpreview">Pending Nutrition Preview</button>
+    <button type="button" data-jt="nutritionaudit">Nutrition Reconcile Audit</button>
+    <button type="button" data-jt="lifecycleaudit">Final ↔ Usage Lifecycle</button>
+    <button type="button" data-jt="restorepreflight">Controlled Restore Preflight</button>
+    <button type="button" data-jt="reconfirmpreflight">Controlled Re-confirm Preflight</button>
+    <button type="button" data-jt="stockflag">Stock Applied Flag Preview</button>
     <button type="button" data-jt="forensic">Historical Forensic</button>
     <button type="button" data-jt="purchase">Purchase → Price</button>
     <button type="button" data-jt="shopping">Shopping Loop</button>
@@ -13875,6 +15067,902 @@ function renderSidebarFamilyAvatars(){
   </div>
   <pre id="jointTestOutput">等待检查…</pre>
 </div>
+
+
+<script>
+/* Part 7.0 · canonical nutrition dashboard integration */
+(function(){
+  let canonicalNutritionRequestSeq=0;
+
+  function cnEsc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function cnNum(v,d=1){ return Number(v||0).toFixed(d); }
+
+  function ensureCanonicalNutritionDashboard(){
+    const panel=document.getElementById('nutritionPanel');
+    if(!panel)return null;
+    let box=document.getElementById('canonicalNutritionDashboard');
+    if(box)return box;
+
+    box=document.createElement('div');
+    box.id='canonicalNutritionDashboard';
+    box.className='canonical-nutrition-dashboard';
+    box.innerHTML='<div class="v2-small">正在读取 canonical nutrition…</div>';
+
+    const daily=document.getElementById('dailyNutrition');
+    if(daily && daily.parentElement){
+      daily.parentElement.insertAdjacentElement('afterend',box);
+    }else{
+      panel.appendChild(box);
+    }
+    return box;
+  }
+
+  async function renderCanonicalNutritionDashboard(){
+    const box=ensureCanonicalNutritionDashboard();
+    if(!box)return;
+
+    const date=document.getElementById('nutritionMealDate')?.value
+      || document.getElementById('nutrition20Date')?.value
+      || (typeof formatDate==='function'?formatDate(new Date()):new Date().toISOString().slice(0,10));
+
+    const seq=++canonicalNutritionRequestSeq;
+    box.innerHTML='<div class="v2-small">正在读取 canonical nutrition…</div>';
+
+    try{
+      const data=await apiGet({action:'getCanonicalNutritionDashboard',date});
+      if(seq!==canonicalNutritionRequestSeq)return;
+
+      const members=Array.isArray(data.members)?data.members:[];
+      const meals=Array.isArray(data.meals)?data.meals:[];
+      const unresolved=Array.isArray(data.unresolved)?data.unresolved:[];
+
+      const memberHtml=members.length?members.map(m=>{
+        const n=m.totals||{}, r=m.remaining||{};
+        return `<div class="canonical-member-card">
+          <div class="canonical-member-title">
+            <b>👤 ${cnEsc(m.name)}</b>
+            <span class="canonical-kcal">${cnNum(n.calories,0)} kcal</span>
+          </div>
+          <div class="canonical-macro-grid">
+            <div class="canonical-macro"><span>Protein</span><b>${cnNum(n.protein)} g</b></div>
+            <div class="canonical-macro"><span>Carbs</span><b>${cnNum(n.carbs)} g</b></div>
+            <div class="canonical-macro"><span>Fat</span><b>${cnNum(n.fat)} g</b></div>
+          </div>
+          <div class="canonical-mini-row">
+            <span class="canonical-mini-chip">🌾 Fiber ${cnNum(n.fiber)}g</span>
+            <span class="canonical-mini-chip">🥬 Veg ${cnNum(n.veggieServings)}份</span>
+            <span class="canonical-mini-chip">🍎 Fruit ${cnNum(n.fruitServings)}份</span>
+          </div>
+          <div class="canonical-mini-row">
+            <span class="canonical-mini-chip">${r.protein===null?'Protein target 未设':`Protein 还差 ${cnNum(r.protein)}g`}</span>
+            <span class="canonical-mini-chip">Fiber 还差 ${cnNum(r.fiber)}g</span>
+            <span class="canonical-mini-chip">Veg 还差 ${cnNum(r.veggieServings)}份</span>
+            <span class="canonical-mini-chip">Fruit 还差 ${cnNum(r.fruitServings)}份</span>
+          </div>
+        </div>`;
+      }).join(''):'<div class="nutrition20-empty">这一天还没有可分配的用餐成员营养记录。</div>';
+
+      const mealHtml=meals.map(x=>{
+        const names=(x.items||[]).map(i=>(i.external?'🍽️ ':'🏠 ')+i.dish).join('、');
+        return `<div class="canonical-meal-row">
+          <div class="canonical-meal-row-head">
+            <span>${cnEsc(x.meal)} · ${x.dinerCount}人</span>
+            <span>${cnNum(x.total?.calories,0)} kcal</span>
+          </div>
+          <div class="canonical-meal-items">${cnEsc(names||'—')}</div>
+        </div>`;
+      }).join('');
+
+      box.innerHTML=`
+        <div class="canonical-nutrition-head">
+          <div>
+            <b>📊 Canonical Nutrition · ${cnEsc(data.date)}</b>
+            <div class="canonical-nutrition-source">家常菜＝Dish Nutrition · 外食＝External Nutrition / Final Decision ID · 按 Meal Settings 实际用餐人数平均分配</div>
+          </div>
+          <span class="canonical-nutrition-status ${unresolved.length?'warn':''}">${unresolved.length?'⚠️ '+unresolved.length+' unresolved':'✓ fully resolved'}</span>
+        </div>
+        <div class="canonical-member-grid">${memberHtml}</div>
+        <div class="canonical-meal-list">${mealHtml}</div>
+        ${unresolved.length?`<div class="canonical-unresolved">⚠️ 尚有 ${unresolved.length} 条 Final Decision 找不到 canonical nutrition source：${unresolved.map(x=>cnEsc(x.dish)).join('、')}</div>`:''}
+      `;
+    }catch(err){
+      if(seq!==canonicalNutritionRequestSeq)return;
+      box.innerHTML=`<div class="canonical-unresolved">Canonical Nutrition 读取失败：${cnEsc(err?.message||err)}</div>`;
+    }
+  }
+
+  window.renderCanonicalNutritionDashboard=renderCanonicalNutritionDashboard;
+
+  function bind(){
+    ensureCanonicalNutritionDashboard();
+    ['nutritionMealDate','nutrition20Date','nutritionMealType'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && !el.dataset.canonicalNutritionBound){
+        el.dataset.canonicalNutritionBound='1';
+        el.addEventListener('change',renderCanonicalNutritionDashboard);
+      }
+    });
+
+    if(typeof renderDailyNutrition==='function' && !renderDailyNutrition.__canonicalDashboardPatched){
+      const original=renderDailyNutrition;
+      const wrapped=function(){
+        const r=original.apply(this,arguments);
+        renderCanonicalNutritionDashboard();
+        return r;
+      };
+      wrapped.__canonicalDashboardPatched=true;
+      renderDailyNutrition=wrapped;
+    }
+
+    renderCanonicalNutritionDashboard();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(bind,300));
+  else setTimeout(bind,300);
+})();
+</script>
+
+
+<script>
+/* Part 7.1 · Weekly Nutrition Trends */
+(function(){
+  let weeklyMetric='protein';
+  let weeklyCache=null;
+  let weeklyReqSeq=0;
+
+  const meta={
+    calories:{label:'Calories',unit:'kcal',digits:0},
+    protein:{label:'Protein',unit:'g',digits:1},
+    fiber:{label:'Fiber',unit:'g',digits:1},
+    veggieServings:{label:'Veg',unit:'份',digits:1},
+    fruitServings:{label:'Fruit',unit:'份',digits:1}
+  };
+
+  function wEsc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function wNum(v,d){ return Number(v||0).toFixed(d==null?1:d); }
+
+  function ensureWeeklyNutritionDashboard(){
+    const panel=document.getElementById('nutritionPanel');
+    if(!panel)return null;
+    let box=document.getElementById('weeklyNutritionDashboard');
+    if(box)return box;
+    box=document.createElement('div');
+    box.id='weeklyNutritionDashboard';
+    box.className='weekly-nutrition-dashboard';
+    const canonical=document.getElementById('canonicalNutritionDashboard');
+    if(canonical)canonical.insertAdjacentElement('afterend',box);
+    else panel.appendChild(box);
+    return box;
+  }
+
+  function renderWeeklyFromCache(){
+    const box=ensureWeeklyNutritionDashboard();
+    if(!box || !weeklyCache)return;
+
+    const data=weeklyCache;
+    const metric=meta[weeklyMetric]||meta.protein;
+    const members=Array.isArray(data.members)?data.members:[];
+    const incomplete=Array.isArray(data.incompleteDays)?data.incompleteDays:[];
+
+    const memberHtml=members.map(m=>{
+      const days=Array.isArray(m.days)?m.days:[];
+      const values=days.map(d=>Number(d.totals?.[weeklyMetric]||0));
+      const max=Math.max(...values,1);
+      const avg=Number(m.summary?.average?.[weeklyMetric]||0);
+      const target=weeklyMetric==='protein'
+        ? Number(m.targets?.protein||0)
+        : weeklyMetric==='fiber' ? 25
+        : weeklyMetric==='veggieServings' ? 3
+        : weeklyMetric==='fruitServings' ? 2
+        : 0;
+
+      const trackedDays=Number(m.summary?.trackedDays||0);
+      const ringPct=weeklyMetric==='calories'
+        ? Math.max(0,Math.min(100,(trackedDays/7)*100))
+        : (target>0 ? Math.max(0,Math.min(100,(avg/target)*100)) : 0);
+
+      const daysCompact=days.map((d,i)=>{
+        const v=values[i]||0;
+        const status=String(d.trackingStatus||'NO_DATA');
+        const cls=status==='INCOMPLETE'?'incomplete':(status==='NO_DATA'?'no-data':'complete');
+        return `<div class="weekly-mini-day ${cls}" title="${wEsc(d.date)} · ${wNum(v,metric.digits)} ${metric.unit}">
+          <span>${wEsc(d.date.slice(5))}</span>
+          <b>${status==='NO_DATA'?'—':wNum(v,metric.digits)}</b>
+        </div>`;
+      }).join('');
+
+      return `<div class="weekly-member-card">
+        <div class="weekly-member-top">
+          <b>${wEsc(m.name)}</b>
+          <span class="weekly-avg">7日平均 ${wNum(avg,metric.digits)} ${metric.unit}${target?` · 目标 ${wNum(target,metric.digits)}`:''}</span>
+        </div>
+        <div class="weekly-doughnut-layout">
+          <div class="weekly-doughnut" style="--weekly-pct:${ringPct}%">
+            <div class="weekly-doughnut-center">
+              <strong>${wNum(avg,metric.digits)}</strong>
+              <span>${metric.unit}</span>
+            </div>
+          </div>
+          <div class="weekly-doughnut-info">
+            <div><span>7日平均</span><b>${wNum(avg,metric.digits)} ${metric.unit}</b></div>
+            <div><span>${weeklyMetric==='calories'?'Tracking':'目标'}</span><b>${weeklyMetric==='calories'?`${trackedDays}/7`:(target?`${wNum(target,metric.digits)} ${metric.unit}`:'—')}</b></div>
+            <div><span>完成度</span><b>${Math.round(ringPct)}%</b></div>
+            <div><span>Complete</span><b>${m.summary?.completeTrackedDays||0}/${trackedDays||0}</b></div>
+          </div>
+        </div>
+        <div class="weekly-mini-days">${daysCompact}</div>
+      </div>`;
+    }).join('');
+
+    box.innerHTML=`
+      <div class="weekly-nutrition-head">
+        <div>
+          <b>7-Day Nutrition Trend</b>
+          <div class="weekly-nutrition-sub">${wEsc(data.startDate)} → ${wEsc(data.endDate)} · canonical nutrition sources only</div>
+        </div>
+        <span class="canonical-nutrition-status ${incomplete.length?'warn':''}">${incomplete.length?'⚠️ '+incomplete.length+' incomplete':'✓ '+(data.summary?.trackedDays||0)+' tracked / '+(data.summary?.noDataDays||0)+' no data'}</span>
+      </div>
+      <div class="weekly-metric-tabs">
+        ${Object.keys(meta).map(k=>`<button type="button" class="weekly-metric-btn ${k===weeklyMetric?'active':''}" data-weekly-metric="${k}">${meta[k].label}</button>`).join('')}
+      </div>
+      <div class="weekly-member-list">${memberHtml||'<div class="nutrition20-empty">这 7 天没有可分配的成员 Nutrition。</div>'}</div>
+      <div class="weekly-incomplete" style="background:#171e27;border-color:#293440;color:#8d99a6">
+        状态：Complete＝有记录且全部 Nutrition resolved · No Data＝当天没有记录 · Incomplete＝有记录但存在 unresolved
+      </div>
+      ${incomplete.length?`<div class="weekly-incomplete">⚠️ 数据未完整日期：${incomplete.map(x=>wEsc(x.date)).join('、')}</div>`:''}
+    `;
+
+    box.querySelectorAll('[data-weekly-metric]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        weeklyMetric=btn.dataset.weeklyMetric||'protein';
+        renderWeeklyFromCache();
+      });
+    });
+  }
+
+  async function renderWeeklyNutritionTrend(){
+    const box=ensureWeeklyNutritionDashboard();
+    if(!box)return;
+
+    const endDate=document.getElementById('nutritionMealDate')?.value
+      || document.getElementById('nutrition20Date')?.value
+      || (typeof formatDate==='function'?formatDate(new Date()):new Date().toISOString().slice(0,10));
+
+    const seq=++weeklyReqSeq;
+    box.innerHTML='<div class="v2-small">正在读取 7-day canonical nutrition…</div>';
+
+    try{
+      const data=await apiGet({action:'getCanonicalNutritionWeeklyTrend',endDate});
+      if(seq!==weeklyReqSeq)return;
+      weeklyCache=data;
+      renderWeeklyFromCache();
+    }catch(err){
+      if(seq!==weeklyReqSeq)return;
+      box.innerHTML=`<div class="canonical-unresolved">Weekly Nutrition 读取失败：${wEsc(err?.message||err)}</div>`;
+    }
+  }
+
+  window.renderWeeklyNutritionTrend=renderWeeklyNutritionTrend;
+
+  function bindWeekly(){
+    ensureWeeklyNutritionDashboard();
+    ['nutritionMealDate','nutrition20Date'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && !el.dataset.weeklyNutritionBound){
+        el.dataset.weeklyNutritionBound='1';
+        el.addEventListener('change',renderWeeklyNutritionTrend);
+      }
+    });
+    renderWeeklyNutritionTrend();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(bindWeekly,450));
+  }else{
+    setTimeout(bindWeekly,450);
+  }
+})();
+</script>
+
+
+<script>
+/* Part 7.2 · Monthly Nutrition Trends */
+(function(){
+  let monthlyReqSeq=0;
+
+  function mEsc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function mNum(v,d=1){ return Number(v||0).toFixed(d); }
+  function pct(v){ return v==null?'—':Math.round(Number(v||0)*100)+'%'; }
+
+  function ensureMonthlyNutritionDashboard(){
+    const panel=document.getElementById('nutritionPanel');
+    if(!panel)return null;
+    let box=document.getElementById('monthlyNutritionDashboard');
+    if(box)return box;
+
+    box=document.createElement('div');
+    box.id='monthlyNutritionDashboard';
+    box.className='monthly-nutrition-dashboard';
+
+    const weekly=document.getElementById('weeklyNutritionDashboard');
+    if(weekly)weekly.insertAdjacentElement('afterend',box);
+    else panel.appendChild(box);
+    return box;
+  }
+
+  function rateCard(label,value){
+    const n=value==null?0:Math.max(0,Math.min(1,Number(value||0)));
+    return `<div class="monthly-rate">
+      <div class="monthly-rate-head"><span>${mEsc(label)}</span><b>${value==null?'—':Math.round(n*100)+'%'}</b></div>
+      <div class="monthly-rate-track"><div class="monthly-rate-fill" style="width:${n*100}%"></div></div>
+    </div>`;
+  }
+
+  async function renderMonthlyNutritionTrend(){
+    const box=ensureMonthlyNutritionDashboard();
+    if(!box)return;
+
+    const selected=document.getElementById('nutritionMealDate')?.value
+      || document.getElementById('nutrition20Date')?.value
+      || new Date().toISOString().slice(0,10);
+    const month=String(selected||'').slice(0,7);
+
+    const seq=++monthlyReqSeq;
+    box.innerHTML='<div class="v2-small">正在读取 monthly canonical nutrition…</div>';
+
+    try{
+      const data=await apiGet({action:'getCanonicalNutritionMonthlyTrend',month,asOfDate:selected});
+      if(seq!==monthlyReqSeq)return;
+
+      const members=Array.isArray(data.members)?data.members:[];
+      const summary=data.summary||{};
+
+      const membersHtml=members.map(m=>{
+        const s=m.summary||{}, a=s.average||{};
+        const days=Array.isArray(m.days)?m.days:[];
+
+        const cal=days.map(d=>{
+          const st=String(d.trackingStatus||'NO_DATA');
+          const cls=st==='COMPLETE'?'complete':(st==='INCOMPLETE'?'incomplete':'no-data');
+          const v=Number(d.totals?.calories||0);
+          return `<div class="monthly-day ${cls}" title="${mEsc(d.date)} · ${st} · ${mNum(v,0)} kcal">${mEsc(d.date.slice(-2))}</div>`;
+        }).join('');
+
+        return `<div class="monthly-member-card">
+          <div class="monthly-member-top">
+            <b>👤 ${mEsc(m.name)}</b>
+            <span class="monthly-coverage">Tracking ${pct(s.trackingCoverage)} · ${s.trackedDays||0}/${data.summary?.calendarDays||0} days</span>
+          </div>
+
+          <div class="monthly-summary-grid">
+            <div class="monthly-summary-cell"><span>Avg Calories</span><b>${mNum(a.calories,0)}</b></div>
+            <div class="monthly-summary-cell"><span>Avg Protein</span><b>${mNum(a.protein,1)}g</b></div>
+            <div class="monthly-summary-cell"><span>Avg Fiber</span><b>${mNum(a.fiber,1)}g</b></div>
+            <div class="monthly-summary-cell"><span>No Data Days</span><b>${s.noDataDays||0}</b></div>
+          </div>
+
+          <div class="monthly-rate-grid">
+            ${rateCard('Protein Target',s.proteinTargetAttainmentRate)}
+            ${rateCard('Fiber Target',s.fiberTargetAttainmentRate)}
+            ${rateCard('Veg Target',s.veggieTargetAttainmentRate)}
+            ${rateCard('Fruit Target',s.fruitTargetAttainmentRate)}
+          </div>
+
+          <div class="monthly-calendar">${cal}</div>
+        </div>`;
+      }).join('');
+
+      box.innerHTML=`
+        <div class="monthly-nutrition-head">
+          <div>
+            <b>🗓️ Monthly Nutrition Trend · ${mEsc(data.month)}</b>
+            <div class="monthly-sub">Tracked-day averages only · future dates excluded · NO_DATA 不会当成 0 kcal · canonical sources unchanged</div>
+          </div>
+          <span class="canonical-nutrition-status ${summary.incompleteDays?'warn':''}">
+            ${summary.incompleteDays?'⚠️ '+summary.incompleteDays+' incomplete':'✓ '+summary.trackedDays+' tracked / '+summary.noDataDays+' no data'}
+          </span>
+        </div>
+        <div class="monthly-member-list">${membersHtml||'<div class="nutrition20-empty">本月暂无成员 Nutrition data。</div>'}</div>
+      `;
+    }catch(err){
+      if(seq!==monthlyReqSeq)return;
+      box.innerHTML=`<div class="canonical-unresolved">Monthly Nutrition 读取失败：${mEsc(err?.message||err)}</div>`;
+    }
+  }
+
+  window.renderMonthlyNutritionTrend=renderMonthlyNutritionTrend;
+
+  function bindMonthly(){
+    ensureMonthlyNutritionDashboard();
+    ['nutritionMealDate','nutrition20Date'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el && !el.dataset.monthlyNutritionBound){
+        el.dataset.monthlyNutritionBound='1';
+        el.addEventListener('change',renderMonthlyNutritionTrend);
+      }
+    });
+    renderMonthlyNutritionTrend();
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(bindMonthly,600));
+  }else{
+    setTimeout(bindMonthly,600);
+  }
+})();
+</script>
+<script>
+/* Part 7.3 · Nutrition Insight Dashboard · READ ONLY */
+(function(){
+  let insightReqSeq=0;
+  function iEsc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+  function iNum(v,d=1){return Number(v||0).toFixed(d);}
+  function iPct(v){return v==null?'—':Math.round(Number(v||0)*100)+'%';}
+  function ensureInsightDashboard(){
+    const panel=document.getElementById('nutritionPanel'); if(!panel)return null;
+    let box=document.getElementById('nutritionInsightDashboard'); if(box)return box;
+    box=document.createElement('div'); box.id='nutritionInsightDashboard'; box.className='nutrition-insight-dashboard';
+    const monthly=document.getElementById('monthlyNutritionDashboard');
+    if(monthly)monthly.insertAdjacentElement('afterend',box); else panel.appendChild(box);
+    return box;
+  }
+  function gapCard(label,gap,unit,rate){
+    return `<div class="insight-card"><span>${iEsc(label)} average gap</span><b>${iNum(gap,1)} ${iEsc(unit)}</b><small>Target days ${iPct(rate)}</small></div>`;
+  }
+  async function renderNutritionInsightDashboard(){
+    const box=ensureInsightDashboard(); if(!box)return;
+    const selected=document.getElementById('nutritionMealDate')?.value||document.getElementById('nutrition20Date')?.value||new Date().toISOString().slice(0,10);
+    const month=String(selected).slice(0,7), seq=++insightReqSeq;
+    box.innerHTML='<div class="v2-small">正在读取 nutrition insights…</div>';
+    try{
+      const data=await apiGet({action:'getNutritionInsightDashboard',month,asOfDate:selected});
+      if(seq!==insightReqSeq)return;
+      const members=Array.isArray(data.members)?data.members:[];
+      const html=members.map(m=>{const g=m.averageGap||{},r=m.targetRates||{};return `<div class="insight-member">
+        <div class="insight-member-top"><b>💡 ${iEsc(m.name)}</b><span class="insight-badge">${m.trackedDays||0} tracked · coverage ${iPct(m.trackingCoverage)}</span></div>
+        <div class="insight-grid">
+          ${gapCard('Protein',g.protein,'g',r.protein)}${gapCard('Fiber',g.fiber,'g',r.fiber)}${gapCard('Vegetable',g.veggieServings,'份',r.veggieServings)}${gapCard('Fruit',g.fruitServings,'份',r.fruitServings)}
+        </div>
+        <div class="insight-priority"><strong>最常不足：</strong> ${iEsc(m.topShortfallLabel||'—')} · 达标 ${iPct(m.topShortfallRate)} · 当前连续完整记录 ${m.currentCompleteStreak||0} 天</div>
+      </div>`}).join('');
+      box.innerHTML=`<div class="insight-head"><div><b>🧭 Nutrition Insights · ${iEsc(data.month)}</b><div class="insight-sub">只使用 tracked days · NO_DATA 不当成 0 · future dates excluded · canonical sources unchanged</div></div><span class="canonical-nutrition-status ${data.summary?.unresolvedNutrition?'warn':''}">${data.summary?.unresolvedNutrition?'⚠️ '+data.summary.unresolvedNutrition+' unresolved':'✓ read-only insight layer'}</span></div><div class="insight-member-list">${html||'<div class="nutrition20-empty">本月暂无可分析的 Nutrition data。</div>'}</div><div class="insight-note">Average gap = max(0, daily target − tracked-day average). 达标率只以 tracked days 为分母。</div>`;
+    }catch(err){if(seq!==insightReqSeq)return;box.innerHTML=`<div class="canonical-unresolved">Nutrition Insights 读取失败：${iEsc(err?.message||err)}</div>`;}
+  }
+  window.renderNutritionInsightDashboard=renderNutritionInsightDashboard;
+  function bindInsight(){ensureInsightDashboard();['nutritionMealDate','nutrition20Date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.dataset.nutritionInsightBound){el.dataset.nutritionInsightBound='1';el.addEventListener('change',renderNutritionInsightDashboard);}});renderNutritionInsightDashboard();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(bindInsight,750));else setTimeout(bindInsight,750);
+})();
+</script>
+
+<script>
+/* Part 8.0 · Ingredient Readiness Forecast · READ ONLY */
+(function(){
+  let readinessSeq=0;
+
+  function fEsc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function fQty(v){
+    const n=Number(v||0);
+    return Number.isInteger(n)?String(n):n.toFixed(2).replace(/0+$/,'').replace(/\.$/,'');
+  }
+
+  async function renderIngredientReadinessForecast(){
+    const box=document.getElementById('dashboardIngredientReadiness');
+    const summary=document.getElementById('dashboardIngredientReadinessSummary');
+    if(!box)return;
+
+    const start=(typeof part32TodayKey==='function')
+      ? part32TodayKey()
+      : new Date().toISOString().slice(0,10);
+
+    const seq=++readinessSeq;
+    if(summary)summary.textContent='未来 7 天 · 读取中…';
+    box.innerHTML='<div class="v2-small">正在检查未来菜单与库存…</div>';
+
+    try{
+      const data=await apiGet({action:'getIngredientReadinessForecast',startDate:start,forwardDays:7});
+      if(seq!==readinessSeq)return;
+
+      const s=data.summary||{};
+      if(summary){
+        summary.textContent=`缺口 ${s.shortageIngredients||0} · 已备妥 ${s.readyIngredients||0} · 未量化 ${s.unquantifiedIngredients||0}`;
+      }
+
+      const shortages=Array.isArray(data.shortages)?data.shortages:[];
+      if(shortages.length){
+        box.innerHTML=shortages.slice(0,8).map(x=>{
+          const name=x.inventoryName||x.ingredient;
+          const missing=x.status==='MISSING_INVENTORY';
+          const status=missing
+            ? '库存未建档'
+            : `缺 ${fQty(x.shortageQty)}${fEsc(x.demandUnit||x.inventoryUnit||'')}`;
+          return `<div class="dashboard-inventory-row">
+            <div>
+              <b>${fEsc(name)}</b>
+              <span>需求 ${fQty(x.demandQty)}${fEsc(x.demandUnit||'')} · ${fEsc((x.sourceDishes||[]).join('、'))}</span>
+              ${x.alreadyOnShoppingList?'<em class="readiness-shopping-tag">已在购物清单</em>':''}
+            </div>
+            <strong class="readiness-status ${missing?'missing':'shortage'}">${status}</strong>
+          </div>`;
+        }).join('');
+      }else if((s.unquantifiedIngredients||0)>0){
+        box.innerHTML=`<div class="v2-small">量化库存没有发现缺口；但有 ${s.unquantifiedIngredients} 项食材的配方数量/单位尚未填写。</div>`;
+      }else{
+        box.innerHTML='<div class="v2-small">未来 7 天已确认菜单的可量化食材目前看起来备料充足。</div>';
+      }
+    }catch(err){
+      if(seq!==readinessSeq)return;
+      if(summary)summary.textContent='读取失败';
+      box.innerHTML=`<div class="v2-small">备料预测失败：${fEsc(err?.message||err)}</div>`;
+    }
+  }
+
+  window.renderIngredientReadinessForecast=renderIngredientReadinessForecast;
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(renderIngredientReadinessForecast,650));
+  }else{
+    setTimeout(renderIngredientReadinessForecast,650);
+  }
+})();
+</script>
+
+
+<script>
+/* Part 8.3.2 · Startup-safe local Next Meal calculator · READ ONLY */
+window.getNextMealQuickViewLocal = function(startDate,forwardDays){
+  try{
+    const start=String(startDate||((typeof part32TodayKey==='function')?part32TodayKey():new Date().toISOString().slice(0,10)));
+    const days=Math.max(1,Math.min(30,Number(forwardDays||7)));
+    const mealOrder={'早餐':0,'午餐':1,'晚餐':2,'加餐':3};
+
+    const startObj=new Date(start+'T12:00:00');
+    if(Number.isNaN(startObj.getTime())){
+      return {success:false,error:'Invalid startDate'};
+    }
+    const endObj=new Date(startObj);
+    endObj.setDate(endObj.getDate()+days-1);
+    const end=`${endObj.getFullYear()}-${String(endObj.getMonth()+1).padStart(2,'0')}-${String(endObj.getDate()).padStart(2,'0')}`;
+
+    const rows=(Array.isArray(window.finalDecisions)
+        ? window.finalDecisions
+        : (typeof finalDecisions!=='undefined' && Array.isArray(finalDecisions) ? finalDecisions : []))
+      .filter(x=>x && x.selected && String(x.date||'')>=start && String(x.date||'')<=end)
+      .slice()
+      .sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')) ||
+        ((mealOrder[String(a.meal||'')]??9)-(mealOrder[String(b.meal||'')]??9)));
+
+    if(!rows.length){
+      return {
+        success:true,
+        build:document.body?.dataset?.appBuild||'8.3.2-next-meal-startup-race-fix',
+        readOnly:true,
+        startDate:start,
+        endDate:end,
+        found:false,
+        nextMeal:null
+      };
+    }
+
+    const first=rows[0];
+    const same=rows.filter(x=>String(x.date||'')===String(first.date||'') &&
+      String(x.meal||'')===String(first.meal||''));
+
+    const unique=[];
+    const seen=new Set();
+    same.forEach(x=>{
+      const key=String(x.name||'').trim();
+      if(key && !seen.has(key)){seen.add(key);unique.push(x);}
+    });
+
+    let diners=[];
+    try{
+      if(typeof getSavedMealDiners==='function'){
+        diners=getSavedMealDiners(first.date,first.meal)||[];
+      }
+    }catch(_){}
+
+    return {
+      success:true,
+      build:document.body?.dataset?.appBuild||'8.3.2-next-meal-startup-race-fix',
+      readOnly:true,
+      startDate:start,
+      endDate:end,
+      found:true,
+      nextMeal:{
+        date:first.date,
+        meal:first.meal,
+        dinerCount:diners.length,
+        diners,
+        dishCount:unique.length,
+        dishes:unique.map(x=>x.name),
+        stockApplied:unique.length>0 && unique.every(x=>!!x.stockApplied)
+      }
+    };
+  }catch(err){
+    return {success:false,error:err?.message||String(err)};
+  }
+};
+</script>
+
+<script>
+/* Part 8.4 · Home Action Center · UI only */
+(function(){
+  function getTodayKey(){
+    return (typeof part32TodayKey==='function')
+      ? part32TodayKey()
+      : new Date().toISOString().slice(0,10);
+  }
+
+  function navigatePanel(panelId){
+    const btn=document.querySelector(`[data-v2="${panelId}"]`);
+    if(btn){btn.click();return true;}
+    const panel=document.getElementById(panelId);
+    if(panel){
+      document.querySelectorAll('.v2-panel').forEach(x=>x.classList.remove('active'));
+      panel.classList.add('active');
+      if(typeof setOrderControlsForPanel==='function')setOrderControlsForPanel(panelId);
+      return true;
+    }
+    return false;
+  }
+
+  window.openHomeActionTarget=function(target){
+    if(target==='menu'){navigatePanel('menuPanel');return;}
+    if(target==='nutrition'){navigatePanel('nutritionPanel');return;}
+    if(target==='inventory'){
+      const b=document.getElementById('openInventoryBtn');
+      if(b)b.click();
+      return;
+    }
+    if(target==='shopping'){
+      navigatePanel('recordPagePanel');
+      if(typeof openRecordTab==='function')openRecordTab('shopping');
+    }
+  };
+
+  window.getHomeActionCenterSnapshot=function(date){
+    const today=String(date||getTodayKey());
+    const finals=(typeof finalDecisions!=='undefined'&&Array.isArray(finalDecisions)?finalDecisions:[])
+      .filter(x=>x && x.selected && String(x.date||'')===today);
+
+    const meals=['早餐','午餐','晚餐'];
+    const emptyMeals=meals.filter(meal=>!finals.some(x=>String(x.meal||'')===meal));
+    const stockPending=finals.filter(x=>!x.stockApplied).length;
+
+    const shoppingRows=
+      (typeof shoppingList!=='undefined'&&Array.isArray(shoppingList)?shoppingList:
+      (typeof shoppingItems!=='undefined'&&Array.isArray(shoppingItems)?shoppingItems:[]));
+    const shoppingPending=shoppingRows.filter(x=>x && !x.checked).length;
+
+    return {
+      success:true,
+      build:document.body?.dataset?.appBuild||'8.4-home-action-center',
+      readOnly:true,
+      date:today,
+      summary:{
+        confirmedRows:finals.length,
+        emptyMeals:emptyMeals.length,
+        stockPending,
+        shoppingPending
+      },
+      emptyMeals
+    };
+  };
+
+  window.renderHomeActionCenter=function(){
+    const box=document.getElementById('homeActionCenter');
+    const summary=document.getElementById('homeActionCenterSummary');
+    if(!box)return;
+
+    const s=window.getHomeActionCenterSnapshot();
+    const d=s.summary||{};
+
+    const actions=[
+      {
+        key:'menu',icon:'',title:'点餐 / 菜单',
+        text:d.emptyMeals?`${s.emptyMeals.join('、')} 尚无确认菜单`:'今天三餐已有菜单状态',
+        state:d.emptyMeals?`${d.emptyMeals} 餐待处理`:'菜单已覆盖',
+        cls:d.emptyMeals?'urgent':'ready'
+      },
+      {
+        key:'shopping',icon:'',title:'购物清单',
+        text:d.shoppingPending?`${d.shoppingPending} 项尚未完成`:'目前没有待办购物项',
+        state:d.shoppingPending?`${d.shoppingPending} 项待买`:'已清',
+        cls:d.shoppingPending?'urgent':'ready'
+      },
+      {
+        key:'inventory',icon:'',title:'库存',
+        text:d.stockPending?`${d.stockPending} 条今日确认记录尚未完成库存处理`:'查看现有库存与食材',
+        state:d.stockPending?`${d.stockPending} 条待处理`:'查看库存',
+        cls:d.stockPending?'urgent':'neutral'
+      },
+      {
+        key:'nutrition',icon:'',title:'营养',
+        text:d.confirmedRows?`基于今天 ${d.confirmedRows} 条确认记录查看营养`:'今天暂无确认菜单数据',
+        state:d.confirmedRows?'查看今日营养':'暂无数据',
+        cls:'neutral'
+      }
+    ];
+
+    box.innerHTML=actions.map(a=>`
+      <button type="button" class="home-action-btn ${a.cls}" data-home-action="${a.key}">
+        <b>${a.title}</b>
+        <span>${a.text}</span>
+        <div class="action-state">${a.state}</div>
+      </button>
+    `).join('');
+
+    box.querySelectorAll('[data-home-action]').forEach(btn=>{
+      btn.addEventListener('click',()=>window.openHomeActionTarget(btn.dataset.homeAction));
+    });
+
+    if(summary){
+      const urgent=actions.filter(x=>x.cls==='urgent').length;
+      summary.textContent=urgent?`今天有 ${urgent} 类事项建议处理`:'今天没有明显待处理事项';
+    }
+  };
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(window.renderHomeActionCenter,500));
+  }else{
+    setTimeout(window.renderHomeActionCenter,500);
+  }
+})();
+</script>
+
+<script>
+/* Part 8.2 · Next Meal Quick View · READ ONLY */
+(function(){
+  let nextMealSeq=0;
+
+  function nEsc(v){
+    return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function dateLabel(date){
+    const today=(typeof part32TodayKey==='function')?part32TodayKey():new Date().toISOString().slice(0,10);
+    const t=new Date(today+'T12:00:00');
+    const d=new Date(String(date)+'T12:00:00');
+    const diff=Math.round((d-t)/86400000);
+    if(diff===0)return '今天';
+    if(diff===1)return '明天';
+    if(diff===2)return '后天';
+    return String(date||'');
+  }
+
+  async function renderNextMealQuickView(){
+    const box=document.getElementById('nextMealQuickView');
+    const summary=document.getElementById('nextMealQuickSummary');
+    if(!box)return;
+
+    const start=(typeof part32TodayKey==='function')
+      ? part32TodayKey()
+      : new Date().toISOString().slice(0,10);
+
+    const seq=++nextMealSeq;
+    if(summary)summary.textContent='未来 7 天 · 检查中…';
+    box.innerHTML='<div class="next-meal-empty">正在寻找下一顿已确认菜单…</div>';
+
+    try{
+      const data=await Promise.resolve(window.getNextMealQuickViewLocal(start,7));
+      if(seq!==nextMealSeq)return;
+
+      if(!data?.found || !data.nextMeal){
+        if(summary)summary.textContent='未来 7 天 · 暂无已确认菜单';
+        box.innerHTML='<div class="next-meal-empty">未来 7 天暂时没有已确认菜单。</div>';
+        return;
+      }
+
+      const x=data.nextMeal;
+      if(summary)summary.textContent=`${dateLabel(x.date)} ${x.meal} · ${x.dishCount} 道 · ${x.dinerCount} 人`;
+
+      box.innerHTML=`
+        <div class="next-meal-box">
+          <div>
+            <div class="next-meal-title">${nEsc(dateLabel(x.date))} · ${nEsc(x.meal)}</div>
+            <div class="next-meal-meta">
+              ${nEsc(x.date)} · ${x.dinerCount?`用餐：${nEsc(x.diners.join('、'))}`:'尚未设置用餐成员'}
+            </div>
+            <div class="next-meal-dishes">
+              ${(x.dishes||[]).map(d=>`<span class="next-meal-chip">${nEsc(d)}</span>`).join('')}
+            </div>
+          </div>
+          <div class="next-meal-state ${x.stockApplied?'ready':'pending'}">
+            ${x.stockApplied?'✓ 库存已处理':'菜单已确认'}
+          </div>
+        </div>
+      `;
+    }catch(err){
+      if(seq!==nextMealSeq)return;
+      if(summary)summary.textContent='读取失败';
+      box.innerHTML=`<div class="next-meal-empty">读取失败：${nEsc(err?.message||err)}</div>`;
+    }
+  }
+
+  window.renderNextMealQuickView=renderNextMealQuickView;
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(renderNextMealQuickView,700));
+  }else{
+    setTimeout(renderNextMealQuickView,700);
+  }
+})();
+</script>
+
+
+<script>
+/* Part 8.3 · One-click Release Acceptance · READ ONLY */
+window.runSpringFamilyReleaseAcceptance = async function(options){
+  if(!window.SpringFamilyDiagnostics?.releaseAcceptanceTest){
+    return {success:false,releaseStatus:'RELEASE_BLOCKED',error:'releaseAcceptanceTest is unavailable'};
+  }
+  const result=await window.SpringFamilyDiagnostics.releaseAcceptanceTest(options||{});
+  console.log('[APP] Release acceptance',result);
+  return result;
+};
+</script>
+
+
+<script>
+/* Part 8.4.3 · Family Nutrition compact organizer · UI ONLY */
+(function(){
+  function compactNutritionLayout(){
+    const panel=document.getElementById('nutritionPanel');
+    if(!panel)return false;
+
+    const weekly=document.getElementById('weeklyNutritionDashboard');
+    const monthly=document.getElementById('monthlyNutritionDashboard');
+    const insight=document.getElementById('nutritionInsightDashboard');
+    if(!weekly && !monthly && !insight)return false;
+
+    let bundle=document.getElementById('nutritionTrendBundle');
+    if(!bundle){
+      bundle=document.createElement('details');
+      bundle.id='nutritionTrendBundle';
+      bundle.innerHTML=`
+        <summary>
+          <span>
+            趋势与洞察
+            <small class="nutrition-trend-sub">周趋势 · 月趋势 · 营养洞察集中查看</small>
+          </span>
+        </summary>
+        <div class="nutrition-trend-body"></div>`;
+      const canonical=document.getElementById('canonicalNutritionDashboard');
+      if(canonical)canonical.insertAdjacentElement('afterend',bundle);
+      else panel.appendChild(bundle);
+    }
+
+    const body=bundle.querySelector('.nutrition-trend-body');
+    [weekly,monthly,insight].forEach(el=>{
+      if(el && el.parentElement!==body)body.appendChild(el);
+    });
+    return true;
+  }
+
+  window.compactNutritionLayout=compactNutritionLayout;
+
+  function run(){
+    compactNutritionLayout();
+    setTimeout(compactNutritionLayout,500);
+    setTimeout(compactNutritionLayout,1200);
+    setTimeout(compactNutritionLayout,2200);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',()=>setTimeout(run,850));
+  }else{
+    setTimeout(run,850);
+  }
+})();
+</script>
 
 </body>
 </html>
