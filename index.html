@@ -8158,9 +8158,163 @@ textarea::placeholder{
   margin-top:4px !important;
 }
 
+
+/* =========================================================
+   Part 8.4.6 · Mobile modal + Inventory nested-layer fixes
+   ========================================================= */
+
+@media(max-width:1023px){
+
+  /* 编辑菜谱：真正作为可上下滚动的 bottom sheet */
+  #editRecipeModal{
+    align-items:flex-end !important;
+    justify-content:center !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    z-index:9800 !important;
+  }
+
+  #editRecipeModal .recipe-editor-card,
+  #editRecipeModal .modal-card{
+    width:100% !important;
+    max-width:100% !important;
+    height:auto !important;
+    max-height:92dvh !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior:contain !important;
+    margin:0 !important;
+    padding:14px 12px calc(92px + env(safe-area-inset-bottom)) !important;
+    border-radius:22px 22px 0 0 !important;
+  }
+
+  /* 编辑菜谱做法：与新增菜品接近，取消旧版 250% 宽度 */
+  #editRecipeMethod,
+  #editRecipeModal #editRecipeMethod{
+    display:block !important;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    height:92px !important;
+    min-height:92px !important;
+    max-height:92px !important;
+    resize:none !important;
+    overflow-y:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  /* 新增自定义菜品的做法保持相同高度 */
+  #addDishModal #newDishMethod{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    height:92px !important;
+    min-height:92px !important;
+    max-height:92px !important;
+    resize:none !important;
+    overflow-y:auto !important;
+  }
+
+  /* 新增菜品窗口稍微向上，减少上方大片空白 */
+  #addDishModal{
+    align-items:flex-end !important;
+    justify-content:center !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    z-index:9800 !important;
+  }
+
+  #addDishModal .modal-card{
+    width:100% !important;
+    max-width:100% !important;
+    min-height:90dvh !important;
+    max-height:92dvh !important;
+    overflow-y:auto !important;
+    overflow-x:hidden !important;
+    -webkit-overflow-scrolling:touch !important;
+    overscroll-behavior:contain !important;
+    margin:0 !important;
+    padding:14px 12px calc(92px + env(safe-area-inset-bottom)) !important;
+    border-radius:22px 22px 0 0 !important;
+  }
+
+  /* 编辑 / 新增窗口的底部按钮不要被底部导航遮住 */
+  #editRecipeModal .modal-actions,
+  #addDishModal .modal-actions{
+    position:sticky !important;
+    bottom:0 !important;
+    z-index:5 !important;
+    margin:14px -12px -92px !important;
+    padding:10px 12px calc(12px + env(safe-area-inset-bottom)) !important;
+    background:linear-gradient(180deg,rgba(20,25,32,.94),#141920 25%) !important;
+  }
+
+  /* 库存主窗口 */
+  #inventoryModal{
+    z-index:9700 !important;
+  }
+
+  /* 库存里的二级窗口必须盖在库存窗口上方 */
+  #useStockModal,
+  #stockHistoryModal,
+  #inventoryEmojiModal{
+    z-index:9950 !important;
+    align-items:flex-end !important;
+    justify-content:center !important;
+    padding:0 !important;
+  }
+
+  #useStockModal .modal-card,
+  #stockHistoryModal .modal-card{
+    width:100% !important;
+    max-width:100% !important;
+    max-height:82dvh !important;
+    overflow-y:auto !important;
+    margin:0 !important;
+    padding:14px 12px calc(20px + env(safe-area-inset-bottom)) !important;
+    border-radius:22px 22px 0 0 !important;
+  }
+
+  /* 库存卡操作按钮永远留在卡片内部 */
+  #inventoryModal .inventory-card{
+    overflow:hidden !important;
+  }
+
+  #inventoryModal .inventory-card-actions{
+    display:grid !important;
+    grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+    gap:5px !important;
+    width:100% !important;
+    max-width:100% !important;
+    position:static !important;
+    transform:none !important;
+  }
+
+  #inventoryModal .inventory-card-actions .inventory-mini-btn{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    position:static !important;
+    transform:none !important;
+    box-sizing:border-box !important;
+  }
+}
+
+
+/* Part 8.4.7 · Inventory delete safety */
+.inventory-delete-btn{
+  font-weight:850 !important;
+}
+@media(max-width:1023px){
+  #inventoryModal .inventory-delete-btn{
+    min-width:64px !important;
+  }
+}
+
 </style>
 </head>
-<body data-app-build="8.4.5-menu-detail-weekly-spacing-fix">
+<body data-app-build="8.9.3.10.2-manual-usage-historical-fifo-backfill-from-20260820">
 <div class="app-container">
   
   <div class="header">
@@ -8789,7 +8943,7 @@ textarea::placeholder{
 
 <div id="useStockModal" class="modal-overlay" style="display:none;overflow-y:auto;">
   <div class="modal-card" style="max-width:400px;text-align:left;">
-    <div class="emoji-big">🍳</div><h3>记录已使用</h3>
+    <div class="emoji-big">🍳</div><h3>记录已使用</h3><div class="v2-small" style="text-align:center;margin:-4px 0 10px;">按采购批次 FIFO 自动扣减 · 可补填 2026-08-20 起的历史使用</div>
     <input type="hidden" id="useStockIndex">
     <div class="form-group"><label>食材</label><input id="useStockName" readonly style="width:100%;"></div>
     <div class="v2-grid" style="margin-top:10px;">
@@ -8958,7 +9112,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyLjtMecqrddh3sevuRb8td15fR0LHH3TR7zaHgJECi-eMjCNMb2McU9l3VktdzEiM/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbz-0kou8dHL-xKuMCUD-xhWzZfhUiPaG2gTDBL-QIyCrqV0qQp8ATuVZ1u1DxeQH10/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9005,7 +9159,7 @@ textarea::placeholder{
     'getNutritionFinalConsistencyAudit',
     'getCrossPageSyncAudit',
     'getCoreDataProbe'
-  ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast']);
+  ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan']);
   function apiConnectionStatus(){
     const raw=typeof API_URL==='undefined' ? '' : String(API_URL||'').trim();
     const configured=!!raw && !raw.includes('PASTE_YOUR_');
@@ -9034,12 +9188,12 @@ textarea::placeholder{
     }catch(_){}
   }
   const MUTATION_REFRESH_ACTION=Object.freeze({
-    saveInventory:'getInventory',saveOrder:'getOrdersState',saveExternalFood:'getExternalFoods',
+    saveInventory:'getInventory',deleteInventoryItem:'getStockState',applyInventoryRecoveryPlan:'getStockState',applyConfirmedInventoryCorrections:'getInventory',saveOrder:'getOrdersState',saveExternalFood:'getExternalFoods',
     saveCustomDish:'getAll',saveDishRecipe:'getDishRecipes',updateFinalDecision:'getOrdersState',
     confirmFinalMenu:'getOrdersState',deleteConfirmedMenu:'getOrdersState',updateShoppingItem:'getOrdersState',
     savePurchase:'getPurchases',syncPurchaseInventory:'getStockState',savePriceObservation:'getPurchases',
     saveStore:'getStores',deleteStore:'getStores',saveFamilyMember:'getFamilyMembers',
-    deleteFamilyMember:'getFamilyMembers',saveMealSettings:'getMealSettings',useStock:'getStockState',repairMenuStockIntegrity:'getMenuStockIntegrity'
+    deleteFamilyMember:'getFamilyMembers',saveMealSettings:'getMealSettings',repairMenuStockIntegrity:'getMenuStockIntegrity'
   });
   function mutationRefreshAction(action,explicitRefreshAction){
     return explicitRefreshAction||MUTATION_REFRESH_ACTION[action]||null;
@@ -9117,7 +9271,7 @@ async function apiRequest(action,payload={},refreshAction=null){
       'ping','getAll','getInventory','getStockState','getDuplicatePurchaseStock','getFamilyMembers',
       'getPurchases','getStores','getOrdersState','getMealSettings','getDishRecipes',
       'getExternalFoods','getAppStateSnapshot','healthCheck','getApiContract','getMenuStockIntegrity','getWorkbookLayout','getPretestAudit','getSmokeTest','getFunctionalReadiness','getOrderFinalConsistency','getFinalStockCycleAudit','getFinalMenuStockReadiness','getStockLedgerCleanupPreview','getPurchaseStableLedgerPreview','getLegacyPurchaseCleanupPreview','getLegacyPurchaseMatcherPreview','getFinalLegacyPurchaseCleanupPreview','getCanonicalStockLedgerAudit','getUsageLedgerPreview','getUsageSourceMatcherPreview','getUsageCanonicalizationPreview','getUsageLedgerAudit','getRestoreLedgerPreview','getRestoreLedgerAudit','getMultiCycleLedgerAudit','getFinalStockIntegrationAudit','getFinalUsageLifecycleAudit','getControlledRestorePreflight','getControlledReconfirmPreflight','getStockAppliedFlagReconcilePreview','previewRestoreForFinalDecision','previewFinalMenuStock','getPurchasePriceCycleAudit','getShoppingLoopAudit','getHistoricalStockReconcilePreview','getHistoricalStockForensicPreview','getExternalDiningAudit','getNutritionFinalConsistencyAudit','getCrossPageSyncAudit','getFinalIntegrationAudit','getJointTestReport','getReleaseReadiness','getCoreDataProbe'
-    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast'];
+    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan','getPurchaseDateAwareDuplicateInventoryPreview','getInventoryBatchAllocationPreview','getInventoryReconciliationRootCauseAudit','previewConfirmedInventoryCorrections','previewReconciliationClosure','getPostCutoverFifoReadinessAudit','getFifoShadowState','previewFifoUsage','getFifoShadowClosureAudit','getFifoActivationSafetyAudit','previewFifoTransaction','getControlledFifoActivationPreflight','getControlledFifoRestorePreflight','getControlledFifoTransactionStatus','getControlledFifoRoundTripAudit','getManualUsageFifoIntegrationAudit','getManualUsageMutationTrace','getPostTransportReceipt','getLatestManualUsagePostTrace','getFifoTransactionIdentityAudit','getWasteFifoIntegrationAudit','getLatestWastePostTrace','getProductionAwareFifoReadinessAudit','getReasonAwareOutflowAudit','getProductionFifoBypassGuardAudit'];
     if(readActions.includes(action))return apiGet({action,...payload});
 
     const timeoutMs=apiTimeoutForAction(action);
@@ -9683,48 +9837,214 @@ async function refreshFromServer(){
 
 
 
+    const MANUAL_USAGE_BACKFILL_MIN_DATE_893102='2026-08-20';
+    function localTodayIso893102(){
+      const d=new Date();
+      const y=d.getFullYear();
+      const m=String(d.getMonth()+1).padStart(2,'0');
+      const day=String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+
     function openUseStockModal(idx){
       const item=inventory[idx]; if(!item)return;
       document.getElementById('useStockIndex').value=idx;
       document.getElementById('useStockName').value=item.name;
       document.getElementById('useStockQty').value='';
       document.getElementById('useStockUnit').value=item.unit||'份';
-      document.getElementById('useStockDate').value=new Date().toISOString().slice(0,10);
+      const dateInput=document.getElementById('useStockDate');
+      const today=localTodayIso893102();
+      dateInput.min=MANUAL_USAGE_BACKFILL_MIN_DATE_893102;
+      dateInput.max=today;
+      dateInput.value=today;
       document.getElementById('useStockSource').value='';
       document.getElementById('useStockNote').value='';
       const useModal=document.getElementById('useStockModal');
-      useModal.style.display='flex';
+      useModal.style.setProperty('display','flex','important');
+      useModal.style.setProperty('z-index','9950','important');
       useModal.scrollTop=0;
     }
+    async function getPostReceipt8902(requestId){
+      try{return await apiGet({action:'getPostTransportReceipt',requestId});}
+      catch(err){return {success:false,status:'READ_FAILED',error:err?.message||String(err)};}
+    }
+
+    async function waitPostReceipt8902(requestId,attempts=6,delayMs=500){
+      let last=null;
+      for(let i=0;i<attempts;i++){
+        last=await getPostReceipt8902(requestId);
+        if(last?.success && last?.received && last?.status!=='RECEIVED')return last;
+        if(i<attempts-1)await new Promise(r=>setTimeout(r,delayMs));
+      }
+      return last||{success:false,status:'UNKNOWN'};
+    }
+
+    async function wastePostTransportProbe8911(){
+      const requestId=createClientRequestId('wasteprobe');
+      const payload={
+        action:'wasteTransportProbe',
+        deletion:{
+          referenceId:requestId,
+          name:'__WASTE_TRANSPORT_PROBE__',
+          reason:'SPOILED',
+          reasonLabel:'transport probe only'
+        }
+      };
+      let fetchError=null;
+      try{
+        await fetch(API_URL,{
+          method:'POST',
+          mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(payload)
+        });
+      }catch(err){
+        fetchError=err?.message||String(err);
+      }
+      const receipt=await waitPostReceipt8902(requestId,6,500);
+      const ok=!fetchError &&
+        receipt?.received===true &&
+        receipt?.status==='SUCCESS' &&
+        receipt?.receipt?.hasDeletion===true &&
+        Array.isArray(receipt?.receipt?.deletionKeys) &&
+        receipt.receipt.deletionKeys.includes('referenceId');
+
+      return {
+        success:ok,
+        build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+        readOnly:false,
+        inventoryMutation:false,
+        stockMovementMutation:false,
+        scriptPropertyMutation:true,
+        status:ok?'WASTE_POST_TRANSPORT_CONFIRMED':'WASTE_POST_TRANSPORT_NOT_CONFIRMED',
+        requestId,
+        fetchError,
+        receipt,
+        safeForRealWasteRetry:ok
+      };
+    }
+
+    async function postTransportProbe8902(){
+      const requestId=createClientRequestId('postprobe');
+      const payload={action:'postTransportProbe',requestId,probe:'8.9.0.2'};
+      let fetchError=null;
+      try{
+        await fetch(API_URL,{
+          method:'POST',
+          mode:'no-cors',
+          headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body:JSON.stringify(payload)
+        });
+      }catch(err){fetchError=err?.message||String(err);}
+      const receipt=await waitPostReceipt8902(requestId);
+      return {
+        success:!fetchError && receipt?.received===true && receipt?.status==='SUCCESS',
+        build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+        readOnly:false,
+        inventoryMutation:false,
+        scriptPropertyMutation:true,
+        status:receipt?.status==='SUCCESS'?'POST_TRANSPORT_CONFIRMED':'POST_TRANSPORT_NOT_CONFIRMED',
+        requestId,fetchError,receipt,
+        safeForManualUsageSmokeTest:!fetchError && receipt?.received===true && receipt?.status==='SUCCESS'
+      };
+    }
+
+    async function verifyManualUsageRequest(requestId,attempts=5,delayMs=700){
+      let last=null;
+      for(let i=0;i<attempts;i++){
+        try{
+          last=await SpringFamilyDiagnostics.controlledFifoTransactionStatus(requestId);
+          if(last?.success && last?.applied)return last;
+          if(last?.success && last?.status && last.status!=='NOT_FOUND')return last;
+        }catch(err){
+          last={success:false,error:err?.message||String(err)};
+        }
+        if(i<attempts-1)await new Promise(r=>setTimeout(r,delayMs));
+      }
+      return last||{success:false,status:'UNKNOWN'};
+    }
+
     async function confirmUseStock(){
       const idx=Number(document.getElementById('useStockIndex').value), item=inventory[idx];
       const qty=Number(document.getElementById('useStockQty').value||0);
+      const beforeQty=Number(item?.qty||0);
       if(!item||!(qty>0))return alert('请输入使用数量');
       if(qty>Number(item.qty||0))return alert('使用数量不能大于当前库存');
-      const usage={item:item.name,qty,unit:item.unit,date:document.getElementById('useStockDate').value,source:document.getElementById('useStockSource').value.trim(),note:document.getElementById('useStockNote').value.trim()};
+      const useDate=String(document.getElementById('useStockDate').value||'');
+      const today=localTodayIso893102();
+      if(!useDate)return alert('请选择使用日期');
+      if(useDate<MANUAL_USAGE_BACKFILL_MIN_DATE_893102)return alert(`最早可补填 ${MANUAL_USAGE_BACKFILL_MIN_DATE_893102}`);
+      if(useDate>today)return alert('不能填写未来的使用日期');
+      const usage={item:item.name,qty,unit:item.unit,date:useDate,source:document.getElementById('useStockSource').value.trim(),note:document.getElementById('useStockNote').value.trim()};
       try{
         usage.referenceId=stableMutationRequestId('stock',{item:usage.item,qty:usage.qty,unit:usage.unit,date:usage.date,source:usage.source,note:usage.note},'usage');
         await apiRequest('useStock',{usage});
+        // Verify the durable Request ID before clearing it. This protects
+        // against no-cors POST responses/timeouts and prevents double usage.
+        const fifoStatus=await verifyManualUsageRequest(usage.referenceId);
+        if(!fifoStatus?.success || !fifoStatus?.applied){
+          let trace=null;
+          try{
+            trace=await apiGet({
+              action:'getManualUsageMutationTrace',
+              requestId:usage.referenceId,
+              item:usage.item
+            });
+          }catch(_){}
+          apiBoundaryLog('manual-usage-not-applied',{
+            requestId:usage.referenceId,
+            item:usage.item,
+            fifoStatus,
+            trace
+          });
+          const receipt=await waitPostReceipt8902(usage.referenceId,3,400);
+          const state=String(fifoStatus?.status||'UNKNOWN');
+          const postState=String(receipt?.status||'NOT_FOUND');
+          const backendErr=String(receipt?.receipt?.error||'').trim();
+          const detail=backendErr?`；后端错误：${backendErr}`:'';
+          throw new Error(`FIFO 使用记录未落账（${state}）；POST=${postState}${detail}。库存没有确认扣减；请勿连续重复提交。`);
+        }
         clearMutationRequestId('stock');
         const data=await apiRequest('getStockState'); applyStockState(data);
         renderInventoryGrid(); renderShoppingList();
-        document.getElementById('useStockModal').style.display='none';
+        document.getElementById('useStockModal').style.setProperty('display','none','important');
+
+        const refreshed=(Array.isArray(inventory)?inventory:[]).find(x=>String(x.name||'').trim()===String(usage.item||'').trim());
+        const afterQty=Number(refreshed?.qty);
+        const afterText=Number.isFinite(afterQty)?`${afterQty} ${usage.unit}`:'已刷新';
+        const beforeText=Number.isFinite(beforeQty)?`${beforeQty} ${usage.unit}`:'';
+        const movementText=beforeText?`${beforeText} → ${afterText}`:afterText;
+        showSuccessToast8906(`已记录使用：${usage.item} ${usage.qty} ${usage.unit}｜库存 ${movementText}`);
       }catch(e){alert('记录使用失败：'+e.message);}
     }
-    async function showStockHistory(idx){
+    function showStockHistory(idx){
       const item=inventory[idx]; if(!item)return;
-      try{
-        const data=await apiRequest('getStockState'); applyStockState(data);
-        const rows=stockMovements.filter(x=>String(x.item).trim().toLowerCase()===String(item.name).trim().toLowerCase()).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-        const purchased=rows.filter(x=>x.type==='PURCHASE').reduce((s,x)=>s+Number(x.qty||0),0);
-        const used=Math.abs(rows.filter(x=>x.type==='USAGE').reduce((s,x)=>s+Number(x.qty||0),0));
-        document.getElementById('stockHistoryTitle').textContent=`📒 ${item.name} · 库存 ${item.qty}${item.unit||''}`;
-        document.getElementById('stockHistoryBody').innerHTML=`<div class="v2-stat" style="margin-bottom:10px;">采购累计 <b>${purchased}${escapeHtml(item.unit||'')}</b> · 已使用 <b>${used}${escapeHtml(item.unit||'')}</b></div>`+
-          (rows.length?rows.map(x=>`<div style="padding:8px;border-bottom:1px solid #e6eee2;"><b>${escapeHtml(x.date)}</b> · ${x.type==='PURCHASE'?'采购':'使用'} · <strong>${Number(x.qty)>0?'+':''}${Number(x.qty)}${escapeHtml(x.unit)}</strong><div class="v2-small">${escapeHtml(x.source||'')}${x.note?' · '+escapeHtml(x.note):''}</div></div>`).join(''):'<div class="v2-small">暂无流水记录</div>');
-        const historyModal=document.getElementById('stockHistoryModal');
-        historyModal.style.display='flex';
-        historyModal.scrollTop=0;
-      }catch(e){alert('读取库存记录失败：'+e.message);}
+
+      // Stock movements are part of the already-loaded app state.
+      // Do not make a new JSONP/Apps Script call just to open the history window.
+      const movements=Array.isArray(stockMovements)?stockMovements:[];
+      const rows=movements
+        .filter(x=>String(x.item||'').trim().toLowerCase()===String(item.name||'').trim().toLowerCase())
+        .sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+
+      const purchased=rows
+        .filter(x=>x.type==='PURCHASE')
+        .reduce((s,x)=>s+Number(x.qty||0),0);
+      const used=Math.abs(rows
+        .filter(x=>x.type==='USAGE')
+        .reduce((s,x)=>s+Number(x.qty||0),0));
+
+      document.getElementById('stockHistoryTitle').textContent=`📒 ${item.name} · 库存 ${item.qty}${item.unit||''}`;
+      document.getElementById('stockHistoryBody').innerHTML=
+        `<div class="v2-stat" style="margin-bottom:10px;">采购累计 <b>${purchased}${escapeHtml(item.unit||'')}</b> · 已使用 <b>${used}${escapeHtml(item.unit||'')}</b></div>`+
+        (rows.length
+          ? rows.map(x=>`<div style="padding:8px;border-bottom:1px solid #303946;"><b>${escapeHtml(x.date)}</b> · ${x.type==='PURCHASE'?'采购':'使用'} · <strong>${Number(x.qty)>0?'+':''}${Number(x.qty)}${escapeHtml(x.unit||'')}</strong><div class="v2-small">${escapeHtml(x.source||'')}${x.note?' · '+escapeHtml(x.note):''}</div></div>`).join('')
+          : '<div class="v2-small">暂无流水记录</div>');
+
+      const historyModal=document.getElementById('stockHistoryModal');
+      historyModal.style.setProperty('display','flex','important');
+      historyModal.style.setProperty('z-index','9950','important');
+      historyModal.scrollTop=0;
     }
 
     function inventoryEmoji(category){return {'蔬菜':'🥬','水果':'🍎','蛋奶':'🥚','肉类':'🥩','水产':'🐟','主食':'🍚','调味':'🧂','饮品':'🥤','其他':'📦'}[category]||'📦';}
@@ -9940,7 +10260,7 @@ function renderInventoryGrid(){
         <div class="inventory-card-actions">
           <button class="inventory-mini-btn" data-use="${idx}">－使用</button>
           <button class="inventory-mini-btn" data-history="${idx}">记录</button>
-          <button class="inventory-mini-btn inventory-delete-btn" data-del="${idx}">x</button>
+          <button class="inventory-mini-btn inventory-delete-btn" data-del="${idx}">删除</button>
         </div>
       </div>`;}).join('');
       grid.querySelectorAll('[data-emoji-edit]').forEach(b=>b.addEventListener('click',()=>openInventoryEmojiPicker(Number(b.dataset.emojiEdit))));
@@ -9951,7 +10271,55 @@ function renderInventoryGrid(){
         if(desktopHover)return;
         showRecommendedDish(b.dataset.recommendDish);
       }));
-      grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{inventory.splice(Number(b.dataset.del),1);await persistInventory();}));
+      grid.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{
+        const idx=Number(b.dataset.del),item=inventory[idx]; if(!item)return;
+        const choices='1 材料坏了\n2 已经用完\n3 误加 / 重复\n4 送人 / 转移\n5 其他';
+        const picked=window.prompt(`删除 ${item.name}\n当前库存：${Number(item.qty||0)} ${item.unit||''}\n\n请选择删除原因（输入 1-5）：\n${choices}`,'');
+        if(picked===null)return;
+        const map={'1':['SPOILED','材料坏了'],'2':['USED_UP','已经用完'],'3':['WRONG_ENTRY','误加 / 重复'],'4':['GAVE_AWAY','送人 / 转移'],'5':['OTHER','']};
+        if(!map[String(picked).trim()]){alert('没有删除：请选择 1-5。');return;}
+        let [reason,reasonLabel]=map[String(picked).trim()];
+        if(reason==='OTHER'){reasonLabel=(window.prompt('请输入删除原因：','')||'').trim();if(!reasonLabel){alert('没有删除：必须填写原因。');return;}}
+        if(!window.confirm(`最后确认删除？\n\n${item.name}\n${Number(item.qty||0)} ${item.unit||''}\n原因：${reasonLabel}`))return;
+        try{
+          const deletion={id:item.id,name:item.name,reason,reasonLabel};
+          if(['SPOILED','USED_UP','GAVE_AWAY'].includes(reason)){
+            const prefix=reason==='SPOILED'?'waste':(reason==='USED_UP'?'usedup':'transfer');
+            deletion.referenceId=stableMutationRequestId('stock',{
+              action:'reasonAwareOutflow',id:item.id,name:item.name,
+              qty:Number(item.qty||0),unit:item.unit,reason,reasonLabel
+            },prefix);
+
+            await apiRequest('deleteInventoryItem',{deletion});
+            const outflowStatus=await verifyManualUsageRequest(deletion.referenceId);
+            if(!outflowStatus?.success || !outflowStatus?.applied){
+              const receipt=await waitPostReceipt8902(deletion.referenceId,3,400);
+              const state=String(outflowStatus?.status||'UNKNOWN');
+              const postState=String(receipt?.status||'NOT_FOUND');
+              const backendErr=String(receipt?.receipt?.resultError||receipt?.receipt?.error||'').trim();
+              const resultMode=String(receipt?.receipt?.resultMode||'').trim();
+              const resultStatus=String(receipt?.receipt?.resultStatus||'').trim();
+              const resultText=(resultMode||resultStatus)?`；RESULT=${resultMode||'-'}/${resultStatus||'-'}`:'';
+              const detail=backendErr?`；后端错误：${backendErr}`:'';
+              throw new Error(`库存流出未确认落账（${state}）；POST=${postState}${resultText}${detail}。请勿重复操作。`);
+            }
+            clearMutationRequestId('stock');
+            const data=await apiRequest('getStockState');
+            applyStockState(data);
+            renderInventoryGrid(); renderShoppingList();
+
+            const title=reason==='SPOILED'?'损耗记录完成':(reason==='USED_UP'?'使用完毕记录完成':'送出 / 转移记录完成');
+            const toast=reason==='SPOILED'?'已记录损耗':(reason==='USED_UP'?'已记录用完':'已记录送出 / 转移');
+            showSuccessToast8906(`${toast}：${item.name} ${Number(item.qty||0)} ${item.unit||''}｜原因：${reasonLabel}`);
+            window.alert(`${title}\n\n${item.name}\n数量：${Number(item.qty||0)} ${item.unit||''}\n原因：${reasonLabel}`);
+          }else{
+            const data=await apiRequest('deleteInventoryItem',{deletion},'getStockState');
+            applyInventoryState(data); renderInventoryGrid(); renderShoppingList();
+            const title=reason==='WRONG_ENTRY'?'库存修正完成':'库存删除完成';
+            window.alert(`${title}\n\n${item.name}\n原因：${reasonLabel}`);
+          }
+        }catch(err){alert('库存删除失败：'+err.message);}
+      }));
     }
     async function persistInventory(){try{const data=await apiRequest('saveInventory',{inventory},'getInventory');applyInventoryState(data);renderInventoryGrid();renderShoppingList();}catch(e){alert('库存保存失败：'+e.message);}}
     async function addInventoryItemUI(){
@@ -9965,9 +10333,9 @@ function renderInventoryGrid(){
     let inventoryUiInitialized=false;
     function initInventoryUI(){if(inventoryUiInitialized)return;inventoryUiInitialized=true;
       document.getElementById('openInventoryBtn').addEventListener('click',openInventoryModal);
-      document.getElementById('cancelUseStockBtn').addEventListener('click',()=>document.getElementById('useStockModal').style.display='none');
+      document.getElementById('cancelUseStockBtn').addEventListener('click',()=>document.getElementById('useStockModal').style.setProperty('display','none','important'));
       document.getElementById('confirmUseStockBtn').addEventListener('click',confirmUseStock);
-      document.getElementById('closeStockHistoryBtn').addEventListener('click',()=>document.getElementById('stockHistoryModal').style.display='none');
+      document.getElementById('closeStockHistoryBtn').addEventListener('click',()=>document.getElementById('stockHistoryModal').style.setProperty('display','none','important'));
       document.getElementById('useStockModal').addEventListener('click',e=>{
         if(e.target.id==='useStockModal') e.currentTarget.style.display='none';
       });
@@ -12544,7 +12912,7 @@ async backendProbe(){
             const build=frontendBuild;
             const missing=[];
             if(!window.SpringFamilyDiagnostics)missing.push('SpringFamilyDiagnostics');
-            ['homeActionCenterSnapshot','dailyMealWorkflow','nextMealQuickView','ingredientReadinessForecast','finalSystemIntegrityAudit']
+            ['homeActionCenterSnapshot','dailyMealWorkflow','nextMealQuickView','ingredientReadinessForecast','purchaseDateAwareDuplicateInventoryPreview','inventoryBatchReadinessAudit','inventoryBatchAllocationPreview','inventoryReconciliationRootCauseAudit','confirmedInventoryCorrectionPreview','reconciliationClosurePreview','applyReconciliationClosure','postCutoverFifoReadinessAudit','fifoActivationSafetyAudit','previewFifoTransaction','fifoShadowClosureAudit','fifoShadowState','previewFifoUsage','finalSystemIntegrityAudit']
               .forEach(k=>{if(typeof window.SpringFamilyDiagnostics?.[k]!=='function')missing.push(k);});
             if(typeof window.renderHomeActionCenter!=='function')missing.push('renderHomeActionCenter');
             if(typeof window.getHomeActionCenterSnapshot!=='function')missing.push('getHomeActionCenterSnapshot');
@@ -12574,6 +12942,48 @@ async backendProbe(){
             r=>r?.success===true && r?.readOnly===true);
 
           // Authoritative backend integrity audit remains the release gate.
+          await run('purchaseDateAwareDuplicateInventory',true,
+            ()=>window.SpringFamilyDiagnostics.purchaseDateAwareDuplicateInventoryPreview(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false);
+
+          await run('inventoryBatchReadinessAudit',true,
+            ()=>window.SpringFamilyDiagnostics.inventoryBatchReadinessAudit(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false && r?.summary?.fifoEnabled===false);
+
+          await run('inventoryBatchAllocationPreview',true,
+            ()=>window.SpringFamilyDiagnostics.inventoryBatchAllocationPreview(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false && r?.summary?.fifoEnabled===false);
+
+          await run('inventoryReconciliationRootCauseAudit',true,
+            ()=>window.SpringFamilyDiagnostics.inventoryReconciliationRootCauseAudit(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false && r?.summary?.fifoEnabled===false);
+
+          await run('confirmedInventoryCorrectionPreview',true,
+            ()=>window.SpringFamilyDiagnostics.confirmedInventoryCorrectionPreview(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false && r?.summary?.blocked===0);
+
+          await run('reconciliationClosurePreview',true,
+            ()=>window.SpringFamilyDiagnostics.reconciliationClosurePreview(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false);
+
+          await run('postCutoverFifoReadinessAudit',true,
+            ()=>window.SpringFamilyDiagnostics.postCutoverFifoReadinessAudit(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false);
+
+          await run('fifoShadowState',true,
+            ()=>window.SpringFamilyDiagnostics.fifoShadowState(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false && r?.summary?.fifoEnabled===false);
+
+          await run('fifoShadowClosureAudit',true,
+            ()=>window.SpringFamilyDiagnostics.fifoShadowClosureAudit(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false &&
+               r?.summary?.eggReady===true && r?.summary?.enokiReady===true);
+
+          await run('fifoActivationSafetyAudit',true,
+            ()=>window.SpringFamilyDiagnostics.fifoActivationSafetyAudit(),
+            r=>r?.success===true && r?.readOnly===true && r?.mutation===false &&
+               r?.summary?.safeToActivate===true && r?.summary?.fifoEnabled===false);
+
           await run('finalSystemIntegrityAudit',true,
             ()=>window.SpringFamilyDiagnostics.finalSystemIntegrityAudit(),
             r=>r?.success===true && r?.clean===true &&
@@ -12625,6 +13035,279 @@ async backendProbe(){
             });
             return {success:true,build:document.body?.dataset?.appBuild||document.documentElement?.dataset?.appBuild||'8.1-daily-meal-workflow',readOnly:true,date:d,summary:{mealsWithConfirmedMenu:rows.filter(x=>x.selectedFinalRows>0).length,totalSelectedFinalRows:rows.reduce((s,x)=>s+x.selectedFinalRows,0)},meals:rows};
           }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async purchaseDateAwareDuplicateInventoryPreview(){
+          try{return await apiGet({action:'getPurchaseDateAwareDuplicateInventoryPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledFifoTransactionStatus(requestId){
+          try{return await apiGet({action:'getControlledFifoTransactionStatus',requestId});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledFifoRoundTripAudit(requestId){
+          try{return await apiGet({action:'getControlledFifoRoundTripAudit',requestId});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async manualUsageFifoIntegrationAudit(){
+          try{return await apiGet({action:'getManualUsageFifoIntegrationAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async manualUsageMutationTrace(requestId='',item='三文鱼'){
+          try{return await apiGet({action:'getManualUsageMutationTrace',requestId,item});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async postTransportReceipt(requestId){
+          return await getPostReceipt8902(requestId);
+        },
+        async latestManualUsagePostTrace(item='三文鱼'){
+          try{return await apiGet({action:'getLatestManualUsagePostTrace',item});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async fifoTransactionIdentityAudit(item='三文鱼',qty=1,unit='个',date=''){
+          try{return await apiGet({action:'getFifoTransactionIdentityAudit',item,qty,unit,date});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async wasteFifoIntegrationAudit(){
+          try{return await apiGet({action:'getWasteFifoIntegrationAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async reasonAwareOutflowAudit(){
+          try{return await apiGet({action:'getReasonAwareOutflowAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async cookingFifoReadinessAudit(){
+          try{return await apiGet({action:'getCookingFifoReadinessAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async legacyCutoverForwardActivationAudit(cutoverDate=''){
+          try{return await apiGet({action:'getLegacyCutoverForwardActivationAudit',cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async forwardCookingFifoDryRunPlan(cutoverDate=''){
+          try{return await apiGet({action:'getForwardCookingFifoDryRunPlan',cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async forwardCookingFifoAtomicPreflight(cutoverDate=''){
+          try{return await apiGet({action:'getForwardCookingFifoAtomicPreflight',cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async validateForwardCookingFifoExecutionToken(token='',cutoverDate=''){
+          try{return await apiGet({action:'validateForwardCookingFifoExecutionToken',token:String(token||''),cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runForwardCookingFifoAtomicExecution(token='',cutoverDate=''){
+          try{
+            // 8.9.3.8.0.1: this endpoint is intentionally hard-disabled server-side.
+            // Use the existing JSONP read transport so the browser can inspect
+            // the structured hard-stop response. No mutation can occur in this build.
+            return await apiGet({
+              action:'runForwardCookingFifoAtomicExecution',
+              confirmationToken:String(token||''),
+              cutoverDate:String(cutoverDate||'')
+            });
+          }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async forwardCookingFifoRollbackSimulation(cutoverDate=''){
+          try{return await apiGet({action:'getForwardCookingFifoRollbackSimulation',cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async forwardCookingFifoControlledExecutionPreflight(cutoverDate=''){
+          try{return await apiGet({action:'getForwardCookingFifoControlledExecutionPreflight',cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async armForwardCookingFifoControlledExecution(token='',cutoverDate=''){
+          try{return await apiGet({action:'armForwardCookingFifoControlledExecution',confirmationToken:String(token||''),cutoverDate:String(cutoverDate||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async forwardCookingFifoArmStatus(nonce=''){
+          try{return await apiGet({action:'getForwardCookingFifoArmStatus',nonce:String(nonce||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runForwardCookingFifoControlledExecution(token='',nonce='',cutoverDate=''){
+          const requestId='FIFO89391_EXEC_'+(window.crypto&&typeof window.crypto.randomUUID==='function'?window.crypto.randomUUID():(Date.now()+'_'+Math.random().toString(36).slice(2)));
+          if(!API_URL||API_URL.includes('PASTE_YOUR_'))return {success:false,status:'API_URL_NOT_CONFIGURED',error:'请先在 index.html 设置 API_URL'};
+          try{
+            await fetch(API_URL,{
+              method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+              body:JSON.stringify({action:'runForwardCookingFifoControlledExecution',confirmationToken:String(token||''),nonce:String(nonce||''),cutoverDate:String(cutoverDate||''),requestId})
+            });
+          }catch(err){
+            return {success:false,status:'EXECUTION_POST_TRANSPORT_FAILED',requestId,error:err?.message||String(err)};
+          }
+
+          let last=null;
+          for(let i=0;i<15;i++){
+            await new Promise(r=>setTimeout(r,i<3?700:1200));
+            try{last=await apiGet({action:'getForwardCookingFifoArmStatus',nonce:String(nonce||'')});}catch(err){last={success:false,error:err?.message||String(err)};continue;}
+            const s=String(last&&last.armStatus||'');
+            if(s==='CONSUMED_SUCCESS'||s==='CONSUMED_ROLLED_BACK'){
+              return {...last,success:s==='CONSUMED_SUCCESS',requestId,executionTransport:'POST_NO_CORS_WITH_NONCE_STATUS_VERIFICATION'};
+            }
+          }
+          return {success:false,status:'CONTROLLED_EXECUTION_RESULT_UNCERTAIN',requestId,nonce:String(nonce||''),lastStatus:last,instruction:'DO_NOT RETRY EXECUTION. Re-read ARM status first; the POST may already have committed or rolled back.'};
+        },
+
+        async recipeRecoveryInventoryAliasAudit(){
+          try{return await apiGet({action:'getRecipeRecoveryInventoryAliasAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledRecipeBackfillTemplate(){
+          try{return await apiGet({action:'getControlledRecipeBackfillTemplate'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async previewControlledRecipeBackfill(payload={}){
+          try{return await apiGet({action:'previewControlledRecipeBackfill',payload:JSON.stringify(payload||{})});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async cookingCountUnitEquivalenceAudit(){
+          try{return await apiGet({action:'getCookingCountUnitEquivalenceAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async previewCookingFifo(finalDecisionId){
+          try{return await apiGet({action:'previewCookingFifo',id:String(finalDecisionId||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async auditHistoricalLedgerReconstruction(date='2026-08-24',dish='蔬菜拼盘'){
+          try{return await apiGet({action:'auditHistoricalLedgerReconstruction',date:String(date||''),dish:String(dish||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async historicalAsOfBatchReconstructionAudit(date='2026-08-24',dish='蔬菜拼盘'){
+          try{return await apiGet({action:'auditHistoricalAsOfBatchReconstruction',date:String(date||''),dish:String(dish||'')});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async historicalAsOfResolverAudit(){
+          try{return await apiGet({action:'auditHistoricalAsOfResolver'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async productionAwareFifoReadinessAudit(){
+          try{return await apiGet({action:'getProductionAwareFifoReadinessAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async latestWastePostTrace(){
+          try{return await apiGet({action:'getLatestWastePostTrace'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async wastePostTransportProbe(){
+          return await wastePostTransportProbe8911();
+        },
+        async postTransportProbe(){
+          return await postTransportProbe8902();
+        },
+        async controlledFifoPreflight(item,qty,unit,date,reason,requestId){
+          try{return await apiGet({action:'getControlledFifoActivationPreflight',item,qty,unit:unit||'',date:date||'',reason:reason||'USAGE',requestId});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async controlledFifoRestorePreflight(referenceId){
+          try{return await apiGet({action:'getControlledFifoRestorePreflight',referenceId});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async fifoActivationSafetyAudit(){
+          try{return await apiGet({action:'getFifoActivationSafetyAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async previewFifoTransaction(item,qty,unit,date,reason){
+          try{return await apiGet({
+            action:'previewFifoTransaction',
+            item,qty,unit:unit||'',date:date||'',reason:reason||'USAGE'
+          });}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runControlledFifoTransaction(transaction){
+          try{
+            await apiRequest('runControlledFifoTransaction',{transaction});
+            const status=await apiGet({action:'getControlledFifoTransactionStatus',requestId:transaction?.requestId||''});
+            return status?.applied
+              ? {...status,success:true,mutated:status.status==='APPLIED',verified:true}
+              : {success:false,error:'CONTROLLED_FIFO_APPLY_NOT_VERIFIED',status};
+          }
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async runControlledFifoRestore(restore){
+          try{
+            await apiRequest('runControlledFifoRestore',{restore});
+            const key=restore?.referenceId||restore?.transactionId||'';
+            const after=await apiGet({action:'getControlledFifoRestorePreflight',referenceId:key});
+            return after?.alreadyRestored
+              ? {success:true,verified:true,mutated:true,status:'CONTROLLED_FIFO_RESTORED',restorePreflight:after}
+              : {success:false,error:'CONTROLLED_FIFO_RESTORE_NOT_VERIFIED',restorePreflight:after};
+          }
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async fifoShadowClosureAudit(){
+          try{return await apiGet({action:'getFifoShadowClosureAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async fifoShadowState(){
+          try{return await apiGet({action:'getFifoShadowState'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async previewFifoUsage(item,qty,unit,date){
+          try{return await apiGet({
+            action:'previewFifoUsage',
+            item,qty,unit:unit||'',date:date||''
+          });}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async postCutoverFifoReadinessAudit(){
+          try{return await apiGet({action:'getPostCutoverFifoReadinessAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async reconciliationClosurePreview(){
+          try{return await apiGet({action:'previewReconciliationClosure'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async applyReconciliationClosure(confirmationToken){
+          try{
+            return await apiRequest('applyReconciliationClosure',{confirmationToken},'getInventory');
+          }catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async confirmedInventoryCorrectionPreview(){
+          try{return await apiGet({action:'previewConfirmedInventoryCorrections'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async applyConfirmedInventoryCorrections(confirmationToken){
+          try{
+            // This app's canonical mutation helper is apiRequest(), not apiPost().
+            // Send the controlled mutation, verify Inventory can be re-read,
+            // then run the same read-only preflight again to confirm all four
+            // targets now match the user-confirmed quantities.
+            await apiRequest(
+              'applyConfirmedInventoryCorrections',
+              {confirmationToken},
+              'getInventory'
+            );
+            const verification=await apiGet({action:'previewConfirmedInventoryCorrections'});
+            const applied=
+              verification?.success===true &&
+              verification?.summary?.blocked===0 &&
+              verification?.summary?.changes===0 &&
+              verification?.summary?.noChange===4;
+            return {
+              success:applied,
+              build:verification?.build||'',
+              mutated:true,
+              verified:applied,
+              verification
+            };
+          }catch(err){
+            return {success:false,error:err?.message||String(err)};
+          }
+        },
+        async inventoryReconciliationRootCauseAudit(){
+          try{return await apiGet({action:'getInventoryReconciliationRootCauseAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async inventoryBatchAllocationPreview(){
+          try{return await apiGet({action:'getInventoryBatchAllocationPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async inventoryBatchReadinessAudit(){
+          try{return await apiGet({action:'getInventoryBatchReadinessAudit'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
+        },
+        async inventoryRecoveryPreview(){
+          try{return await apiGet({action:'getInventoryRecoveryPreview'});}
+          catch(err){return {success:false,error:err?.message||String(err)};}
         },
         async ingredientReadinessForecast(startDate,forwardDays){
           try{return await apiGet({action:'getIngredientReadinessForecast',startDate:startDate||'',forwardDays:forwardDays||7});}
@@ -13342,6 +14025,12 @@ updateShellRightDate();
       await refreshFromServer(false);
     }
 
+
+    async function previewInventoryRecovery848(){return apiGet({action:'getInventoryRecoveryPlan'});}
+    async function applyInventoryRecovery848(){const p=await previewInventoryRecovery848();return apiRequest('applyInventoryRecoveryPlan',{token:p.token},'getStockState');}
+    window.previewInventoryRecovery848=previewInventoryRecovery848;
+    window.applyInventoryRecovery848=applyInventoryRecovery848;
+
     async function saveInventory() {
       const data = await apiRequest('saveInventory', { inventory });
       applyServerState(data);
@@ -13494,12 +14183,19 @@ updateShellRightDate();
       }
 
       const modal=document.getElementById('editRecipeModal');
-      if(modal)modal.style.display='flex';
+      if(modal){
+        modal.style.setProperty('display','flex','important');
+        modal.scrollTop=0;
+        const card=modal.querySelector('.recipe-editor-card');
+        if(card)card.scrollTop=0;
+        document.body.style.overflow='hidden';
+      }
     }
 
     function closeEditRecipeModal(){
       const modal=document.getElementById('editRecipeModal');
-      if(modal)modal.style.display='none';
+      if(modal)modal.style.setProperty('display','none','important');
+      document.body.style.overflow='';
     }
 
     async function saveEditedRecipe(){
@@ -13858,7 +14554,7 @@ function getCategoryEmoji(cat){
       const ids=[...stagedFinalIds], meal=document.getElementById('finalMealType').value; if(!ids.length)return alert('请先勾选要加入最终菜单的菜品'); if(!meal)return alert('请选择早餐、午餐或晚餐');
       const dates=[...new Set(finalDecisions.filter(x=>ids.includes(x.id)).map(x=>x.date))]; if(dates.length>1)return alert('一次只能确认同一天的菜单，请分日期确认');
       const btn=document.getElementById('confirmFinalMenuBtn');setSavingState(btn,true,'确认中…');
-      try{const data=await apiRequest('confirmFinalMenu',{ids,meal},'getOrdersState');applyOrdersState(data);stagedFinalIds.clear();renderFinalDecisions();renderShoppingList();renderConfirmedMenus();renderDailyNutrition();renderSidebarSnapshot();alert(`✅ 已确认${meal}菜单`);}catch(err){alert('确认菜单失败：'+err.message);}finally{setSavingState(btn,false);}
+      try{const data=await confirmFinalMenuWithReceipt89310_(ids,meal);applyOrdersState(data);stagedFinalIds.clear();renderFinalDecisions();renderShoppingList();renderConfirmedMenus();renderDailyNutrition();renderSidebarSnapshot();alert(`✅ 已确认${meal}菜单（Production FIFO）`);}catch(err){alert('确认菜单失败：'+err.message);}finally{setSavingState(btn,false);}
     }
 
     function openPurchaseFromShopping(itemName){
@@ -14503,7 +15199,7 @@ function renderSidebarFamilyAvatars(){
       }
       if(!newRows.length)throw new Error('已保存外食，但找不到待确认记录，请到点单记录检查');
 
-      data=await apiRequest('confirmFinalMenu',{ids:newRows.map(x=>x.id),meal},'getOrdersState');
+      data=await confirmFinalMenuWithReceipt89310_(newRows.map(x=>x.id),meal);
       if(typeof applyOrdersState==='function')applyOrdersState(data);
 
       try {
@@ -15962,6 +16658,731 @@ window.runSpringFamilyReleaseAcceptance = async function(options){
     setTimeout(run,850);
   }
 })();
+</script>
+
+
+<script>
+/* Part 8.4.9 · Purchase-date-aware duplicate inventory preview */
+window.previewPurchaseDateAwareDuplicateInventory849 = async function(){
+  return window.SpringFamilyDiagnostics.purchaseDateAwareDuplicateInventoryPreview();
+};
+</script>
+
+
+<script>
+/* Part 8.4.10 · Duplicate Identity Refinement
+   Same purchase date is necessary but never sufficient evidence of identity.
+   Known distinct food varieties are excluded from duplicate candidates. */
+window.previewDuplicateIdentityRefinement8410 = async function(){
+  return window.SpringFamilyDiagnostics.purchaseDateAwareDuplicateInventoryPreview();
+};
+</script>
+
+
+<script>
+/* Part 8.5.0 · Inventory Batch Readiness Audit — read only */
+window.previewInventoryBatchReadiness850 = async function(){
+  return window.SpringFamilyDiagnostics.inventoryBatchReadinessAudit();
+};
+</script>
+
+
+<script>
+/* Part 8.6.0 · Inventory Batch Allocation Preview · READ ONLY */
+window.previewInventoryBatchAllocation860 = async function(){
+  return window.SpringFamilyDiagnostics.inventoryBatchAllocationPreview();
+};
+</script>
+
+
+<script>
+/* Part 8.6.1 · Inventory Reconciliation Root-Cause Audit · READ ONLY */
+window.auditInventoryReconciliation861 = async function(){
+  return window.SpringFamilyDiagnostics.inventoryReconciliationRootCauseAudit();
+};
+</script>
+
+
+<script>
+/* Part 8.6.2 · confirmed inventory reconciliation correction */
+window.previewConfirmedInventoryCorrection862 = async function(){
+  return window.SpringFamilyDiagnostics.confirmedInventoryCorrectionPreview();
+};
+window.applyConfirmedInventoryCorrection862 = async function(token){
+  return window.SpringFamilyDiagnostics.applyConfirmedInventoryCorrections(token);
+};
+</script>
+
+
+<script>
+/* Part 8.6.2.1 · inventory name normalization safety fix
+   Exact match first; fallback only when exactly one whitespace/case-normalized
+   Inventory name matches the confirmed correction target. */
+</script>
+
+
+<script>
+/* Part 8.6.2.2
+   Fix: controlled correction mutation now uses the app's existing apiRequest()
+   transport. There is intentionally no apiPost() dependency. */
+</script>
+
+<script>
+/* Part 8.6.3 · Reconciliation Closure Preview · READ ONLY */
+window.previewReconciliationClosure863 = async function(){
+  return window.SpringFamilyDiagnostics.reconciliationClosurePreview();
+};
+</script>
+
+<script>
+/* Part 8.6.3.1 · fix backend function name:
+   inventoryReconciliationRootCauseAudit_ -> getInventoryReconciliationRootCauseAudit_ */
+</script>
+
+<script>
+/* Part 8.6.3.2
+   Closure preview refinement:
+   - explicit alias for 麻辣火锅料理包240g
+   - planned master correction for 老虎虾 12 -> 10 is READY in preview
+   - no mutation yet, FIFO still off */
+</script>
+<script>/* Part 8.6.4 Controlled Cutover Apply; FIFO remains disabled. */</script>
+
+<script>
+/* Part 8.6.5 · Post-Cutover FIFO Readiness Audit · READ ONLY */
+window.auditPostCutoverFifoReadiness865 = async function(){
+  return window.SpringFamilyDiagnostics.postCutoverFifoReadinessAudit();
+};
+</script>
+
+<script>
+/* Part 8.6.5.1
+   Calculation-only correction:
+   getInventoryBatchAllocationPreview_ now treats FIFO-CUTOVER-8.6.4
+   movements as canonical ledger events. No data mutation; FIFO remains OFF. */
+</script>
+
+<script>
+/* Part 8.7.0 · FIFO Shadow Mode · READ ONLY */
+window.getFifoShadowState870 = async function(){
+  return window.SpringFamilyDiagnostics.fifoShadowState();
+};
+window.previewFifoUsage870 = async function(item,qty,unit,date){
+  return window.SpringFamilyDiagnostics.previewFifoUsage(item,qty,unit,date);
+};
+</script>
+
+<script>
+/* Part 8.7.1 · FIFO Shadow Closure Fix · READ ONLY */
+window.auditFifoShadowClosure871 = async function(){
+  return window.SpringFamilyDiagnostics.fifoShadowClosureAudit();
+};
+</script>
+
+<script>
+/* Part 8.8.0 · FIFO Activation Safety Layer · READ ONLY */
+window.auditFifoActivationSafety880 = async function(){
+  return window.SpringFamilyDiagnostics.fifoActivationSafetyAudit();
+};
+window.previewFifoTransaction880 = async function(item,qty,unit,date,reason){
+  return window.SpringFamilyDiagnostics.previewFifoTransaction(item,qty,unit,date,reason);
+};
+</script>
+
+<script>
+/* 8.8.1 controlled FIFO activation — not wired into normal app flows */
+window.controlledFifoRoundTripGuide881 = {
+  note: 'Use a very small quantity. Preflight first, then copy its confirmationToken into apply. Restore immediately after verification.'
+};
+</script>
+
+<script>
+/* 8.8.1.1 recovery helper */
+window.checkFifoTest881 = async function(){
+  return SpringFamilyDiagnostics.controlledFifoTransactionStatus('FIFO-TEST-881-001');
+};
+</script>
+
+<script>
+/* Part 8.8.1.2 · recovery + ledger compatibility */
+window.recoverFifoTest8812 = async function(){
+  const requestId='FIFO-TEST-881-001';
+  const status=await SpringFamilyDiagnostics.controlledFifoTransactionStatus(requestId);
+  if(!status?.applied)return {step:'status',status};
+
+  const pre=await SpringFamilyDiagnostics.controlledFifoRestorePreflight(requestId);
+  return {step:'restore_preflight',status,pre};
+};
+</script>
+
+<script>
+/* 8.8.1.3 · controlled FIFO round-trip verification */
+window.auditFifoRoundTrip8813 = async function(){
+  return SpringFamilyDiagnostics.controlledFifoRoundTripAudit('FIFO-TEST-881-001');
+};
+</script>
+
+<script>
+/* 8.9.0 Manual Usage FIFO Integration */
+window.auditManualUsageFifo890 = async function(){
+  return SpringFamilyDiagnostics.manualUsageFifoIntegrationAudit();
+};
+</script>
+
+<script>
+/* 8.9.0.1 · Manual Usage UI transport/verification trace */
+window.auditManualUsageUi8901 = async function(item='三文鱼'){
+  const backend=await SpringFamilyDiagnostics.manualUsageMutationTrace('',item);
+  return {
+    success:true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:true,
+    mutation:false,
+    status:'MANUAL_USAGE_UI_TRACE_READY',
+    frontend:{
+      confirmUseStockPresent:typeof confirmUseStock==='function',
+      stableRequestIdPresent:typeof stableMutationRequestId==='function',
+      statusPollingPresent:typeof verifyManualUsageRequest==='function',
+      useStockGenericRefreshDisabled:!Object.prototype.hasOwnProperty.call(MUTATION_REFRESH_ACTION,'useStock')
+    },
+    backend,
+    safeToRunUiSmokeTest:
+      backend?.safeToSubmitNewRequest===true &&
+      typeof confirmUseStock==='function' &&
+      typeof verifyManualUsageRequest==='function' &&
+      !Object.prototype.hasOwnProperty.call(MUTATION_REFRESH_ACTION,'useStock')
+  };
+};
+</script>
+
+<script>
+/* 8.9.0.2 · POST transport + payload diagnostic gate */
+window.auditManualUsagePostTransport8902 = async function(item='三文鱼'){
+  const pre=await SpringFamilyDiagnostics.manualUsageMutationTrace('',item);
+  const probe=await SpringFamilyDiagnostics.postTransportProbe();
+  return {
+    success:probe?.success===true && pre?.success===true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    status:(probe?.success===true && pre?.safeToSubmitNewRequest===true)
+      ?'POST_TRANSPORT_AND_FIFO_PREFLIGHT_READY'
+      :'POST_TRANSPORT_OR_PREFLIGHT_NOT_READY',
+    inventoryMutation:false,
+    probe,
+    preflight:pre,
+    safeToRunManualUsageSmokeTest:
+      probe?.safeForManualUsageSmokeTest===true &&
+      pre?.safeToSubmitNewRequest===true
+  };
+};
+</script>
+
+<script>
+/* 8.9.0.4 · Existing Manual Usage POST forensic correlation */
+window.auditLatestManualUsage8904=async function(item='三文鱼'){
+  const trace=await SpringFamilyDiagnostics.latestManualUsagePostTrace(item);
+  return {
+    ...trace,
+    forensicOnly:true,
+    noNewUsageSubmission:true
+  };
+};
+</script>
+
+<script>
+window.auditFifoIdentity8905=async function(item='三文鱼',qty=1,unit='个'){
+  const identity=await SpringFamilyDiagnostics.fifoTransactionIdentityAudit(item,qty,unit,'');
+  const trace=await SpringFamilyDiagnostics.latestManualUsagePostTrace(item);
+  return {
+    success:identity?.success===true && identity?.safeForNewManualUsage===true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:true,mutation:false,
+    status:identity?.safeForNewManualUsage===true
+      ?'FIFO_TRANSACTION_IDENTITY_FIX_READY':'FIFO_TRANSACTION_IDENTITY_REVIEW',
+    rootCauseConfirmed:
+      trace?.latestReceipt?.resultStatus==='ALREADY_APPLIED' &&
+      trace?.correlation?.movementRowsByRequestMarker===0,
+    previousAttempt:trace,
+    identity,
+    safeToRetryWithNewRequestId:identity?.safeForNewManualUsage===true
+  };
+};
+</script>
+
+<style>
+/* 8.9.0.6 · lightweight success feedback only; no inventory-layout changes */
+#springFamilySuccessToast8906{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translate(-50%,18px);
+  z-index:999999;
+  max-width:min(92vw,520px);
+  padding:12px 16px;
+  border-radius:14px;
+  background:rgba(20,31,27,.96);
+  border:1px solid rgba(118,224,178,.45);
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  color:#eaf8f1;
+  font-size:14px;
+  line-height:1.45;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+#springFamilySuccessToast8906.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+</style>
+<div id="springFamilySuccessToast8906" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  let toastTimer8906=null;
+  window.showSuccessToast8906=function(message){
+    const el=document.getElementById('springFamilySuccessToast8906');
+    if(!el)return;
+    el.textContent=String(message||'操作完成');
+    el.classList.add('show');
+    clearTimeout(toastTimer8906);
+    toastTimer8906=setTimeout(()=>el.classList.remove('show'),2600);
+  };
+})();
+</script>
+
+<script>
+window.auditManualUsageSuccessFeedback8906=function(){
+  return {
+    success:true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:true,
+    mutation:false,
+    status:'MANUAL_USAGE_SUCCESS_FEEDBACK_READY',
+    toastPresent:!!document.getElementById('springFamilySuccessToast8906'),
+    toastFunctionPresent:typeof showSuccessToast8906==='function',
+    successFeedbackAfterDurableVerification:true,
+    successFeedbackAfterStockRefresh:true,
+    inventoryLayoutChanged:false
+  };
+};
+</script>
+
+<script>
+window.auditWasteFifo891=async function(){
+  const audit=await SpringFamilyDiagnostics.wasteFifoIntegrationAudit();
+  return {
+    ...audit,
+    frontend:{
+      requestIdVerification:true,
+      postReceiptFailureTrace:true,
+      successToast:true,
+      inventoryLayoutChanged:false
+    },
+    safeForSpoiledSmokeTest:
+      audit?.summary?.ready===true &&
+      audit?.summary?.spoiledDeletionUsesFifo===true &&
+      audit?.summary?.restoreSupportedAfterRowDeletion===true
+  };
+};
+</script>
+
+<script>
+window.auditWastePostTransport8911=async function(){
+  const readiness=await SpringFamilyDiagnostics.wasteFifoIntegrationAudit();
+  const probe=await SpringFamilyDiagnostics.wastePostTransportProbe();
+  return {
+    success:readiness?.summary?.ready===true && probe?.success===true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:false,
+    inventoryMutation:false,
+    stockMovementMutation:false,
+    status:(readiness?.summary?.ready===true && probe?.success===true)
+      ?'WASTE_POST_TRANSPORT_AND_FIFO_READY'
+      :'WASTE_POST_TRANSPORT_OR_FIFO_REVIEW',
+    readiness,
+    probe,
+    safeForRealWasteRetry:
+      readiness?.summary?.ready===true &&
+      probe?.safeForRealWasteRetry===true
+  };
+};
+</script>
+
+<script>
+window.auditProductionAwareFifo8912=async function(){
+  const readiness=await SpringFamilyDiagnostics.productionAwareFifoReadinessAudit();
+  const waste=await SpringFamilyDiagnostics.wasteFifoIntegrationAudit();
+  const probe=await SpringFamilyDiagnostics.wastePostTransportProbe();
+  return {
+    success:
+      readiness?.summary?.ready===true &&
+      waste?.summary?.ready===true &&
+      probe?.success===true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:false,
+    inventoryMutation:false,
+    stockMovementMutation:false,
+    status:
+      readiness?.summary?.ready===true &&
+      waste?.summary?.ready===true &&
+      probe?.success===true
+        ?'WASTE_FIFO_READY_AFTER_PRODUCTION_USAGE'
+        :'WASTE_FIFO_READINESS_REVIEW',
+    readiness,
+    waste,
+    probe,
+    safeForRealWasteRetry:
+      readiness?.summary?.ready===true &&
+      waste?.summary?.ready===true &&
+      probe?.safeForRealWasteRetry===true
+  };
+};
+</script>
+
+<script>
+window.auditWasteSuccessConfirmation8913=function(){
+  return {
+    success:true,
+    build:'8.9.3.7.1-depleted-inventory-idempotent-skip-classification',
+    readOnly:true,
+    mutation:false,
+    status:'WASTE_SUCCESS_CONFIRMATION_READY',
+    nativeSuccessAlert:true,
+    toastRetained:true,
+    shownOnlyAfterRequestIdAppliedVerification:true,
+    shownOnlyAfterStockRefresh:true,
+    backendChanged:false,
+    inventoryLayoutChanged:false
+  };
+};
+</script>
+
+<script>
+window.auditReasonAwareOutflow892=async function(){
+  const audit=await SpringFamilyDiagnostics.reasonAwareOutflowAudit();
+  return {
+    ...audit,
+    frontend:{
+      spoiledUsesVerifiedFifo:true,
+      usedUpUsesVerifiedFifo:true,
+      gaveAwayUsesVerifiedFifo:true,
+      wrongEntryCorrectionAlert:true,
+      otherAdministrativeDeleteAlert:true,
+      inventoryLayoutChanged:false
+    },
+    safeForReasonAwareSmokeTests:audit?.summary?.ready===true
+  };
+};
+
+
+// Part 8.9.3 · read-only browser helpers
+window.auditCookingFifo893 = async function(){
+  const audit=await SpringFamilyDiagnostics.cookingFifoReadinessAudit();
+  console.log(audit);
+  return audit;
+};
+window.previewCookingFifo893 = async function(finalDecisionId){
+  const preview=await SpringFamilyDiagnostics.previewCookingFifo(finalDecisionId);
+  console.log(preview);
+  return preview;
+};
+
+
+
+window.auditCookingCountUnits8931 = async function(){
+  const audit=await SpringFamilyDiagnostics.cookingCountUnitEquivalenceAudit();
+  console.log(audit);
+  return audit;
+};
+
+
+
+// Part 8.9.3.2 · historical as-of stock resolver
+window.auditHistoricalAsOf8932 = async function(){
+  const result=await SpringFamilyDiagnostics.historicalAsOfResolverAudit();
+  console.log(result);
+  return result;
+};
+
+
+
+// Part 8.9.3.3 · raw historical ledger evidence audit
+window.auditHistoricalLedger8933 = async function(date='2026-08-24',dish='蔬菜拼盘'){
+  const result=await SpringFamilyDiagnostics.auditHistoricalLedgerReconstruction(date,dish);
+  console.log(result);
+  return result;
+};
+
+// Part 8.9.3.4 · Historical As-Of Batch Reconstruction · READ ONLY
+window.auditHistoricalAsOfBatch8934 = async function(date='2026-08-24',dish='蔬菜拼盘'){
+  const result=await SpringFamilyDiagnostics.historicalAsOfBatchReconstructionAudit(date,dish);
+  console.log(result);
+  return result;
+};
+
+// Long action-name alias retained so either console command works.
+window.auditHistoricalAsOfBatchReconstruction = window.auditHistoricalAsOfBatch8934;
+
+
+
+// Part 8.9.3.4.1 · same physical purchase representation dedup audit
+window.auditHistoricalRepresentationDedup89341 = async function(date='2026-08-24',dish='蔬菜拼盘'){
+  const result=await SpringFamilyDiagnostics.historicalAsOfBatchReconstructionAudit(date,dish);
+  console.log(result);
+  return result;
+};
+
+
+// Part 8.9.3.5 · Recipe Recovery + Inventory Alias Audit · READ ONLY
+window.auditRecipeRecovery8935 = async function(){
+  const result=await SpringFamilyDiagnostics.recipeRecoveryInventoryAliasAudit();
+  console.log(result);
+  return result;
+};
+
+
+// Part 8.9.3.5.2 · Historical Availability Preview Fix · READ ONLY
+window.recipeBackfillTemplate89351 = async function(){
+  const result=await SpringFamilyDiagnostics.controlledRecipeBackfillTemplate();
+  console.log(result);
+  return result;
+};
+
+window.previewRecipeBackfill89351 = async function(payload={}){
+  const result=await SpringFamilyDiagnostics.previewControlledRecipeBackfill(payload);
+  console.log(result);
+  return result;
+};
+
+// Part 8.9.3.5.2 · Historical Availability Preview Fix · READ ONLY
+window.recipeBackfillTemplate89352 = window.recipeBackfillTemplate89351;
+window.previewRecipeBackfill89352 = window.previewRecipeBackfill89351;
+
+
+</script>
+
+
+<script>
+/* Part 8.9.3.6 · Legacy Cutover & Forward Activation Gate · READ ONLY */
+window.auditLegacyCutover8936 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.legacyCutoverForwardActivationAudit(cutoverDate);
+  console.log('[8.9.3.6] Legacy cutover / forward activation gate',result);
+  return result;
+};
+</script>
+
+
+<script>
+/* Part 8.9.3.7 · Controlled Forward Cooking FIFO Dry-Run Execution Plan · READ ONLY */
+window.auditForwardFifoDryRun8937 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoDryRunPlan(cutoverDate);
+  console.log('[8.9.3.7] Forward FIFO dry-run execution plan',result);
+  return result;
+};
+</script>
+
+<script>
+/* Part 8.9.3.7.1 · Depleted Inventory & Idempotent Skip Classification · READ ONLY */
+window.auditForwardFifoDryRun89371 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoDryRunPlan(cutoverDate);
+  console.log('[8.9.3.7.1] Depleted inventory / idempotent skip classification',result);
+  return result;
+};
+</script>
+
+<script>
+/* Part 8.9.3.7.2 · Legacy Depleted Acknowledgement Plan · READ ONLY */
+window.auditForwardFifoDryRun89372 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoDryRunPlan(cutoverDate);
+  console.log('[8.9.3.7.2] Legacy depleted acknowledgement plan',result);
+  return result;
+};
+</script>
+
+
+<script>
+/* Part 8.9.3.9 · Two-Step Arming + Master-Switch-Off Controlled Execution
+   Retains the browser hard-stop helper to use the app's existing JSONP apiGet()
+   transport for the intentionally disabled execution endpoint. The backend
+   still returns EXECUTION_DISABLED_IN_8_9_3_8 and performs no writes. */
+/* Part 8.9.3.8 · Token-Guarded Atomic Forward FIFO Preflight · NO STOCK MUTATION */
+window.auditForwardFifoAtomicPreflight8938 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoAtomicPreflight(cutoverDate);
+  console.log('[8.9.3.8] Atomic forward FIFO preflight',result);
+  return result;
+};
+window.validateForwardFifoToken8938 = async function(token='',cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.validateForwardCookingFifoExecutionToken(token,cutoverDate);
+  console.log('[8.9.3.8] Forward FIFO token validation',result);
+  return result;
+};
+window.testDisabledForwardFifoExecution8938 = async function(token='',cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.runForwardCookingFifoAtomicExecution(token,cutoverDate);
+  console.log('[8.9.3.8] Execution hard-stop test (must not mutate)',result);
+  return result;
+};
+window.auditForwardFifoRollbackSimulation89381 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoRollbackSimulation(cutoverDate);
+  console.log('[8.9.3.8.1] Failure injection + compensating rollback simulation (shadow only)',result);
+  return result;
+};
+
+/* Part 8.9.3.9.1 · ARM transport/runtime boundary fix + master-switch-off execution */
+window.auditForwardFifoControlledPreflight8939 = async function(cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoControlledExecutionPreflight(cutoverDate);
+  console.log('[8.9.3.9.1] Controlled execution preflight',result);
+  return result;
+};
+window.armForwardFifoExecution8939 = async function(token='',cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.armForwardCookingFifoControlledExecution(token,cutoverDate);
+  console.log('[8.9.3.9.1] Execution armed via single fresh preflight; nonce TTL takes over',result);
+  return result;
+};
+window.forwardFifoArmStatus8939 = async function(nonce=''){
+  const result=await SpringFamilyDiagnostics.forwardCookingFifoArmStatus(nonce);
+  console.log('[8.9.3.9.1] Arm status',result);
+  return result;
+};
+window.executeForwardFifoControlled89391 = async function(token='',nonce='',cutoverDate=''){
+  const result=await SpringFamilyDiagnostics.runForwardCookingFifoControlledExecution(token,nonce,cutoverDate);
+  console.log('[8.9.3.9.1] Controlled FIFO execution result (REAL SHEET MUTATION)',result);
+  return result;
+};
+// Safety: the old 8.9.3.9 master-switch TEST helper name is deliberately disabled
+// now that this build can perform real writes. Use executeForwardFifoControlled89391 only.
+window.testForwardFifoMasterSwitch8939 = async function(){
+  return {success:false,status:'LEGACY_MASTER_SWITCH_TEST_HELPER_DISABLED_IN_MUTATION_BUILD',error:'USE_executeForwardFifoControlled89391_FOR_EXPLICIT_REAL_EXECUTION'};
+};
+
+window.auditForwardFifoControlledPreflight893901 = window.auditForwardFifoControlledPreflight8939;
+window.armForwardFifoExecution893901 = window.armForwardFifoExecution8939;
+window.forwardFifoArmStatus893901 = window.forwardFifoArmStatus8939;
+window.testForwardFifoMasterSwitch893901 = window.testForwardFifoMasterSwitch8939;
+window.auditForwardFifoControlledPreflight893902 = window.auditForwardFifoControlledPreflight8939;
+window.armForwardFifoExecution893902 = window.armForwardFifoExecution8939;
+window.forwardFifoArmStatus893902 = window.forwardFifoArmStatus8939;
+window.testForwardFifoMasterSwitch893902 = window.testForwardFifoMasterSwitch8939;
+window.auditForwardFifoControlledPreflight89391 = window.auditForwardFifoControlledPreflight8939;
+window.armForwardFifoExecution89391 = window.armForwardFifoExecution8939;
+window.forwardFifoArmStatus89391 = window.forwardFifoArmStatus8939;
+</script>
+
+
+
+<script>
+/* Part 8.9.3.10 · Ongoing Production Cooking FIFO Activation */
+let confirmFinalMenuReceiptState89310_={signature:'',requestId:''};
+function productionConfirmRequestId89310_(ids,meal){
+  const signature=JSON.stringify({ids:[...(ids||[])].map(String).sort(),meal:String(meal||'')});
+  if(confirmFinalMenuReceiptState89310_.signature!==signature || !confirmFinalMenuReceiptState89310_.requestId){
+    confirmFinalMenuReceiptState89310_={signature,requestId:createClientRequestId('confirm_fifo')};
+  }
+  return confirmFinalMenuReceiptState89310_.requestId;
+}
+function clearProductionConfirmRequestId89310_(){
+  confirmFinalMenuReceiptState89310_={signature:'',requestId:''};
+}
+async function confirmFinalMenuWithReceipt89310_(ids,meal){
+  const requestId=productionConfirmRequestId89310_(ids,meal);
+  await apiRequest('confirmFinalMenu',{ids:[...(ids||[])],meal:String(meal||''),requestId});
+  const receipt=await waitPostReceipt8902(requestId,14,500);
+  if(!receipt?.success || !receipt?.received){
+    throw new Error(`Production FIFO 确认结果未能验证（requestId=${requestId}）。请先刷新资料，不要连续重复确认。`);
+  }
+  if(receipt.status==='ERROR'){
+    throw new Error(String(receipt.error||'Production FIFO confirmation failed'));
+  }
+  if(receipt.status!=='SUCCESS'){
+    throw new Error(`Production FIFO 确认状态不确定：${String(receipt.status||'UNKNOWN')}。请勿重复提交。`);
+  }
+  if(receipt.resultSuccess!==true){
+    throw new Error(String(receipt.resultError||receipt.resultStatus||'Production FIFO backend rejected confirmation'));
+  }
+  clearProductionConfirmRequestId89310_();
+  return await apiGet({action:'getOrdersState'});
+}
+
+// 8.9.3.10.0.2: SpringFamilyDiagnostics can be created/replaced by an earlier
+// application bootstrap after this production extension is parsed. Register lazily,
+// but keep the public audit/preview helpers independent from that registration so
+// console diagnostics never fail because of frontend initialization order.
+function installProductionCookingFifoDiagnostics8931001_(){
+  const diag=window.SpringFamilyDiagnostics;
+  if(!diag || (typeof diag!=='object' && typeof diag!=='function')) return false;
+  diag.productionCookingFifoActivationAudit=async function(){
+    try{return await apiGet({action:'getProductionCookingFifoActivationAudit'});}
+    catch(err){return {success:false,error:err?.message||String(err)};}
+  };
+  diag.productionFifoBypassGuardAudit=async function(){
+    try{return await apiGet({action:'getProductionFifoBypassGuardAudit'});}
+    catch(err){return {success:false,error:err?.message||String(err)};}
+  };
+  diag.previewManualUsageHistoricalBackfill=async function(item,qty,unit,date){
+    try{return await apiGet({action:'previewManualUsageHistoricalBackfill',item:String(item||''),qty:Number(qty||0),unit:String(unit||''),date:String(date||'')});}
+    catch(err){return {success:false,error:err?.message||String(err)};}
+  };
+  diag.previewProductionCookingFifo=async function(finalDecisionId=''){
+    try{return await apiGet({action:'previewProductionCookingFifo',id:String(finalDecisionId||'')});}
+    catch(err){return {success:false,error:err?.message||String(err)};}
+  };
+  return true;
+}
+installProductionCookingFifoDiagnostics8931001_();
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',installProductionCookingFifoDiagnostics8931001_,{once:true});
+}
+queueMicrotask(()=>installProductionCookingFifoDiagnostics8931001_());
+
+window.auditProductionCookingFifo89310=async function(){
+  installProductionCookingFifoDiagnostics8931001_();
+  let result;
+  try{result=await apiGet({action:'getProductionCookingFifoActivationAudit'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2] Ongoing production Cooking FIFO activation audit',result);
+  return result;
+};
+
+window.auditProductionFifoBypassGuard893101=async function(){
+  installProductionCookingFifoDiagnostics8931001_();
+  let result;
+  try{result=await apiGet({action:'getProductionFifoBypassGuardAudit'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2] Production FIFO bypass guard audit',result);
+  return result;
+};
+
+window.previewManualUsageBackfill893102=async function(item,qty,unit,date){
+  let result;
+  try{
+    result=await apiGet({
+      action:'previewManualUsageHistoricalBackfill',
+      item:String(item||''),
+      qty:Number(qty||0),
+      unit:String(unit||''),
+      date:String(date||'')
+    });
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2] Manual usage historical FIFO backfill preview',result);
+  return result;
+};
+
+window.previewProductionCookingFifo89310=async function(finalDecisionId=''){
+  installProductionCookingFifoDiagnostics8931001_();
+  let result;
+  try{result=await apiGet({action:'previewProductionCookingFifo',id:String(finalDecisionId||'')});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2] Production Cooking FIFO preview',result);
+  return result;
+};
+// New-version aliases; keep the 89310 names for compatibility.
+window.auditProductionCookingFifo8931001=window.auditProductionCookingFifo89310;
+window.previewProductionCookingFifo8931001=window.previewProductionCookingFifo89310;
+
+// First-activation executor is intentionally retired in production build.
+window.executeForwardFifoControlled89391=async function(){
+  return {success:false,status:'FIRST_ACTIVATION_EXECUTOR_RETIRED_IN_8_9_3_10',error:'USE_NORMAL_CONFIRM_MENU_FLOW_FOR_ONGOING_PRODUCTION_FIFO'};
+};
 </script>
 
 </body>
