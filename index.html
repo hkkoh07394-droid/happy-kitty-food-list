@@ -8314,7 +8314,7 @@ textarea::placeholder{
 
 </style>
 </head>
-<body data-app-build="8.9.3.10.2-manual-usage-historical-fifo-backfill-from-20260820">
+<body data-app-build="8.9.3.10.2.2-hide-zero-inventory-cards">
 <div class="app-container">
   
   <div class="header">
@@ -9112,7 +9112,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbz-0kou8dHL-xKuMCUD-xhWzZfhUiPaG2gTDBL-QIyCrqV0qQp8ATuVZ1u1DxeQH10/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbypXorztnDzRvyVKvY8htRDOREoF-YtDMM9DePAcBlFYipMm9t6niXddkV9Pw_snX8/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -10052,7 +10052,10 @@ async function refreshFromServer(){
     function updateInventoryCount(){
       const el=document.getElementById('inventoryCount');if(!el)return;
       const hidden=new Set(['调味','饮料','饮品','零食']);
-      el.textContent=inventory.filter(x=>!hidden.has(String(x.category||'').trim())).length;
+      el.textContent=inventory.filter(x=>
+        !hidden.has(String(x.category||'').trim()) &&
+        Number(x.qty||0)>0
+      ).length;
     }
 
 
@@ -10244,6 +10247,7 @@ function renderInventoryGrid(){
       const hiddenInventoryCategories=new Set(['调味','饮料','饮品','零食']);
       const rows=inventory
         .filter(x=>!hiddenInventoryCategories.has(String(x.category||'').trim()))
+        .filter(x=>Number(x.qty||0)>0)
         .filter(x=>!q||String(x.name).toLowerCase().includes(q))
         .sort((a,b)=>smartNameSort(a.name,b.name));
       if(!rows.length){grid.innerHTML='<div class="v2-small" style="grid-column:1/-1;padding:16px;text-align:center;">暂无库存食材</div>';return;}
@@ -11684,7 +11688,7 @@ async function refreshAllAppState(){
 
       const ibox=document.getElementById('dashboardInventoryWatch');
       if(ibox){
-        const low=(inventory||[]).filter(x=>Number(x.qty||0)<=1)
+        const low=(inventory||[]).filter(x=>Number(x.qty||0)>0 && Number(x.qty||0)<=1)
           .sort((a,b)=>Number(a.qty||0)-Number(b.qty||0)).slice(0,8);
         ibox.innerHTML=low.length?low.map(x=>`
           <div class="dashboard-inventory-row">
@@ -17337,7 +17341,7 @@ window.auditProductionCookingFifo89310=async function(){
   let result;
   try{result=await apiGet({action:'getProductionCookingFifoActivationAudit'});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2] Ongoing production Cooking FIFO activation audit',result);
+  console.log('[8.9.3.10.2.2] Ongoing production Cooking FIFO activation audit',result);
   return result;
 };
 
@@ -17346,7 +17350,7 @@ window.auditProductionFifoBypassGuard893101=async function(){
   let result;
   try{result=await apiGet({action:'getProductionFifoBypassGuardAudit'});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2] Production FIFO bypass guard audit',result);
+  console.log('[8.9.3.10.2.2] Production FIFO bypass guard audit',result);
   return result;
 };
 
@@ -17363,7 +17367,7 @@ window.previewManualUsageBackfill893102=async function(item,qty,unit,date){
   }catch(err){
     result={success:false,error:err?.message||String(err)};
   }
-  console.log('[8.9.3.10.2] Manual usage historical FIFO backfill preview',result);
+  console.log('[8.9.3.10.2.2] Manual usage historical FIFO backfill preview',result);
   return result;
 };
 
@@ -17372,7 +17376,7 @@ window.previewProductionCookingFifo89310=async function(finalDecisionId=''){
   let result;
   try{result=await apiGet({action:'previewProductionCookingFifo',id:String(finalDecisionId||'')});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2] Production Cooking FIFO preview',result);
+  console.log('[8.9.3.10.2.2] Production Cooking FIFO preview',result);
   return result;
 };
 // New-version aliases; keep the 89310 names for compatibility.
