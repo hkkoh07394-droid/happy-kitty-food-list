@@ -8314,7 +8314,7 @@ textarea::placeholder{
 
 </style>
 </head>
-<body data-app-build="8.9.3.10.2.2-hide-zero-inventory-cards">
+<body data-app-build="8.9.3.10.2.3-purchase-promotion-auto-calculation">
 <div class="app-container">
   
   <div class="header">
@@ -8698,7 +8698,10 @@ textarea::placeholder{
 <div class="v2-field"><label>小票价格 (RM)</label><input type="number" id="purchaseUnitPrice" min="0" step="0.01" placeholder="例如 4.00"></div>
 <div class="v2-field"><label>分类</label><select id="purchaseCategory"><option>蔬菜</option><option>水果</option><option>蛋奶</option><option>肉类</option><option>水产</option><option>调味</option><option>饮料</option><option>零食</option><option>主食</option><option>其他</option></select></div>
 <div class="v2-field"><label>运费 (RM)</label><input type="number" id="purchaseShipping" min="0" step="0.01" value="0"></div>
-<div class="v2-field"><label>优惠 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0"></div>
+<div class="v2-field"><label>优惠类型</label><select id="purchasePromoType"><option value="NONE">无优惠</option><option value="AMOUNT">金额优惠 (RM)</option><option value="PERCENT">百分比优惠 (%)</option><option value="B1F1">B1F1 买1送1</option><option value="B2F1">B2F1 买2送1</option></select></div>
+<div class="v2-field" id="purchasePromoValueField" style="display:none;"><label id="purchasePromoValueLabel">优惠值</label><input type="number" id="purchasePromoValue" min="0" step="0.01" value="0"></div>
+<div class="v2-field"><label>优惠金额 (RM)</label><input type="number" id="purchaseDiscount" min="0" step="0.01" value="0" readonly></div>
+<div class="v2-field purchase-full"><div id="purchaseTotalPreview" class="v2-small" style="padding:10px 12px;border:1px solid rgba(127,191,127,.25);border-radius:14px;"></div></div>
 <div class="v2-field purchase-full"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
 <div class="v2-field purchase-full"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
 </div>
@@ -9112,7 +9115,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbypXorztnDzRvyVKvY8htRDOREoF-YtDMM9DePAcBlFYipMm9t6niXddkV9Pw_snX8/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxABKtJZlt2keGtHojTbR6DdEOcBMq5j78u9f2y1L9svoq8lB_9oX1ktSjmzUqrTLU/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9344,6 +9347,8 @@ async function apiRequest(action,payload={},refreshAction=null){
       unitPrice:purchase.unitPrice,
       shipping:purchase.shipping,
       discount:purchase.discount,
+      promoType:purchase.promoType||'NONE',
+      promoValue:Number(purchase.promoValue||0),
       category:purchase.category,
       note:purchase.note,
       url:purchase.url
@@ -10890,7 +10895,10 @@ function renderInventoryGrid(){
       document.getElementById('purchaseMeasureUnit').value = '';
       document.getElementById('purchaseUnitPrice').value = '';
       document.getElementById('purchaseShipping').value = '0';
+      document.getElementById('purchasePromoType').value = 'NONE';
+      document.getElementById('purchasePromoValue').value = '0';
       document.getElementById('purchaseDiscount').value = '0';
+      syncPurchasePromoUi8931023();
       document.getElementById('purchaseCategory').value = '';
       document.getElementById('purchaseUrl').value = '';
       document.getElementById('purchaseNote').value = '';
@@ -10929,15 +10937,52 @@ function renderInventoryGrid(){
       };
     }
 
-    function updatePurchaseTotalPreview(){
-      // v2.7.1: preview intentionally disabled.
+    function calculatePurchasePromotion8931023(){
+      const qty=Number(document.getElementById('purchaseQty')?.value||0);
+      const unitPrice=Number(document.getElementById('purchaseUnitPrice')?.value||0);
+      const shipping=Number(document.getElementById('purchaseShipping')?.value||0);
+      const promoType=String(document.getElementById('purchasePromoType')?.value||'NONE');
+      const promoValue=Math.max(0,Number(document.getElementById('purchasePromoValue')?.value||0));
+      const merchandise=Math.max(0,qty*unitPrice);
+      let discount=0, freeQty=0, promoLabel='无优惠', error='';
+      if(promoType==='AMOUNT'){ discount=Math.min(merchandise,promoValue); promoLabel=`金额优惠 RM${promoValue.toFixed(2)}`; }
+      else if(promoType==='PERCENT'){ const pct=Math.min(100,promoValue); discount=merchandise*pct/100; promoLabel=`${pct.toFixed(2).replace(/\.00$/,'')}% 优惠`; }
+      else if(promoType==='B1F1'){ if(qty>0&&Math.abs(qty-Math.round(qty))>1e-9) error='B1F1 只支持整数购买数量'; else {freeQty=Math.floor(Math.max(0,qty)/2); discount=freeQty*unitPrice; promoLabel=`B1F1 买1送1 · 免费 ${freeQty}`;} }
+      else if(promoType==='B2F1'){ if(qty>0&&Math.abs(qty-Math.round(qty))>1e-9) error='B2F1 只支持整数购买数量'; else {freeQty=Math.floor(Math.max(0,qty)/3); discount=freeQty*unitPrice; promoLabel=`B2F1 买2送1 · 免费 ${freeQty}`;} }
+      discount=Math.max(0,Math.min(merchandise,discount));
+      const total=Math.max(0,merchandise+Math.max(0,shipping)-discount);
+      return {qty,unitPrice,shipping,promoType,promoValue,merchandise:Number(merchandise.toFixed(2)),discount:Number(discount.toFixed(2)),total:Number(total.toFixed(2)),actualUnitCost:qty>0?Number((total/qty).toFixed(4)):0,freeQty,promoLabel,error};
     }
+    function syncPurchasePromoUi8931023(){
+      const type=String(document.getElementById('purchasePromoType')?.value||'NONE');
+      const field=document.getElementById('purchasePromoValueField');
+      const label=document.getElementById('purchasePromoValueLabel');
+      if(field)field.style.display=(type==='AMOUNT'||type==='PERCENT')?'':'none';
+      if(label)label.textContent=type==='PERCENT'?'优惠百分比 (%)':'优惠金额 (RM)';
+      if(type==='NONE'||type==='B1F1'||type==='B2F1'){ const v=document.getElementById('purchasePromoValue'); if(v)v.value='0'; }
+      updatePurchaseTotalPreview();
+    }
+    function updatePurchaseTotalPreview(){
+      const calc=calculatePurchasePromotion8931023();
+      const d=document.getElementById('purchaseDiscount'); if(d)d.value=calc.discount.toFixed(2);
+      const box=document.getElementById('purchaseTotalPreview'); if(!box)return;
+      if(calc.error){box.innerHTML=`<b>⚠️ ${escapeHtml(calc.error)}</b>`;return;}
+      box.innerHTML=[`<b>${escapeHtml(calc.promoLabel)}</b>`,`原价 RM${calc.merchandise.toFixed(2)}`,`优惠 RM${calc.discount.toFixed(2)}`,`实付 RM${calc.total.toFixed(2)}`,calc.qty>0?`实际平均 RM${calc.actualUnitCost.toFixed(2)} / ${escapeHtml(document.getElementById('purchaseUnit')?.value||'份')}`:''].filter(Boolean).join(' · ');
+    }
+    function installPurchasePromotionEvents8931023(){
+      ['purchaseQty','purchaseUnitPrice','purchaseShipping','purchasePromoValue','purchaseUnit'].forEach(id=>{const el=document.getElementById(id);if(el&&el.dataset.promoListener8931023!=='1'){el.addEventListener('input',updatePurchaseTotalPreview);el.addEventListener('change',updatePurchaseTotalPreview);el.dataset.promoListener8931023='1';}});
+      const type=document.getElementById('purchasePromoType'); if(type&&type.dataset.promoListener8931023!=='1'){type.addEventListener('change',syncPurchasePromoUi8931023);type.dataset.promoListener8931023='1';}
+      syncPurchasePromoUi8931023();
+    }
+    setTimeout(installPurchasePromotionEvents8931023,0);
 
 async function savePurchaseUI(){
       const btn = document.getElementById('savePurchaseBtn');
       if(!btn || btn.dataset.saving==='1')return;
 
       try {
+        const promoCalc=calculatePurchasePromotion8931023();
+        if(promoCalc.error)return alert(promoCalc.error);
         const purchase = {
           date: document.getElementById('purchaseDate').value,
           sourceType: document.getElementById('purchaseSourceType').value,
@@ -10950,7 +10995,9 @@ async function savePurchaseUI(){
           measureUnit: document.getElementById('purchaseMeasureUnit').value,
           unitPrice: Number(document.getElementById('purchaseUnitPrice').value||0),
           shipping: Number(document.getElementById('purchaseShipping').value||0),
-          discount: Number(document.getElementById('purchaseDiscount').value||0),
+          promoType: promoCalc.promoType,
+          promoValue: promoCalc.promoValue,
+          discount: promoCalc.discount,
           category: document.getElementById('purchaseCategory').value.trim(),
           note: document.getElementById('purchaseNote').value.trim(),
           url: document.getElementById('purchaseUrl').value.trim()
@@ -17341,7 +17388,7 @@ window.auditProductionCookingFifo89310=async function(){
   let result;
   try{result=await apiGet({action:'getProductionCookingFifoActivationAudit'});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2.2] Ongoing production Cooking FIFO activation audit',result);
+  console.log('[8.9.3.10.2.3] Ongoing production Cooking FIFO activation audit',result);
   return result;
 };
 
@@ -17350,7 +17397,7 @@ window.auditProductionFifoBypassGuard893101=async function(){
   let result;
   try{result=await apiGet({action:'getProductionFifoBypassGuardAudit'});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2.2] Production FIFO bypass guard audit',result);
+  console.log('[8.9.3.10.2.3] Production FIFO bypass guard audit',result);
   return result;
 };
 
@@ -17367,7 +17414,7 @@ window.previewManualUsageBackfill893102=async function(item,qty,unit,date){
   }catch(err){
     result={success:false,error:err?.message||String(err)};
   }
-  console.log('[8.9.3.10.2.2] Manual usage historical FIFO backfill preview',result);
+  console.log('[8.9.3.10.2.3] Manual usage historical FIFO backfill preview',result);
   return result;
 };
 
@@ -17376,7 +17423,7 @@ window.previewProductionCookingFifo89310=async function(finalDecisionId=''){
   let result;
   try{result=await apiGet({action:'previewProductionCookingFifo',id:String(finalDecisionId||'')});}
   catch(err){result={success:false,error:err?.message||String(err)};}
-  console.log('[8.9.3.10.2.2] Production Cooking FIFO preview',result);
+  console.log('[8.9.3.10.2.3] Production Cooking FIFO preview',result);
   return result;
 };
 // New-version aliases; keep the 89310 names for compatibility.
