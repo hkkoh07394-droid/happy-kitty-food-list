@@ -8313,8 +8313,27 @@ textarea::placeholder{
 }
 
 </style>
+
+<style>
+.purchase-batch-tray{margin:14px 0 4px;padding:12px;border:1px solid rgba(127,191,127,.28);border-radius:16px;background:rgba(127,191,127,.045)}
+.purchase-batch-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+.purchase-batch-count{white-space:nowrap;padding:4px 9px;border-radius:999px;border:1px solid rgba(127,191,127,.25);font-size:.82rem}
+.purchase-batch-items{display:flex;flex-direction:column;gap:8px}
+.purchase-batch-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 11px;border:1px solid rgba(255,255,255,.10);border-radius:13px}
+.purchase-batch-item-main b{display:block;margin-bottom:3px}
+.purchase-batch-item-meta{font-size:.78rem;opacity:.78;line-height:1.45}
+.purchase-batch-item-actions{display:flex;gap:5px;align-items:center}
+.purchase-batch-item-actions button{min-width:auto;padding:6px 8px}
+.purchase-batch-summary{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:.86rem;line-height:1.6}
+#purchasePanel.batch-purchase-mode89310215 .purchase-entry-head{border-color:rgba(127,191,127,.35)}
+@media(max-width:640px){
+  .purchase-batch-item{grid-template-columns:1fr}
+  .purchase-batch-item-actions{justify-content:flex-end}
+}
+</style>
+
 </head>
-<body data-app-build="8.9.3.10.2.3-purchase-promotion-auto-calculation">
+<body data-app-build="8.9.3.10.2.15.1-batch-add-button-position">
 <div class="app-container">
   
   <div class="header">
@@ -8672,7 +8691,10 @@ textarea::placeholder{
       <section id="purchasePanel" class="finance-section purchase-section" style="display:none;">
     <div class="finance-tool-area-head purchase-entry-head">
       <h3 style="margin:0;">🧾 记录采购</h3>
-      <button type="button" class="finance-area-close" id="closePurchaseEntryBtn" aria-label="关闭记录采购">×</button>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+        <button type="button" class="btn btn-outline" id="toggleBatchPurchaseBtn" style="padding:7px 10px;">📦 批量采购</button>
+        <button type="button" class="finance-area-close" id="closePurchaseEntryBtn" aria-label="关闭记录采购">×</button>
+      </div>
     </div>
     <div class="purchase-compact-grid">
 <div class="v2-field"><label>日期</label><input type="text" id="purchaseDate" readonly inputmode="none" placeholder="选择日期"></div>
@@ -8690,6 +8712,7 @@ textarea::placeholder{
           <button type="button" class="btn btn-outline" id="quickAddBranchBtn" style="width:38px; min-width:38px; height:38px; padding:0; flex:0 0 38px; border-radius:50%;">＋</button>
         </div>        
         </div></div>
+<input type="hidden" id="purchaseEditId" value="">
 <div class="v2-field purchase-full"><label>商品 / 食材</label><input id="purchaseItem" placeholder="例如 鸡蛋"></div>
 <div class="v2-field"><label>购买份数</label><input type="number" id="purchaseQty" min="0.01" step="0.01" value="1" placeholder="例如 1"></div>
 <div class="v2-field"><label>购买单位</label><select id="purchaseUnit"><option>盒</option><option>包</option><option>瓶</option><option>袋</option><option>罐</option><option>件</option><option>个</option><option>份</option></select></div>
@@ -8705,8 +8728,25 @@ textarea::placeholder{
 <div class="v2-field purchase-full"><label>商品链接（Shopee/Lazada 可填）</label><input id="purchaseUrl" placeholder="https://..."></div>
 <div class="v2-field purchase-full"><label>备注</label><input id="purchaseNote" placeholder="规格、会员价、优惠券等"></div>
 </div>
+<div id="batchPurchaseAddAction893102151" style="display:none;margin:12px 0 8px;">
+  <button class="btn" id="addBatchPurchaseItemBtn89310215" type="button">＋ 加入采购单</button>
+</div>
+<div id="batchPurchaseTray89310215" style="display:none;" class="purchase-batch-tray">
+  <div class="purchase-batch-head">
+    <div>
+      <b>📦 本次采购单</b>
+      <div class="v2-small">日期、渠道、分店只需选择一次；下面连续加入商品。</div>
+    </div>
+    <span id="batchPurchaseCount89310215" class="purchase-batch-count">0 项</span>
+  </div>
+  <div id="batchPurchaseItems89310215" class="purchase-batch-items"></div>
+  <div id="batchPurchaseSummary89310215" class="purchase-batch-summary">尚未加入商品</div>
+</div>
 <div class="v2-actions">
       <button class="btn" id="savePurchaseBtn">💾 保存采购</button>
+      
+      <button class="btn" id="saveBatchPurchaseBtn89310215" style="display:none;">💾 保存全部</button>
+      <button class="btn btn-outline" id="cancelPurchaseEditBtn" style="display:none;">取消修改</button>
       <button class="btn btn-outline" id="clearPurchaseBtn">清空</button>
       </section>
       <section id="monthlyPurchaseArea" class="finance-section finance-tool-area" style="display:none;">
@@ -9115,7 +9155,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxABKtJZlt2keGtHojTbR6DdEOcBMq5j78u9f2y1L9svoq8lB_9oX1ktSjmzUqrTLU/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxHEDoWrX3zz1aw2Az7KSk54Uj1Ztl8X6f181YIclorVrCAv13C94Nd6GdKGjeE5T8/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9194,7 +9234,7 @@ textarea::placeholder{
     saveInventory:'getInventory',deleteInventoryItem:'getStockState',applyInventoryRecoveryPlan:'getStockState',applyConfirmedInventoryCorrections:'getInventory',saveOrder:'getOrdersState',saveExternalFood:'getExternalFoods',
     saveCustomDish:'getAll',saveDishRecipe:'getDishRecipes',updateFinalDecision:'getOrdersState',
     confirmFinalMenu:'getOrdersState',deleteConfirmedMenu:'getOrdersState',updateShoppingItem:'getOrdersState',
-    savePurchase:'getPurchases',syncPurchaseInventory:'getStockState',savePriceObservation:'getPurchases',
+    savePurchase:'getPurchases',savePurchaseBatch:'getPurchases',syncPurchaseInventory:'getStockState',savePriceObservation:'getPurchases',
     saveStore:'getStores',deleteStore:'getStores',saveFamilyMember:'getFamilyMembers',
     deleteFamilyMember:'getFamilyMembers',saveMealSettings:'getMealSettings',repairMenuStockIntegrity:'getMenuStockIntegrity'
   });
@@ -10868,6 +10908,9 @@ function renderInventoryGrid(){
                   ${p.normalizedCost&&p.normalizedBaseUnit
                     ? `<div class="v2-small">${money(p.normalizedCost)}/${escapeHtml(p.normalizedBaseUnit)}</div>`
                     : ''}
+                  <button type="button" class="btn btn-outline purchase-edit-btn"
+                    onclick="openPurchaseEdit8931026('${String(p.id||'').replace(/'/g,"\\'")}')"
+                    style="margin-top:6px;padding:4px 9px;font-size:.72rem;">✏️ 修改</button>
                 </div>
               </div>`).join('')}
           </div>
@@ -10884,7 +10927,79 @@ function renderInventoryGrid(){
         <div class="monthly-purchase-groups">${groupHtml}</div>`;
     }
 
+
+    function parsePurchasePromotion8931026(p){
+      const note=String(p&&p.note||'');
+      const promoMatch=note.match(/(?:^|[;·]\s*)Promotion=(NONE|AMOUNT|PERCENT|B1F1|B2F1)/i);
+      const type=promoMatch?String(promoMatch[1]).toUpperCase():(Number(p&&p.discount||0)>0?'AMOUNT':'NONE');
+      let value=0;
+      if(type==='AMOUNT')value=Number(p&&p.discount||0);
+      if(type==='PERCENT'){
+        const m=note.match(/PromotionPercent=([0-9.]+)/i);
+        value=m?Number(m[1]||0):0;
+      }
+      return {type,value};
+    }
+
+    function stripPromotionMetadata8931026(note){
+      return String(note||'')
+        .replace(/\s*·?\s*Promotion=(?:NONE|AMOUNT|PERCENT|B1F1|B2F1)(?:;\s*PromotionValueRM=[^;·]+)?(?:;\s*PromotionPercent=[^;·]+)?(?:;\s*PromotionFreeQty=[^;·]+)?(?:;\s*PromotionDiscountRM=[^;·]+)?/ig,'')
+        .trim();
+    }
+
+    function setPurchaseEditMode8931026(purchase){
+      const id=String(purchase&&purchase.id||'');
+      document.getElementById('purchaseEditId').value=id;
+      const saveBtn=document.getElementById('savePurchaseBtn');
+      if(saveBtn)saveBtn.textContent=id?'💾 保存修改':'💾 保存采购';
+      const cancelBtn=document.getElementById('cancelPurchaseEditBtn');
+      if(cancelBtn)cancelBtn.style.display=id?'':'none';
+    }
+
+    function openPurchaseEdit8931026(purchaseId){
+      const p=(Array.isArray(purchases)?purchases:[]).find(x=>String(x.id||'')===String(purchaseId||''));
+      if(!p)return alert('找不到这笔采购记录');
+
+      setPurchaseEditMode8931026(p);
+
+      document.getElementById('purchaseDate').value=String(p.date||'');
+      document.getElementById('purchaseSourceType').value=String(p.sourceType||'Supermarket');
+      renderSourceOptions();
+      document.getElementById('purchaseSource').value=String(p.source||'');
+      renderBranchOptions?.();
+      document.getElementById('purchaseBranch').value=String(p.branch||'');
+      document.getElementById('purchaseItem').value=String(p.item||'');
+      document.getElementById('purchaseQty').value=Number(p.qty||0);
+      document.getElementById('purchaseUnit').value=String(p.unit||'份');
+      document.getElementById('purchasePackageSize').value=Number(p.packageSize||0)||'';
+      document.getElementById('purchaseMeasureUnit').value=String(p.measureUnit||'');
+      document.getElementById('purchaseUnitPrice').value=Number(p.unitPrice||0);
+      document.getElementById('purchaseShipping').value=Number(p.shipping||0);
+      document.getElementById('purchaseCategory').value=String(p.category||'');
+      document.getElementById('purchaseUrl').value=String(p.url||'');
+
+      const promo=parsePurchasePromotion8931026(p);
+      document.getElementById('purchasePromoType').value=promo.type;
+      document.getElementById('purchasePromoValue').value=promo.value||0;
+      document.getElementById('purchaseNote').value=stripPromotionMetadata8931026(p.note||'');
+      syncPurchasePromoUi8931023();
+
+      document.getElementById('purchaseFinancePanel')?.scrollIntoView({behavior:'smooth',block:'start'});
+      setTimeout(()=>document.getElementById('purchaseUnitPrice')?.focus(),200);
+    }
+    window.openPurchaseEdit8931026=openPurchaseEdit8931026;
+
+    function cancelPurchaseEdit8931026(){
+      setPurchaseEditMode8931026(null);
+      clearPurchaseForm();
+    }
+
     function clearPurchaseForm(){
+      document.getElementById('purchaseEditId').value='';
+      const saveBtn=document.getElementById('savePurchaseBtn');
+      if(saveBtn)saveBtn.textContent='💾 保存采购';
+      const cancelBtn=document.getElementById('cancelPurchaseEditBtn');
+      if(cancelBtn)cancelBtn.style.display='none';
       document.getElementById('purchaseDate').value = formatDate(new Date());
       document.getElementById('purchaseSourceType').value = 'Supermarket';
       document.getElementById('purchaseSource').value = '';
@@ -10976,6 +11091,251 @@ function renderInventoryGrid(){
     }
     setTimeout(installPurchasePromotionEvents8931023,0);
 
+
+/* =========================================================
+   8.9.3.10.2.15 · Batch Purchase Entry UI
+   ========================================================= */
+let batchPurchaseMode89310215=false;
+let batchPurchaseDraft89310215=[];
+let batchPurchaseEditingIndex89310215=-1;
+
+function batchPurchaseRequestId89310215(){
+  const key='batchPurchaseRequestId89310215';
+  let id='';
+  try{id=sessionStorage.getItem(key)||'';}catch(_){}
+  if(!id){
+    id='purchase_batch_'+(crypto?.randomUUID?.()||(`${Date.now()}_${Math.random().toString(36).slice(2)}`));
+    try{sessionStorage.setItem(key,id);}catch(_){}
+  }
+  return id;
+}
+function clearBatchPurchaseRequestId89310215(){
+  try{sessionStorage.removeItem('batchPurchaseRequestId89310215');}catch(_){}
+}
+
+function collectPurchaseLine89310215(){
+  const promoCalc=calculatePurchasePromotion8931023();
+  if(promoCalc.error)throw new Error(promoCalc.error);
+  const line={
+    item:document.getElementById('purchaseItem').value.trim(),
+    qty:Number(document.getElementById('purchaseQty').value||0),
+    unit:document.getElementById('purchaseUnit').value,
+    packageSize:Number(document.getElementById('purchasePackageSize').value||0),
+    measureUnit:document.getElementById('purchaseMeasureUnit').value,
+    unitPrice:Number(document.getElementById('purchaseUnitPrice').value||0),
+    shipping:Number(document.getElementById('purchaseShipping').value||0),
+    promoType:promoCalc.promoType,
+    promoValue:promoCalc.promoValue,
+    discount:promoCalc.discount,
+    total:promoCalc.total,
+    category:document.getElementById('purchaseCategory').value.trim(),
+    note:document.getElementById('purchaseNote').value.trim(),
+    url:document.getElementById('purchaseUrl').value.trim()
+  };
+  if(!line.item)throw new Error('请输入商品/食材');
+  if(!(line.qty>0))throw new Error('数量必须大于 0');
+  if(line.unitPrice<0)throw new Error('小票价格不能小于 0');
+  return line;
+}
+
+function clearPurchaseItemFields89310215(){
+  document.getElementById('purchaseItem').value='';
+  document.getElementById('purchaseQty').value='1';
+  document.getElementById('purchaseUnitPrice').value='';
+  document.getElementById('purchasePackageSize').value='';
+  document.getElementById('purchaseMeasureUnit').value='';
+  document.getElementById('purchaseShipping').value='0';
+  document.getElementById('purchasePromoType').value='NONE';
+  document.getElementById('purchasePromoValue').value='0';
+  document.getElementById('purchaseDiscount').value='0';
+  document.getElementById('purchaseUrl').value='';
+  document.getElementById('purchaseNote').value='';
+  batchPurchaseEditingIndex89310215=-1;
+  const add=document.getElementById('addBatchPurchaseItemBtn89310215');
+  if(add)add.textContent='＋ 加入采购单';
+  syncPurchasePromoUi8931023();
+  document.getElementById('purchaseItem')?.focus();
+}
+
+function renderBatchPurchaseTray89310215(){
+  const wrap=document.getElementById('batchPurchaseItems89310215');
+  const count=document.getElementById('batchPurchaseCount89310215');
+  const summary=document.getElementById('batchPurchaseSummary89310215');
+  if(count)count.textContent=`${batchPurchaseDraft89310215.length} 项`;
+  if(!wrap||!summary)return;
+
+  if(!batchPurchaseDraft89310215.length){
+    wrap.innerHTML='<div class="v2-small" style="padding:6px 2px;">先填写上面的商品资料，再按「＋ 加入采购单」。</div>';
+    summary.textContent='尚未加入商品';
+    return;
+  }
+
+  wrap.innerHTML=batchPurchaseDraft89310215.map((x,i)=>`
+    <div class="purchase-batch-item">
+      <div class="purchase-batch-item-main">
+        <b>${i+1}. ${escapeHtml(x.item)}</b>
+        <div class="purchase-batch-item-meta">
+          ${escapeHtml(String(x.qty))} ${escapeHtml(x.unit)} · RM${Number(x.unitPrice||0).toFixed(2)}
+          ${x.promoType&&x.promoType!=='NONE'?` · ${escapeHtml(x.promoType)} 优惠 RM${Number(x.discount||0).toFixed(2)}`:''}
+          ${Number(x.shipping||0)>0?` · 运费 RM${Number(x.shipping).toFixed(2)}`:''}
+          · 实付 <b>RM${Number(x.total||0).toFixed(2)}</b>
+        </div>
+      </div>
+      <div class="purchase-batch-item-actions">
+        <button type="button" class="btn btn-outline" onclick="editBatchPurchaseItem89310215(${i})">修改</button>
+        <button type="button" class="btn btn-outline" onclick="removeBatchPurchaseItem89310215(${i})">删除</button>
+      </div>
+    </div>
+  `).join('');
+
+  const merchandise=batchPurchaseDraft89310215.reduce((s,x)=>s+Number(x.qty||0)*Number(x.unitPrice||0),0);
+  const discount=batchPurchaseDraft89310215.reduce((s,x)=>s+Number(x.discount||0),0);
+  const shipping=batchPurchaseDraft89310215.reduce((s,x)=>s+Number(x.shipping||0),0);
+  const total=batchPurchaseDraft89310215.reduce((s,x)=>s+Number(x.total||0),0);
+  summary.innerHTML=`商品 <b>${batchPurchaseDraft89310215.length}</b> 项 · 原价 RM${merchandise.toFixed(2)} · 优惠 RM${discount.toFixed(2)} · 运费 RM${shipping.toFixed(2)} · <b>总计 RM${total.toFixed(2)}</b>`;
+}
+
+window.removeBatchPurchaseItem89310215=function(index){
+  if(index<0||index>=batchPurchaseDraft89310215.length)return;
+  batchPurchaseDraft89310215.splice(index,1);
+  if(batchPurchaseEditingIndex89310215===index)clearPurchaseItemFields89310215();
+  renderBatchPurchaseTray89310215();
+};
+
+window.editBatchPurchaseItem89310215=function(index){
+  const x=batchPurchaseDraft89310215[index];
+  if(!x)return;
+  batchPurchaseEditingIndex89310215=index;
+  document.getElementById('purchaseItem').value=x.item||'';
+  document.getElementById('purchaseQty').value=x.qty||1;
+  document.getElementById('purchaseUnit').value=x.unit||'份';
+  document.getElementById('purchasePackageSize').value=x.packageSize||'';
+  document.getElementById('purchaseMeasureUnit').value=x.measureUnit||'';
+  document.getElementById('purchaseUnitPrice').value=x.unitPrice??'';
+  document.getElementById('purchaseShipping').value=x.shipping||0;
+  document.getElementById('purchasePromoType').value=x.promoType||'NONE';
+  document.getElementById('purchasePromoValue').value=x.promoValue||0;
+  document.getElementById('purchaseCategory').value=x.category||'其他';
+  document.getElementById('purchaseUrl').value=x.url||'';
+  document.getElementById('purchaseNote').value=x.note||'';
+  const add=document.getElementById('addBatchPurchaseItemBtn89310215');
+  if(add)add.textContent='✓ 更新采购单商品';
+  syncPurchasePromoUi8931023();
+  document.getElementById('purchaseItem')?.scrollIntoView({behavior:'smooth',block:'center'});
+};
+
+function addBatchPurchaseItem89310215(){
+  try{
+    const source=String(document.getElementById('purchaseSource')?.value||'').trim();
+    if(!source)return alert('请先选择或添加购买渠道');
+    const line=collectPurchaseLine89310215();
+    if(batchPurchaseEditingIndex89310215>=0){
+      batchPurchaseDraft89310215[batchPurchaseEditingIndex89310215]=line;
+    }else{
+      batchPurchaseDraft89310215.push(line);
+    }
+    clearPurchaseItemFields89310215();
+    renderBatchPurchaseTray89310215();
+  }catch(e){alert(e.message||String(e));}
+}
+
+function setBatchPurchaseMode89310215(enabled){
+  const editId=String(document.getElementById('purchaseEditId')?.value||'').trim();
+  if(enabled&&editId){
+    alert('修改既有采购时请使用单笔模式；批量模式用于新增采购。');
+    return;
+  }
+  batchPurchaseMode89310215=!!enabled;
+  const panel=document.getElementById('purchasePanel');
+  panel?.classList.toggle('batch-purchase-mode89310215',batchPurchaseMode89310215);
+
+  const tray=document.getElementById('batchPurchaseTray89310215');
+  const addAction=document.getElementById('batchPurchaseAddAction893102151');
+  const saveSingle=document.getElementById('savePurchaseBtn');
+  const add=document.getElementById('addBatchPurchaseItemBtn89310215');
+  const saveBatch=document.getElementById('saveBatchPurchaseBtn89310215');
+  const toggle=document.getElementById('toggleBatchPurchaseBtn');
+
+  if(tray)tray.style.display=batchPurchaseMode89310215?'':'none';
+  if(addAction)addAction.style.display=batchPurchaseMode89310215?'':'none';
+  if(saveSingle)saveSingle.style.display=batchPurchaseMode89310215?'none':'';
+  if(add)add.style.display=batchPurchaseMode89310215?'':'none';
+  if(saveBatch)saveBatch.style.display=batchPurchaseMode89310215?'':'none';
+  if(toggle)toggle.textContent=batchPurchaseMode89310215?'↩ 单笔采购':'📦 批量采购';
+
+  renderBatchPurchaseTray89310215();
+}
+
+async function saveBatchPurchase89310215(){
+  const btn=document.getElementById('saveBatchPurchaseBtn89310215');
+  if(!btn||btn.dataset.saving==='1')return;
+  try{
+    if(!batchPurchaseDraft89310215.length)return alert('请先加入至少一个商品');
+    const common={
+      date:document.getElementById('purchaseDate').value,
+      sourceType:document.getElementById('purchaseSourceType').value,
+      source:String(document.getElementById('purchaseSource').value||'').trim(),
+      branch:String(document.getElementById('purchaseBranch').value||'').trim()
+    };
+    if(!common.date)return alert('请选择采购日期');
+    if(!common.source)return alert('请先选择或添加购买渠道');
+
+    const snapshot=batchPurchaseDraft89310215.map(x=>({...x}));
+    const total=snapshot.reduce((s,x)=>s+Number(x.total||0),0);
+    const batchRequestId=batchPurchaseRequestId89310215();
+
+    btn.dataset.saving='1';
+    setSavingState(btn,true,`保存 ${snapshot.length} 项…`);
+
+    const data=await apiRequest('savePurchaseBatch',{
+      batch:{common,items:snapshot,batchRequestId}
+    },'getPurchases');
+
+    applyPurchaseState(data);
+    renderSourceOptions();
+    renderMonthlyPurchaseSummary();
+    renderPriceComparison();
+
+    clearBatchPurchaseRequestId89310215();
+    batchPurchaseDraft89310215=[];
+    renderBatchPurchaseTray89310215();
+    clearPurchaseItemFields89310215();
+
+    alert(`✅ 批量采购已保存：${snapshot.length} 项 · RM${total.toFixed(2)}`);
+
+    if(typeof refreshProcurementClosedLoop==='function')refreshProcurementClosedLoop();
+    else if(typeof refreshProcurementChain==='function')refreshProcurementChain();
+  }catch(e){
+    if(typeof refreshIntegratedViews==='function')refreshIntegratedViews();
+    alert(`批量采购保存失败：${e.message||e}`);
+  }finally{
+    if(btn){
+      btn.dataset.saving='0';
+      setSavingState(btn,false,'💾 保存全部');
+    }
+  }
+}
+
+function installBatchPurchaseEvents89310215(){
+  const toggle=document.getElementById('toggleBatchPurchaseBtn');
+  const add=document.getElementById('addBatchPurchaseItemBtn89310215');
+  const save=document.getElementById('saveBatchPurchaseBtn89310215');
+  if(toggle&&toggle.dataset.batch89310215!=='1'){
+    toggle.addEventListener('click',()=>setBatchPurchaseMode89310215(!batchPurchaseMode89310215));
+    toggle.dataset.batch89310215='1';
+  }
+  if(add&&add.dataset.batch89310215!=='1'){
+    add.addEventListener('click',addBatchPurchaseItem89310215);
+    add.dataset.batch89310215='1';
+  }
+  if(save&&save.dataset.batch89310215!=='1'){
+    save.addEventListener('click',saveBatchPurchase89310215);
+    save.dataset.batch89310215='1';
+  }
+}
+setTimeout(installBatchPurchaseEvents89310215,0);
+
+
 async function savePurchaseUI(){
       const btn = document.getElementById('savePurchaseBtn');
       if(!btn || btn.dataset.saving==='1')return;
@@ -10983,7 +11343,9 @@ async function savePurchaseUI(){
       try {
         const promoCalc=calculatePurchasePromotion8931023();
         if(promoCalc.error)return alert(promoCalc.error);
+        const editId=String(document.getElementById('purchaseEditId')?.value||'').trim();
         const purchase = {
+          id: editId,
           date: document.getElementById('purchaseDate').value,
           sourceType: document.getElementById('purchaseSourceType').value,
           source: document.getElementById('purchaseSource').value.trim(),
@@ -11008,12 +11370,14 @@ async function savePurchaseUI(){
         if (!(purchase.qty > 0)) return alert('数量必须大于 0');
         if (purchase.unitPrice < 0) return alert('小票价格不能小于 0');
 
-        purchase.requestId=purchaseRequestIdFor(purchase);
+        if(!editId) purchase.requestId=purchaseRequestIdFor(purchase);
 
         btn.dataset.saving='1';
         setSavingState(btn,true,'保存采购中…');
 
-        const data = await apiRequest('savePurchase', {purchase}, 'getPurchases');
+        const data = editId
+          ? await apiRequest('updatePurchase', {purchase}, 'getPurchases')
+          : await apiRequest('savePurchase', {purchase}, 'getPurchases');
         applyPurchaseState(data);
         renderSourceOptions();
         renderMonthlyPurchaseSummary();
@@ -11021,10 +11385,12 @@ async function savePurchaseUI(){
 
         clearPurchaseRequestId();
 
-        alert(`✅ 采购已保存：${money(
-          data.purchases?.at(-1)?.total ||
-          purchase.qty*purchase.unitPrice+purchase.shipping-purchase.discount
-        )}`);
+        alert(editId
+          ? `✅ 采购已修改并同步库存流水：${purchase.item}`
+          : `✅ 采购已保存：${money(
+              data.purchases?.at(-1)?.total ||
+              purchase.qty*purchase.unitPrice+purchase.shipping-purchase.discount
+            )}`);
 
         clearPurchaseForm();
 
@@ -17335,19 +17701,33 @@ function clearProductionConfirmRequestId89310_(){
 async function confirmFinalMenuWithReceipt89310_(ids,meal){
   const requestId=productionConfirmRequestId89310_(ids,meal);
   await apiRequest('confirmFinalMenu',{ids:[...(ids||[])],meal:String(meal||''),requestId});
-  const receipt=await waitPostReceipt8902(requestId,14,500);
-  if(!receipt?.success || !receipt?.received){
+  const envelope=await waitPostReceipt8902(requestId,14,500);
+
+  if(!envelope?.success || !envelope?.received){
     throw new Error(`Production FIFO 确认结果未能验证（requestId=${requestId}）。请先刷新资料，不要连续重复确认。`);
   }
-  if(receipt.status==='ERROR'){
-    throw new Error(String(receipt.error||'Production FIFO confirmation failed'));
+
+  // 8.9.3.10.2.13:
+  // getPostTransportReceipt8902_ returns transport metadata at the top level,
+  // while action/result fields live inside envelope.receipt. Previous frontend
+  // code incorrectly read resultSuccess/resultStatus from the envelope itself,
+  // so a genuinely committed backend transaction was shown as
+  // "Production FIFO backend rejected confirmation".
+  const receipt=(envelope.receipt && typeof envelope.receipt==='object')
+    ? envelope.receipt
+    : envelope;
+
+  const transportStatus=String(receipt.status||envelope.status||'UNKNOWN');
+  if(transportStatus==='ERROR'){
+    throw new Error(String(receipt.error||envelope.error||'Production FIFO confirmation failed'));
   }
-  if(receipt.status!=='SUCCESS'){
-    throw new Error(`Production FIFO 确认状态不确定：${String(receipt.status||'UNKNOWN')}。请勿重复提交。`);
+  if(transportStatus!=='SUCCESS'){
+    throw new Error(`Production FIFO 确认状态不确定：${transportStatus}。请勿重复提交。`);
   }
   if(receipt.resultSuccess!==true){
     throw new Error(String(receipt.resultError||receipt.resultStatus||'Production FIFO backend rejected confirmation'));
   }
+
   clearProductionConfirmRequestId89310_();
   return await apiGet({action:'getOrdersState'});
 }
@@ -17436,5 +17816,161 @@ window.executeForwardFifoControlled89391=async function(){
 };
 </script>
 
+
+<script>
+window.auditPurchaseLedgerDuplicates8931024=async function(item,date){
+  let result;
+  try{
+    result=await apiGet({action:'auditPurchaseLedgerDuplicates',item:String(item||''),date:String(date||'')});
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2.4] Purchase ledger duplicate audit',result);
+  return result;
+};
+</script>
+
+<script>
+window.previewPorkPurchaseExactCleanup8931025=async function(){
+  let result;
+  try{
+    result=await apiGet({action:'previewPorkPurchaseExactCleanup'});
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2.5] Exact pork purchase cleanup preview',result);
+  return result;
+};
+</script>
+
+<script>
+setTimeout(()=>{
+  const b=document.getElementById('cancelPurchaseEditBtn');
+  if(b && b.dataset.editListener8931026!=='1'){
+    b.addEventListener('click',cancelPurchaseEdit8931026);
+    b.dataset.editListener8931026='1';
+  }
+},0);
+</script>
+
+
+<script>
+window.previewPorkCleanup8931027=async function(){
+  let result;
+  try{
+    result=await apiGet({action:'previewPorkPurchaseExactCleanup'});
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2.7] Pork cleanup preview',result);
+  return result;
+};
+
+window.executePorkCleanup8931027=async function(confirmationToken){
+  const token=String(confirmationToken||'').trim();
+  if(!token)throw new Error('confirmationToken is required');
+  let result;
+  try{
+    result=await apiRequest('executePorkPurchaseExactCleanup',{confirmationToken:token},'getStockState');
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2.7] Pork cleanup execution',result);
+  return result;
+};
+</script>
+
+
+<script>
+window.auditProductionSept38931028=async function(){
+  let result;
+  try{
+    result=await apiGet({action:'auditProductionSept3'});
+  }catch(err){
+    result={success:false,error:err?.message||String(err)};
+  }
+  console.log('[8.9.3.10.2.8] Sept 3 production read-only audit',result);
+  return result;
+};
+</script>
+
+<script>
+window.diagnoseProductionSept3Failure8931029=async function(){
+  let result;
+  try{
+    result=await apiGet({action:'diagnoseProductionSept3Failure'});
+  }catch(err){
+    result={
+      success:false,
+      error:err?.message||String(err),
+      stack:err?.stack||''
+    };
+  }
+  console.log('[8.9.3.10.2.9] Production confirm failure diagnostic',result);
+  return result;
+};
+window.addEventListener('unhandledrejection',e=>{
+  console.error('[8.9.3.10.2.9] unhandled rejection',e.reason);
+});
+</script>
+
+<script>
+window.getLatestProductionConfirmFailureReceipt89310210=async function(){
+  let result;
+  try{result=await apiGet({action:'getLatestProductionConfirmFailureReceipt'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2.10] latest production confirm receipt',result);
+  return result;
+};
+</script>
+
+<script>
+window.auditMultiDishProductionSequencingFix89310211=async function(){
+  let result;
+  try{result=await apiGet({action:'auditMultiDishProductionSequencingFix'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2.11] multi-dish sequencing fix audit',result);
+  return result;
+};
+</script>
+
+<script>
+window.auditDepletedShadowReadyFix89310212=async function(){
+  let result;
+  try{result=await apiGet({action:'auditDepletedShadowReadyFix'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2.12] depleted shadow-ready fix audit',result);
+  return result;
+};
+</script>
+
+<script>
+window.auditSept3PostConfirm89310213=async function(){
+  let result;
+  try{result=await apiGet({action:'auditSept3PostConfirm'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2.13] Sept 3 post-confirm audit',result);
+  return result;
+};
+</script>
+
+<script>
+window.auditInventoryOutflowReadinessFix89310214=async function(){
+  let result;
+  try{result=await apiGet({action:'auditInventoryOutflowReadinessFix'});}
+  catch(err){result={success:false,error:err?.message||String(err)};}
+  console.log('[8.9.3.10.2.14] inventory outflow readiness audit',result);
+  return result;
+};
+</script>
 </body>
+
+
+
+
+
+
+
+
+
 </html>
