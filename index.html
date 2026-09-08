@@ -8367,7 +8367,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17-ai-menu-artwork-integration">
+<body data-app-build="8.9.3.10.2.17.1-production-recipe-readiness-diagnostics">
 <div class="app-container">
   
   <div class="header">
@@ -9189,7 +9189,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyQ43BAdS7R_6FxgN-AJlLWO3eciBKNVjysqxplE9CK2pr3Mft_bOLvpZrFkPr52wI/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyB3fgULqYdcCNOqenmgitzwBflPqPqAfjjaZHyEkbuWnluDAmCGVgOFuWXI8rNVkI/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -15020,11 +15020,66 @@ function getCategoryEmoji(cat){
       container.querySelectorAll('input[type="checkbox"]:not(:disabled)').forEach(cb=>cb.addEventListener('change',e=>{const id=e.target.dataset.id;if(e.target.checked)stagedFinalIds.add(id);else stagedFinalIds.delete(id);}));
     }
 
+
+    async function productionMenuReadinessPreflight893102171_(ids){
+      const result=await apiRequest('diagnoseProductionMenuReadiness',{ids:[...(ids||[])]},null);
+      if(!result || result.status==='PRODUCTION_MENU_READINESS_READY') return {ready:true,result};
+
+      const blocked=(result.rows||[]).filter(r=>{
+        const s=String(r.status||'');
+        return s!=='PRODUCTION_FIFO_PREVIEW_READY' && s!=='READY' && s!=='EXTERNAL_NO_STOCK';
+      });
+      const lines=blocked.map(r=>{
+        const reasons=(r.blockers||[]).map(b=>String(b.reason||'BLOCKED'));
+        let extra='';
+        if(reasons.includes('RECIPE_DETAILS_REQUIRED')){
+          const raw=(r.recipeIngredients||[]).filter(x=>!x.detailed);
+          if(!r.dishRecipeExists || !(r.dishRecipeIngredientCount>0)){
+            extra='（没有可用的详细菜谱）';
+          }else if(raw.length){
+            extra='（缺数量/单位：'+raw.map(x=>x.name||'未命名食材').join('、')+'）';
+          }else{
+            extra='（详细食材数量/单位不足）';
+          }
+        }
+        return `• ${r.dish||r.id}: ${reasons.join(', ')||r.status}${extra}`;
+      });
+
+      return {
+        ready:false,
+        result,
+        message:
+          '以下菜品尚不能进行 Production FIFO 确认：\n\n'+
+          lines.join('\n')+
+          '\n\n请先补齐对应菜谱的食材数量和单位；没有写数量的食材不会被 Production FIFO 接受。'
+      };
+    }
+
     async function confirmStagedFinalMenu(){
       const ids=[...stagedFinalIds], meal=document.getElementById('finalMealType').value; if(!ids.length)return alert('请先勾选要加入最终菜单的菜品'); if(!meal)return alert('请选择早餐、午餐或晚餐');
       const dates=[...new Set(finalDecisions.filter(x=>ids.includes(x.id)).map(x=>x.date))]; if(dates.length>1)return alert('一次只能确认同一天的菜单，请分日期确认');
-      const btn=document.getElementById('confirmFinalMenuBtn');setSavingState(btn,true,'确认中…');
-      try{const data=await confirmFinalMenuWithReceipt89310_(ids,meal);applyOrdersState(data);stagedFinalIds.clear();renderFinalDecisions();renderShoppingList();renderConfirmedMenus();renderDailyNutrition();renderSidebarSnapshot();alert(`✅ 已确认${meal}菜单（Production FIFO）`);}catch(err){alert('确认菜单失败：'+err.message);}finally{setSavingState(btn,false);}
+      const btn=document.getElementById('confirmFinalMenuBtn');setSavingState(btn,true,'检查菜谱…');
+      try{
+        const preflight=await productionMenuReadinessPreflight893102171_(ids);
+        if(!preflight.ready){
+          alert(preflight.message);
+          return;
+        }
+        setSavingState(btn,true,'确认中…');
+        const data=await confirmFinalMenuWithReceipt89310_(ids,meal);
+        applyOrdersState(data);
+        stagedFinalIds.clear();
+        renderFinalDecisions();
+        renderShoppingList();
+        renderConfirmedMenus();
+        renderDailyNutrition();
+        renderSidebarSnapshot();
+        alert(`✅ 已确认${meal}菜单（Production FIFO）`);
+      }catch(err){
+        alert('确认菜单失败：'+err.message);
+      }finally{
+        setSavingState(btn,false);
+      }
     }
 
     function openPurchaseFromShopping(itemName){
