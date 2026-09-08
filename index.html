@@ -3716,6 +3716,40 @@ textarea::placeholder{
   font-size:2.4rem;
   margin-bottom:2px;
 }
+
+/* ===== 8.9.3.10.2.17 AI Menu Artwork ===== */
+.dish-photo-box{
+  position:relative;
+  height:auto !important;
+  aspect-ratio:auto !important;
+  min-height:88px;
+  overflow:hidden;
+  padding:0 !important;
+}
+.dish-photo-box.has-ai-artwork{
+  background:var(--app-surface-2);
+  align-items:stretch;
+}
+.dish-ai-artwork{
+  display:block;
+  width:100%;
+  height:auto;
+  max-width:100%;
+  border-radius:14px;
+  object-fit:contain;
+  object-position:center;
+  background:var(--app-surface-2);
+}
+.dish-photo-fallback{
+  width:100%;
+  min-height:88px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:2.4rem;
+  background:linear-gradient(145deg,var(--app-surface-3),var(--app-surface-2));
+}
+
 .dish-body{
   display:flex;
   flex-direction:column;
@@ -8333,7 +8367,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.15.1-batch-add-button-position">
+<body data-app-build="8.9.3.10.2.17-ai-menu-artwork-integration">
 <div class="app-container">
   
   <div class="header">
@@ -9155,7 +9189,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxHEDoWrX3zz1aw2Az7KSk54Uj1Ztl8X6f181YIclorVrCAv13C94Nd6GdKGjeE5T8/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyQ43BAdS7R_6FxgN-AJlLWO3eciBKNVjysqxplE9CK2pr3Mft_bOLvpZrFkPr52wI/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -14697,6 +14731,25 @@ updateShellRightDate();
       });
     }
 
+
+    // ===== 8.9.3.10.2.17 AI Menu Artwork Library =====
+    // Put the TRUE_GRID WebP files in a folder named `menu-artwork`
+    // beside this index.html. Mapping is by dish name, so built-in and
+    // runtime/custom dishes can both resolve safely without changing recipes.
+    const MENU_ARTWORK_BASE = './menu-artwork/';
+    const MENU_ARTWORK_BY_NAME = Object.freeze({"白饭":{"id":"MENU-AI-001","file":"MENU-AI-001.webp"},"白切鸡":{"id":"MENU-AI-002","file":"MENU-AI-002.webp"},"白灼芥蓝":{"id":"MENU-AI-003","file":"MENU-AI-003.webp"},"菠菜鸡蛋饼":{"id":"MENU-AI-004","file":"MENU-AI-004.webp"},"叉烧肉":{"id":"MENU-AI-005","file":"MENU-AI-005.webp"},"茶叶蛋":{"id":"MENU-AI-006","file":"MENU-AI-006.webp"},"炒合菜":{"id":"MENU-AI-007","file":"MENU-AI-007.webp"},"炒荷兰豆":{"id":"MENU-AI-008","file":"MENU-AI-008.webp"},"炒空心菜":{"id":"MENU-AI-009","file":"MENU-AI-009.webp"},"炒南瓜":{"id":"MENU-AI-010","file":"MENU-AI-010.webp"},"葱油拌面":{"id":"MENU-AI-011","file":"MENU-AI-011.webp"},"醋溜白菜":{"id":"MENU-AI-012","file":"MENU-AI-012.webp"},"蛋包饭":{"id":"MENU-AI-013","file":"MENU-AI-013.webp"},"蛋炒饭":{"id":"MENU-AI-014","file":"MENU-AI-014.webp"},"蛋饺":{"id":"MENU-AI-015","file":"MENU-AI-015.webp"},"地三鲜":{"id":"MENU-AI-016","file":"MENU-AI-016.webp"},"冬瓜排骨汤":{"id":"MENU-AI-017","file":"MENU-AI-017.webp"},"豆腐沙拉":{"id":"MENU-AI-018","file":"MENU-AI-018.webp"},"豆腐味噌汤":{"id":"MENU-AI-019","file":"MENU-AI-019.webp"},"豆腐蒸蛋":{"id":"MENU-AI-020","file":"MENU-AI-020.webp"},"豆花":{"id":"MENU-AI-021","file":"MENU-AI-021.webp"},"番茄炒蛋":{"id":"MENU-AI-022","file":"MENU-AI-022.webp"},"番茄马铃薯牛肉汤":{"id":"MENU-AI-023","file":"MENU-AI-023.webp"},"番茄意大利面":{"id":"MENU-AI-024","file":"MENU-AI-024.webp"},"腐乳炒空心菜":{"id":"MENU-AI-025","file":"MENU-AI-025.webp"},"腐竹烧肉":{"id":"MENU-AI-026","file":"MENU-AI-026.webp"},"干煸四季豆":{"id":"MENU-AI-027","file":"MENU-AI-027.webp"},"干锅虾":{"id":"MENU-AI-028","file":"MENU-AI-028.webp"},"宫保鸡丁":{"id":"MENU-AI-029","file":"MENU-AI-029.webp"},"韩式拌豆芽":{"id":"MENU-AI-030","file":"MENU-AI-030.webp"},"韩式拌饭":{"id":"MENU-AI-031","file":"MENU-AI-031.webp"},"韩式豆腐汤":{"id":"MENU-AI-032","file":"MENU-AI-032.webp"},"韩式鸡蛋卷":{"id":"MENU-AI-033","file":"MENU-AI-033.webp"},"韩式烤肉":{"id":"MENU-AI-034","file":"MENU-AI-034.webp"},"韩式辣炒猪肉":{"id":"MENU-AI-035","file":"MENU-AI-035.webp"},"韩式辣豆腐":{"id":"MENU-AI-036","file":"MENU-AI-036.webp"},"韩式辛奇汤":{"id":"MENU-AI-037","file":"MENU-AI-037.webp"},"蚝油生菜":{"id":"MENU-AI-038","file":"MENU-AI-038.webp"},"黑豆排骨汤":{"id":"MENU-AI-039","file":"MENU-AI-039.webp"},"黑椒牛柳":{"id":"MENU-AI-040","file":"MENU-AI-040.webp"},"红烧豆腐":{"id":"MENU-AI-041","file":"MENU-AI-041.webp"},"红烧牛腩":{"id":"MENU-AI-042","file":"MENU-AI-042.webp"},"红烧肉":{"id":"MENU-AI-043","file":"MENU-AI-043.webp"},"回锅肉":{"id":"MENU-AI-044","file":"MENU-AI-044.webp"},"家常豆腐":{"id":"MENU-AI-045","file":"MENU-AI-045.webp"},"家常炖豆腐":{"id":"MENU-AI-046","file":"MENU-AI-046.webp"},"煎牛排":{"id":"MENU-AI-047","file":"MENU-AI-047.webp"},"煎猪排":{"id":"MENU-AI-048","file":"MENU-AI-048.webp"},"酱油炒面":{"id":"MENU-AI-049","file":"MENU-AI-049.webp"},"酱油溏心蛋":{"id":"MENU-AI-050","file":"MENU-AI-050.webp"},"京酱肉丝":{"id":"MENU-AI-051","file":"MENU-AI-051.webp"},"韭菜炒蛋":{"id":"MENU-AI-052","file":"MENU-AI-052.webp"},"韭菜盒子":{"id":"MENU-AI-053","file":"MENU-AI-053.webp"},"咖喱饭":{"id":"MENU-AI-054","file":"MENU-AI-054.webp"},"咖喱鸡肉":{"id":"MENU-AI-055","file":"MENU-AI-055.webp"},"烤豆腐":{"id":"MENU-AI-056","file":"MENU-AI-056.webp"},"烤蔬菜拼盘":{"id":"MENU-AI-057","file":"MENU-AI-057.webp"},"可乐鸡翅":{"id":"MENU-AI-058","file":"MENU-AI-058.webp"},"辣子鸡":{"id":"MENU-AI-059","file":"MENU-AI-059.webp"},"老虎虾":{"id":"MENU-AI-060","file":"MENU-AI-060.webp"},"老黄瓜排骨汤":{"id":"MENU-AI-061","file":"MENU-AI-061.webp"},"莲藕排骨汤":{"id":"MENU-AI-062","file":"MENU-AI-062.webp"},"凉拌豆腐":{"id":"MENU-AI-063","file":"MENU-AI-063.webp"},"凉拌黄瓜":{"id":"MENU-AI-064","file":"MENU-AI-064.webp"},"凉拌木耳":{"id":"MENU-AI-065","file":"MENU-AI-065.webp"},"萝卜排骨汤":{"id":"MENU-AI-066","file":"MENU-AI-066.webp"},"麻婆豆腐":{"id":"MENU-AI-067","file":"MENU-AI-067.webp"},"蜜汁叉烧":{"id":"MENU-AI-068","file":"MENU-AI-068.webp"},"蘑菇烩饭":{"id":"MENU-AI-069","file":"MENU-AI-069.webp"},"南瓜粥":{"id":"MENU-AI-070","file":"MENU-AI-070.webp"},"酿豆腐":{"id":"MENU-AI-071","file":"MENU-AI-071.webp"},"柠檬鸡":{"id":"MENU-AI-072","file":"MENU-AI-072.webp"},"牛肉汉堡":{"id":"MENU-AI-073","file":"MENU-AI-073.webp"},"牛肉汉堡肉":{"id":"MENU-AI-074","file":"MENU-AI-074.webp"},"披萨":{"id":"MENU-AI-075","file":"MENU-AI-075.webp"},"皮蛋豆腐":{"id":"MENU-AI-076","file":"MENU-AI-076.webp"},"青菜豆腐汤":{"id":"MENU-AI-077","file":"MENU-AI-077.webp"},"清炒菠菜":{"id":"MENU-AI-078","file":"MENU-AI-078.webp"},"清炒莴笋":{"id":"MENU-AI-079","file":"MENU-AI-079.webp"},"清炒小白菜":{"id":"MENU-AI-080","file":"MENU-AI-080.webp"},"清炒油麦菜":{"id":"MENU-AI-081","file":"MENU-AI-081.webp"},"清油麻辣汤底":{"id":"MENU-AI-082","file":"MENU-AI-082.webp"},"清蒸虾":{"id":"MENU-AI-083","file":"MENU-AI-083.webp"},"日式茶泡饭":{"id":"MENU-AI-084","file":"MENU-AI-084.webp"},"日式饭团":{"id":"MENU-AI-085","file":"MENU-AI-085.webp"},"日式厚蛋烧":{"id":"MENU-AI-086","file":"MENU-AI-086.webp"},"日式味噌汤":{"id":"MENU-AI-087","file":"MENU-AI-087.webp"},"日式乌冬面":{"id":"MENU-AI-088","file":"MENU-AI-088.webp"},"日式炸鸡":{"id":"MENU-AI-089","file":"MENU-AI-089.webp"},"日式猪排饭":{"id":"MENU-AI-090","file":"MENU-AI-090.webp"},"肉骨茶":{"id":"MENU-AI-091","file":"MENU-AI-091.webp"},"上汤娃娃菜":{"id":"MENU-AI-092","file":"MENU-AI-092.webp"},"蔬菜拼盘":{"id":"MENU-AI-093","file":"MENU-AI-093.webp"},"蔬菜粥":{"id":"MENU-AI-094","file":"MENU-AI-094.webp"},"水煮牛肉":{"id":"MENU-AI-095","file":"MENU-AI-095.webp"},"酸辣土豆丝":{"id":"MENU-AI-096","file":"MENU-AI-096.webp"},"蒜蓉西兰花":{"id":"MENU-AI-097","file":"MENU-AI-097.webp"},"蒜香排骨":{"id":"MENU-AI-098","file":"MENU-AI-098.webp"},"糖醋排骨":{"id":"MENU-AI-099","file":"MENU-AI-099.webp"},"土豆鸡丁":{"id":"MENU-AI-100","file":"MENU-AI-100.webp"},"味噌烤豆腐":{"id":"MENU-AI-101","file":"MENU-AI-101.webp"},"五花肉片":{"id":"MENU-AI-102","file":"MENU-AI-102.webp"},"午餐肉洋葱蛋":{"id":"MENU-AI-103","file":"MENU-AI-103.webp"},"西班牙海鲜饭":{"id":"MENU-AI-104","file":"MENU-AI-104.webp"},"西式炒蛋":{"id":"MENU-AI-105","file":"MENU-AI-105.webp"},"西洋菜排骨汤":{"id":"MENU-AI-106","file":"MENU-AI-106.webp"},"虾仁炒河粉":{"id":"MENU-AI-107","file":"MENU-AI-107.webp"},"虾仁豆腐":{"id":"MENU-AI-108","file":"MENU-AI-108.webp"},"虾仁滑蛋":{"id":"MENU-AI-109","file":"MENU-AI-109.webp"},"咸蛋黄焗南瓜":{"id":"MENU-AI-110","file":"MENU-AI-110.webp"},"香菇油菜":{"id":"MENU-AI-111","file":"MENU-AI-111.webp"},"香煎三文鱼":{"id":"MENU-AI-112","file":"MENU-AI-112.webp"},"蟹黄豆腐":{"id":"MENU-AI-113","file":"MENU-AI-113.webp"},"洋葱炒蛋":{"id":"MENU-AI-114","file":"MENU-AI-114.webp"},"药材鸡汤":{"id":"MENU-AI-115","file":"MENU-AI-115.webp"},"意大利肉酱面":{"id":"MENU-AI-116","file":"MENU-AI-116.webp"},"鱼香肉丝":{"id":"MENU-AI-117","file":"MENU-AI-117.webp"},"玉米饼":{"id":"MENU-AI-118","file":"MENU-AI-118.webp"},"玉子烧":{"id":"MENU-AI-119","file":"MENU-AI-119.webp"},"越南春卷":{"id":"MENU-AI-120","file":"MENU-AI-120.webp"},"炸豆腐":{"id":"MENU-AI-121","file":"MENU-AI-121.webp"},"照烧鸡腿":{"id":"MENU-AI-122","file":"MENU-AI-122.webp"},"蒸牛奶玉米":{"id":"MENU-AI-123","file":"MENU-AI-123.webp"},"蒸水蛋":{"id":"MENU-AI-124","file":"MENU-AI-124.webp"},"蒸玉米":{"id":"MENU-AI-125","file":"MENU-AI-125.webp"},"芝麻菠菜":{"id":"MENU-AI-126","file":"MENU-AI-126.webp"},"孜然羊肉":{"id":"MENU-AI-127","file":"MENU-AI-127.webp"},"ABC汤":{"id":"MENU-AI-128","file":"MENU-AI-128.webp"}});
+    function getDishArtwork89310217_(dish){
+      const name=String(dish&&dish.name||'').trim();
+      const meta=MENU_ARTWORK_BY_NAME[name];
+      return meta ? {id:meta.id,url:MENU_ARTWORK_BASE+meta.file} : null;
+    }
+    function dishPhotoHtml89310217_(dish){
+      const art=getDishArtwork89310217_(dish);
+      const fallback=dish&&dish.isCustom?'✨':getCategoryEmoji(dish&&dish.cat);
+      if(!art) return `<div class="dish-photo-box"><div class="dish-photo-fallback">${fallback}</div></div>`;
+      return `<div class="dish-photo-box has-ai-artwork" data-artwork-id="${art.id}"><img class="dish-ai-artwork" src="${art.url}" alt="" loading="lazy" decoding="async" onerror="this.parentElement.classList.remove('has-ai-artwork');this.parentElement.innerHTML='<div class=&quot;dish-photo-fallback&quot;>${fallback}</div>'"></div>`;
+    }
+
 function getCategoryEmoji(cat){
       const map={'主食':'🍚','青菜':'🥬','肉类':'🍖','蛋类':'🥚','豆腐类':'🧈','汤类':'🍲','海鲜':'🦐','烘焙':'🍞'};
       return map[cat]||'🍽️';
@@ -14729,7 +14782,7 @@ function getCategoryEmoji(cat){
         const card = document.createElement('div');
         card.className = 'dish-card' + (selectedDishes.has(dish.name) ? ' selected' : '');
         card.innerHTML = `
-          <div class="dish-photo-box">${dish.isCustom?'✨':getCategoryEmoji(dish.cat)}</div>
+          ${dishPhotoHtml89310217_(dish)}
           <div class="dish-cat-badge">${escapeHtml(dish.cat)}</div>
           ${dish.isCustom ? '<div class="custom-dish-badge">自定义</div>' : ''}
           <button type="button" class="dish-edit-recipe-btn" data-edit-recipe="${escapeHtml(dish.name)}" title="编辑菜谱">✎</button>
