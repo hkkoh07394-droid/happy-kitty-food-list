@@ -8481,7 +8481,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17.1.5-manual-opening-fifo">
+<body data-app-build="8.9.3.10.2.17.1.6-manual-opening-date-independent-fifo">
 <div class="app-container">
   
   <div class="header">
@@ -9303,7 +9303,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbzEWhz1W-U42GtP__o4xvURVVF32QzQ36yU5U9DILa4qjcfWKdLdguafYVSOYVem8Q/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxVmUKWQ9LMrjcroNyEa-tjS4nX7Y7Ls99SXfic5k5fIGG-RgO6WPtgqhcA18jBZbk/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -15306,7 +15306,7 @@ function getCategoryEmoji(cat){
           (shadowLines.length
             ? '\n\nFIFO Shadow 需要处理的库存项目：\n'+shadowLines.join('\n')
             : '')+
-          '\n\n手动库存若属于 LEGACY_STOCK，系统会自动建立 FIFO Opening Batch，不要求 Purchase 日期；其他异常仍会继续阻挡确认。'
+          '\n\n手动库存若属于 LEGACY_STOCK，系统会自动建立不受 Purchase 日期限制的 FIFO Opening Batch；其他异常仍会继续阻挡确认。'
       };
     }
 
