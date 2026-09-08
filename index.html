@@ -8367,7 +8367,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17.1-production-recipe-readiness-diagnostics">
+<body data-app-build="8.9.3.10.2.17.1.1-production-readiness-readroute-fix">
 <div class="app-container">
   
   <div class="header">
@@ -9189,7 +9189,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyB3fgULqYdcCNOqenmgitzwBflPqPqAfjjaZHyEkbuWnluDAmCGVgOFuWXI8rNVkI/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxM_gPgSk_2FXpcFo7LOufUCQ9suZ8q_IPzockSc4RQlsTP_UqBAYANf6e3Pp-AvSs/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9348,7 +9348,7 @@ async function apiRequest(action,payload={},refreshAction=null){
       'ping','getAll','getInventory','getStockState','getDuplicatePurchaseStock','getFamilyMembers',
       'getPurchases','getStores','getOrdersState','getMealSettings','getDishRecipes',
       'getExternalFoods','getAppStateSnapshot','healthCheck','getApiContract','getMenuStockIntegrity','getWorkbookLayout','getPretestAudit','getSmokeTest','getFunctionalReadiness','getOrderFinalConsistency','getFinalStockCycleAudit','getFinalMenuStockReadiness','getStockLedgerCleanupPreview','getPurchaseStableLedgerPreview','getLegacyPurchaseCleanupPreview','getLegacyPurchaseMatcherPreview','getFinalLegacyPurchaseCleanupPreview','getCanonicalStockLedgerAudit','getUsageLedgerPreview','getUsageSourceMatcherPreview','getUsageCanonicalizationPreview','getUsageLedgerAudit','getRestoreLedgerPreview','getRestoreLedgerAudit','getMultiCycleLedgerAudit','getFinalStockIntegrationAudit','getFinalUsageLifecycleAudit','getControlledRestorePreflight','getControlledReconfirmPreflight','getStockAppliedFlagReconcilePreview','previewRestoreForFinalDecision','previewFinalMenuStock','getPurchasePriceCycleAudit','getShoppingLoopAudit','getHistoricalStockReconcilePreview','getHistoricalStockForensicPreview','getExternalDiningAudit','getNutritionFinalConsistencyAudit','getCrossPageSyncAudit','getFinalIntegrationAudit','getJointTestReport','getReleaseReadiness','getCoreDataProbe'
-    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan','getPurchaseDateAwareDuplicateInventoryPreview','getInventoryBatchAllocationPreview','getInventoryReconciliationRootCauseAudit','previewConfirmedInventoryCorrections','previewReconciliationClosure','getPostCutoverFifoReadinessAudit','getFifoShadowState','previewFifoUsage','getFifoShadowClosureAudit','getFifoActivationSafetyAudit','previewFifoTransaction','getControlledFifoActivationPreflight','getControlledFifoRestorePreflight','getControlledFifoTransactionStatus','getControlledFifoRoundTripAudit','getManualUsageFifoIntegrationAudit','getManualUsageMutationTrace','getPostTransportReceipt','getLatestManualUsagePostTrace','getFifoTransactionIdentityAudit','getWasteFifoIntegrationAudit','getLatestWastePostTrace','getProductionAwareFifoReadinessAudit','getReasonAwareOutflowAudit','getProductionFifoBypassGuardAudit'];
+    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan','getPurchaseDateAwareDuplicateInventoryPreview','getInventoryBatchAllocationPreview','getInventoryReconciliationRootCauseAudit','previewConfirmedInventoryCorrections','previewReconciliationClosure','getPostCutoverFifoReadinessAudit','getFifoShadowState','previewFifoUsage','getFifoShadowClosureAudit','getFifoActivationSafetyAudit','previewFifoTransaction','getControlledFifoActivationPreflight','getControlledFifoRestorePreflight','getControlledFifoTransactionStatus','getControlledFifoRoundTripAudit','getManualUsageFifoIntegrationAudit','getManualUsageMutationTrace','getPostTransportReceipt','getLatestManualUsagePostTrace','getFifoTransactionIdentityAudit','getWasteFifoIntegrationAudit','getLatestWastePostTrace','getProductionAwareFifoReadinessAudit','getReasonAwareOutflowAudit','getProductionFifoBypassGuardAudit','diagnoseProductionMenuReadiness'];
     if(readActions.includes(action))return apiGet({action,...payload});
 
     const timeoutMs=apiTimeoutForAction(action);
@@ -15030,19 +15030,40 @@ function getCategoryEmoji(cat){
         return s!=='PRODUCTION_FIFO_PREVIEW_READY' && s!=='READY' && s!=='EXTERNAL_NO_STOCK';
       });
       const lines=blocked.map(r=>{
-        const reasons=(r.blockers||[]).map(b=>String(b.reason||'BLOCKED'));
-        let extra='';
-        if(reasons.includes('RECIPE_DETAILS_REQUIRED')){
-          const raw=(r.recipeIngredients||[]).filter(x=>!x.detailed);
-          if(!r.dishRecipeExists || !(r.dishRecipeIngredientCount>0)){
-            extra='（没有可用的详细菜谱）';
-          }else if(raw.length){
-            extra='（缺数量/单位：'+raw.map(x=>x.name||'未命名食材').join('、')+'）';
-          }else{
-            extra='（详细食材数量/单位不足）';
+        const blockers=Array.isArray(r.blockers)?r.blockers:[];
+        const reasons=blockers.map(b=>String(b.reason||'BLOCKED'));
+        let details=[];
+
+        blockers.forEach(b=>{
+          const reason=String(b.reason||'BLOCKED');
+          if(reason==='RECIPE_DETAILS_REQUIRED'){
+            const raw=(r.recipeIngredients||[]).filter(x=>!x.detailed);
+            if(!r.dishRecipeExists || !(r.dishRecipeIngredientCount>0)){
+              details.push('没有可用的详细菜谱');
+            }else if(raw.length){
+              details.push('缺数量/单位：'+raw.map(x=>x.name||'未命名食材').join('、'));
+            }else{
+              details.push('Final Decision 快照与 Dish Recipes 都没有形成可扣减的完整食材明细');
+            }
+          }else if(reason==='INVENTORY_ITEM_NOT_FOUND'){
+            details.push('库存找不到：'+String(b.ingredient||'未知食材'));
+          }else if(reason==='UNIT_NOT_CONVERTIBLE'){
+            details.push(`${b.ingredient||'食材'} 单位无法转换：${b.recipeUnit||'?'} → ${b.inventoryUnit||'?'}`);
+          }else if(reason==='CURRENT_INVENTORY_INSUFFICIENT'){
+            details.push(`${b.inventoryItem||b.ingredient||'食材'} 库存不足：需要 ${b.requiredQty||0}${b.unit||''}，现有 ${b.currentQty||0}${b.unit||''}`);
+          }else if(reason==='FIFO_BATCH_SHORTAGE'){
+            details.push(`${b.inventoryItem||b.ingredient||'食材'} FIFO批次不足：需要 ${b.requiredQty||0}${b.unit||''}，可用 ${b.availableQty||0}${b.unit||''}`);
+          }else if(reason==='FIFO_SHADOW_REVIEW_REQUIRED'){
+            details.push('FIFO shadow 尚有 '+String(b.shadowReviewItems||0)+' 项需要 review');
+          }else if(reason==='ITEM_NOT_FIFO_SHADOW_READY'){
+            details.push(`${b.inventoryItem||b.ingredient||'食材'} 尚未 FIFO shadow ready`);
+          }else if(reason==='FIFO_SHADOW_ITEM_NOT_FOUND'){
+            details.push(`${b.inventoryItem||b.ingredient||'食材'} 没有 FIFO shadow item`);
           }
-        }
-        return `• ${r.dish||r.id}: ${reasons.join(', ')||r.status}${extra}`;
+        });
+
+        const label=r.dish||r.id||'未知菜品';
+        return `• ${label}: ${reasons.join(', ')||r.status||'BLOCKED'}${details.length?'（'+details.join('；')+'）':''}`;
       });
 
       return {
@@ -15050,8 +15071,8 @@ function getCategoryEmoji(cat){
         result,
         message:
           '以下菜品尚不能进行 Production FIFO 确认：\n\n'+
-          lines.join('\n')+
-          '\n\n请先补齐对应菜谱的食材数量和单位；没有写数量的食材不会被 Production FIFO 接受。'
+          (lines.length?lines.join('\n'):'诊断没有返回菜品明细，请刷新页面后重试。')+
+          '\n\n这一步只做只读检查，不会扣库存。'
       };
     }
 
