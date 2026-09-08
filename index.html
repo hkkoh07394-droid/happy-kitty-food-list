@@ -8284,6 +8284,41 @@ textarea::placeholder{
     background:linear-gradient(180deg,rgba(20,25,32,.94),#141920 25%) !important;
   }
 
+
+  /* ======================================================
+     8.9.3.10.2.17.1.2 · Mobile recipe/add modal stability
+     - Modal action buttons stay in normal document flow.
+     - Prevent sticky buttons from covering nutrition fields.
+     ====================================================== */
+  #editRecipeModal .modal-actions,
+  #addDishModal .modal-actions{
+    position:static !important;
+    inset:auto !important;
+    margin:18px 0 0 !important;
+    padding:10px 0 calc(10px + env(safe-area-inset-bottom)) !important;
+    background:transparent !important;
+    box-shadow:none !important;
+  }
+
+  #editRecipeModal .recipe-editor-card,
+  #editRecipeModal .modal-card,
+  #addDishModal .modal-card{
+    padding-bottom:calc(28px + env(safe-area-inset-bottom)) !important;
+    scroll-padding-top:16px !important;
+    scroll-padding-bottom:28px !important;
+  }
+
+  /* iOS: do not let input focus trigger unwanted page centering. */
+  #editRecipeModal input,
+  #editRecipeModal textarea,
+  #editRecipeModal select,
+  #addDishModal input,
+  #addDishModal textarea,
+  #addDishModal select{
+    scroll-margin-top:18px;
+    scroll-margin-bottom:18px;
+  }
+
   /* 库存主窗口 */
   #inventoryModal{
     z-index:9700 !important;
@@ -8367,7 +8402,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17.1.1-production-readiness-readroute-fix">
+<body data-app-build="8.9.3.10.2.17.1.2-mobile-modal-scroll-and-readiness-fix">
 <div class="app-container">
   
   <div class="header">
@@ -9189,7 +9224,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwEXhqjOIB0Qr-7Hee9AORA6WLMqFhT47ViIJMTpeUNRgdftnXCoCjODy6dovcOpA/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyNhuKkEN54CbXjz705A32jNY_FO8-S2BmmKUJTvS89-6a3m12NL-oGhSHPDf1yf6c/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9866,11 +9901,30 @@ async function refreshFromServer(){
       document.getElementById('newDishCat').value = currentCategory === '全部' ? '主食' : currentCategory;
       updateSubcatSelect();
       const modal=document.getElementById('addDishModal');
-      modal.style.display='flex';modal.scrollTop=0;document.body.style.overflow='hidden';
-      setTimeout(() => document.getElementById('newDishName').focus(), 50);
+      if(window.matchMedia('(max-width:1023px)').matches){
+        lockMobilePageScroll8931021712_();
+      }else{
+        document.body.style.overflow='hidden';
+      }
+      modal.style.display='flex';
+      modal.scrollTop=0;
+      const card=modal.querySelector('.modal-card');
+      if(card)card.scrollTop=0;
+      // No autofocus on mobile: iOS otherwise moves the viewport to the input.
+      if(!window.matchMedia('(max-width:1023px)').matches){
+        setTimeout(() => document.getElementById('newDishName').focus({preventScroll:true}), 50);
+      }
     }
 
-    function closeAddDishModal(){document.getElementById('addDishModal').style.display='none';document.body.style.overflow='';}
+    function closeAddDishModal(){
+      const modal=document.getElementById('addDishModal');
+      if(modal)modal.style.display='none';
+      if(window.matchMedia('(max-width:1023px)').matches){
+        unlockMobilePageScroll8931021712_(true);
+      }else{
+        document.body.style.overflow='';
+      }
+    }
 
     async function addCustomDish() {
       const name = document.getElementById('newDishName').value.trim();
@@ -14003,6 +14057,58 @@ async backendProbe(){
       setTimeout(reconcileMobileLayout,0);
 
 
+
+      let mobilePageScrollLockY8931021712_=null;
+
+      function lockMobilePageScroll8931021712_(){
+        if(!window.matchMedia('(max-width:1023px)').matches)return;
+        if(mobilePageScrollLockY8931021712_!==null)return;
+
+        const y=Math.max(0,window.scrollY||window.pageYOffset||0);
+        mobilePageScrollLockY8931021712_=y;
+
+        document.body.dataset.mobileScrollLockY=String(y);
+        document.body.style.position='fixed';
+        document.body.style.top=`-${y}px`;
+        document.body.style.left='0';
+        document.body.style.right='0';
+        document.body.style.width='100%';
+        document.body.style.overflow='hidden';
+      }
+
+      function unlockMobilePageScroll8931021712_(restore=true){
+        if(!window.matchMedia('(max-width:1023px)').matches){
+          mobilePageScrollLockY8931021712_=null;
+          return;
+        }
+
+        const saved=mobilePageScrollLockY8931021712_!==null
+          ? mobilePageScrollLockY8931021712_
+          : Number(document.body.dataset.mobileScrollLockY||0);
+
+        document.body.style.position='';
+        document.body.style.top='';
+        document.body.style.left='';
+        document.body.style.right='';
+        document.body.style.width='';
+        document.body.style.overflow='';
+        delete document.body.dataset.mobileScrollLockY;
+        mobilePageScrollLockY8931021712_=null;
+
+        if(restore){
+          requestAnimationFrame(()=>window.scrollTo({top:saved,left:0,behavior:'auto'}));
+        }
+      }
+
+      function forceMobilePanelTop8931021712_(){
+        if(!window.matchMedia('(max-width:1023px)').matches)return;
+        const go=()=>window.scrollTo({top:0,left:0,behavior:'auto'});
+        go();
+        requestAnimationFrame(go);
+        setTimeout(go,60);
+        setTimeout(go,220);
+      }
+
       function closeMobileTransientUI(exceptId=''){
         if(!window.matchMedia('(max-width:1023px)').matches)return;
 
@@ -14011,18 +14117,24 @@ async backendProbe(){
           'addExternalFoodModal',
           'inventoryModal',
           'addDishModal',
+          'editRecipeModal',
           'confirmModal',
           'quickBranchModal',
           'quickSourceModal'
         ];
 
+        let hidModal=false;
         modalIds.forEach(id=>{
           if(id===exceptId)return;
           const el=document.getElementById(id);
           if(!el)return;
           el.classList.remove('active','open','show');
-          if(getComputedStyle(el).display!=='none')el.style.display='none';
+          if(getComputedStyle(el).display!=='none'){
+            el.style.display='none';
+            hidModal=true;
+          }
         });
+        if(hidModal)unlockMobilePageScroll8931021712_(true);
 
         const finance=document.getElementById('purchaseFinancePanel');
         if(finance && !String(exceptId).startsWith('finance:')){
@@ -14042,7 +14154,7 @@ async backendProbe(){
 
         const modalOpen=[
           'externalDiningModal','addExternalFoodModal','inventoryModal',
-          'addDishModal','confirmModal','quickBranchModal','quickSourceModal'
+          'addDishModal','editRecipeModal','confirmModal','quickBranchModal','quickSourceModal'
         ].some(id=>{
           const el=document.getElementById(id);
           if(!el)return false;
@@ -14059,9 +14171,10 @@ async backendProbe(){
         const btn=e.target.closest('[data-v2]');
         if(!btn)return;
         closeMobileTransientUI();
+        unlockMobilePageScroll8931021712_(false);
         requestAnimationFrame(()=>{
           normalizeMobileBodyState();
-          window.scrollTo({top:0,behavior:'smooth'});
+          forceMobilePanelTop8931021712_();
         });
       },true);
 
@@ -14115,13 +14228,6 @@ async backendProbe(){
         }else{
           normalizeMobileBodyState();
         }
-      });
-
-
-      document.querySelector('.v2-nav')?.addEventListener('click',e=>{
-        const btn=e.target.closest('[data-v2]');
-        if(!btn || !window.matchMedia('(max-width:1023px)').matches)return;
-        requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}));
       });
 
 
@@ -14271,6 +14377,9 @@ async backendProbe(){
             openRecordTab('history');
             renderFinalDecisions();
             renderShoppingList();
+          }
+          if(window.matchMedia('(max-width:1023px)').matches){
+            forceMobilePanelTop8931021712_();
           }
         });
       });
@@ -14635,18 +14744,26 @@ updateShellRightDate();
 
       const modal=document.getElementById('editRecipeModal');
       if(modal){
+        if(window.matchMedia('(max-width:1023px)').matches){
+          lockMobilePageScroll8931021712_();
+        }else{
+          document.body.style.overflow='hidden';
+        }
         modal.style.setProperty('display','flex','important');
         modal.scrollTop=0;
         const card=modal.querySelector('.recipe-editor-card');
         if(card)card.scrollTop=0;
-        document.body.style.overflow='hidden';
       }
     }
 
     function closeEditRecipeModal(){
       const modal=document.getElementById('editRecipeModal');
       if(modal)modal.style.setProperty('display','none','important');
-      document.body.style.overflow='';
+      if(window.matchMedia('(max-width:1023px)').matches){
+        unlockMobilePageScroll8931021712_(true);
+      }else{
+        document.body.style.overflow='';
+      }
     }
 
     async function saveEditedRecipe(){
@@ -15022,7 +15139,8 @@ function getCategoryEmoji(cat){
 
 
     async function productionMenuReadinessPreflight893102171_(ids){
-      const result=await apiRequest('diagnoseProductionMenuReadiness',{ids:[...(ids||[])]},null);
+      const idList=Array.isArray(ids)?ids:[...ids||[]];
+      const result=await apiRequest('diagnoseProductionMenuReadiness',{idsJson:JSON.stringify(idList)},null);
       if(!result || result.status==='PRODUCTION_MENU_READINESS_READY') return {ready:true,result};
 
       const blocked=(result.rows||[]).filter(r=>{
