@@ -8481,7 +8481,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17.1.3-live-recipe-shadow-and-mobile-modal-fix">
+<body data-app-build="8.9.3.10.2.17.1.5-manual-opening-fifo">
 <div class="app-container">
   
   <div class="header">
@@ -9303,7 +9303,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbxHyHlqoeZERQbhsVHoJL2dCkWXXtZNV-noYAit_BkDnD1SoT_IdSb0DzRthMy4YYk/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbzEWhz1W-U42GtP__o4xvURVVF32QzQ36yU5U9DILa4qjcfWKdLdguafYVSOYVem8Q/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -9462,7 +9462,7 @@ async function apiRequest(action,payload={},refreshAction=null){
       'ping','getAll','getInventory','getStockState','getDuplicatePurchaseStock','getFamilyMembers',
       'getPurchases','getStores','getOrdersState','getMealSettings','getDishRecipes',
       'getExternalFoods','getAppStateSnapshot','healthCheck','getApiContract','getMenuStockIntegrity','getWorkbookLayout','getPretestAudit','getSmokeTest','getFunctionalReadiness','getOrderFinalConsistency','getFinalStockCycleAudit','getFinalMenuStockReadiness','getStockLedgerCleanupPreview','getPurchaseStableLedgerPreview','getLegacyPurchaseCleanupPreview','getLegacyPurchaseMatcherPreview','getFinalLegacyPurchaseCleanupPreview','getCanonicalStockLedgerAudit','getUsageLedgerPreview','getUsageSourceMatcherPreview','getUsageCanonicalizationPreview','getUsageLedgerAudit','getRestoreLedgerPreview','getRestoreLedgerAudit','getMultiCycleLedgerAudit','getFinalStockIntegrationAudit','getFinalUsageLifecycleAudit','getControlledRestorePreflight','getControlledReconfirmPreflight','getStockAppliedFlagReconcilePreview','previewRestoreForFinalDecision','previewFinalMenuStock','getPurchasePriceCycleAudit','getShoppingLoopAudit','getHistoricalStockReconcilePreview','getHistoricalStockForensicPreview','getExternalDiningAudit','getNutritionFinalConsistencyAudit','getCrossPageSyncAudit','getFinalIntegrationAudit','getJointTestReport','getReleaseReadiness','getCoreDataProbe'
-    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan','getPurchaseDateAwareDuplicateInventoryPreview','getInventoryBatchAllocationPreview','getInventoryReconciliationRootCauseAudit','previewConfirmedInventoryCorrections','previewReconciliationClosure','getPostCutoverFifoReadinessAudit','getFifoShadowState','previewFifoUsage','getFifoShadowClosureAudit','getFifoActivationSafetyAudit','previewFifoTransaction','getControlledFifoActivationPreflight','getControlledFifoRestorePreflight','getControlledFifoTransactionStatus','getControlledFifoRoundTripAudit','getManualUsageFifoIntegrationAudit','getManualUsageMutationTrace','getPostTransportReceipt','getLatestManualUsagePostTrace','getFifoTransactionIdentityAudit','getWasteFifoIntegrationAudit','getLatestWastePostTrace','getProductionAwareFifoReadinessAudit','getReasonAwareOutflowAudit','getProductionFifoBypassGuardAudit','diagnoseProductionMenuReadiness'];
+    ,'getNutritionIntegrationDiagnostic','getNutritionReconciliationPreview','getNutritionReconciliationAudit','getNutritionSourceAudit','getNutritionDataModelAudit','getNutritionSchemaProvenancePreflight','getControlledNutritionRepairPreview','getControlledNutritionRepairPreflight','getControlledNutritionRepairAudit','getNutritionCellFormatRepairPreflight','getNutritionCellFormatRepairAudit','getNutritionReconciliationPreviewV2','getPartialNutritionReconciliationPreflight','getPartialNutritionReconciliationAudit','getPendingNutritionResolutionPreview','getControlledNutritionEntryAudit','previewControlledNutritionEntry','getFinalSystemIntegrityAudit','getCanonicalNutritionDashboard','getCanonicalNutritionWeeklyTrend','getCanonicalNutritionMonthlyTrend','getNutritionOutlierTraceAudit','previewHotpotNutritionMealCorrection','getHotpotNutritionMealCorrectionAudit','getIngredientReadinessForecast','getInventoryRecoveryPreview','getInventoryRecoveryPlan','getPurchaseDateAwareDuplicateInventoryPreview','getInventoryBatchAllocationPreview','getInventoryReconciliationRootCauseAudit','previewConfirmedInventoryCorrections','previewReconciliationClosure','getPostCutoverFifoReadinessAudit','getFifoShadowState','previewFifoUsage','getFifoShadowClosureAudit','getFifoActivationSafetyAudit','previewFifoTransaction','getControlledFifoActivationPreflight','getControlledFifoRestorePreflight','getControlledFifoTransactionStatus','getControlledFifoRoundTripAudit','getManualUsageFifoIntegrationAudit','getManualUsageMutationTrace','getPostTransportReceipt','getLatestManualUsagePostTrace','getFifoTransactionIdentityAudit','getWasteFifoIntegrationAudit','getLatestWastePostTrace','getProductionAwareFifoReadinessAudit','getReasonAwareOutflowAudit','getProductionFifoBypassGuardAudit','diagnoseProductionMenuReadiness','previewLegacyOpeningShadowClosure'];
     if(readActions.includes(action))return apiGet({action,...payload});
 
     const timeoutMs=apiTimeoutForAction(action);
@@ -9967,6 +9967,33 @@ async function refreshFromServer(){
       const select = document.getElementById('newDishSubcat');
       const subcats = [...new Set([...(subcatMap[cat] || []), ...dishCatalog.filter(d => d.cat === cat).map(d => d.subcat).filter(Boolean), '其他'])];
       select.innerHTML = subcats.map(sub => `<option value="${escapeHtml(sub)}">${escapeHtml(sub)}</option>`).join('');
+    }
+
+
+    /* ======================================================
+       8.9.3.10.2.17.1.4 · GLOBAL mobile modal scroll helpers
+       These must live in global scope because Add/Edit modal functions
+       are global and are called outside the mobile-init closure.
+       ====================================================== */
+    let mobileModalReturnY8931021714_=null;
+
+    function lockMobilePageScroll8931021712_(){
+      if(!window.matchMedia('(max-width:1023px)').matches)return;
+      if(mobileModalReturnY8931021714_===null){
+        mobileModalReturnY8931021714_=Math.max(0,window.scrollY||window.pageYOffset||0);
+      }
+      document.documentElement.classList.add('mobile-modal-open-8931021713');
+      document.body.classList.add('mobile-modal-open-8931021713');
+    }
+
+    function unlockMobilePageScroll8931021712_(restore=true){
+      const saved=mobileModalReturnY8931021714_;
+      document.documentElement.classList.remove('mobile-modal-open-8931021713');
+      document.body.classList.remove('mobile-modal-open-8931021713');
+      mobileModalReturnY8931021714_=null;
+      if(restore && saved!==null){
+        requestAnimationFrame(()=>window.scrollTo({top:saved,left:0,behavior:'auto'}));
+      }
     }
 
     function openAddDishModal() {
@@ -14137,12 +14164,12 @@ async backendProbe(){
 
 
 
-      let mobilePageScrollLockY8931021712_=null;
+      let mobilePageScrollLockY8931021712_LOCAL_LOCAL_=null;
 
       function lockMobilePageScroll8931021712_(){
         if(!window.matchMedia('(max-width:1023px)').matches)return;
-        if(mobilePageScrollLockY8931021712_===null){
-          mobilePageScrollLockY8931021712_=Math.max(0,window.scrollY||window.pageYOffset||0);
+        if(mobilePageScrollLockY8931021712_LOCAL_===null){
+          mobilePageScrollLockY8931021712_LOCAL_=Math.max(0,window.scrollY||window.pageYOffset||0);
         }
         // Do NOT set body position:fixed on iOS. Fixed body was preventing
         // the Add/Edit modal from opening reliably in Safari.
@@ -14151,10 +14178,10 @@ async backendProbe(){
       }
 
       function unlockMobilePageScroll8931021712_(restore=true){
-        const saved=mobilePageScrollLockY8931021712_;
+        const saved=mobilePageScrollLockY8931021712_LOCAL_;
         document.documentElement.classList.remove('mobile-modal-open-8931021713');
         document.body.classList.remove('mobile-modal-open-8931021713');
-        mobilePageScrollLockY8931021712_=null;
+        mobilePageScrollLockY8931021712_LOCAL_=null;
         if(restore && saved!==null){
           requestAnimationFrame(()=>window.scrollTo({top:saved,left:0,behavior:'auto'}));
         }
@@ -15199,8 +15226,28 @@ function getCategoryEmoji(cat){
 
     async function productionMenuReadinessPreflight893102171_(ids){
       const idList=Array.isArray(ids)?ids:[...ids||[]];
-      const result=await apiRequest('diagnoseProductionMenuReadiness',{idsJson:JSON.stringify(idList)},null);
+      let result=await apiRequest('diagnoseProductionMenuReadiness',{idsJson:JSON.stringify(idList)},null);
       if(!result || result.status==='PRODUCTION_MENU_READINESS_READY') return {ready:true,result};
+
+      // 8.9.3.10.2.17.1.5:
+      // Manual/legacy Inventory is allowed to become a FIFO opening baseline
+      // without a Purchase date. Only LEGACY_STOCK qualifies.
+      const shadowReview=Array.isArray(result.shadowReview)?result.shadowReview:[];
+      const allLegacyOpening=shadowReview.length>0 &&
+        shadowReview.every(x=>String(x.allocationStatus||'')==='LEGACY_STOCK');
+
+      if(allLegacyOpening){
+        const opening=await apiRequest('ensureManualOpeningFifo',{},'POST');
+        if(opening && (
+          opening.status==='MANUAL_OPENING_FIFO_READY' ||
+          opening.status==='MANUAL_OPENING_FIFO_NOT_REQUIRED'
+        )){
+          result=await apiRequest('diagnoseProductionMenuReadiness',{idsJson:JSON.stringify(idList)},null);
+          if(!result || result.status==='PRODUCTION_MENU_READINESS_READY'){
+            return {ready:true,result,manualOpening:opening};
+          }
+        }
+      }
 
       const blocked=(result.rows||[]).filter(r=>{
         const s=String(r.status||'');
@@ -15243,10 +15290,12 @@ function getCategoryEmoji(cat){
         return `• ${label}: ${reasons.join(', ')||r.status||'BLOCKED'}${details.length?'（'+details.join('；')+'）':''}`;
       });
 
-      const shadowLines=(result.shadowReview||[]).map(x=>
-        `• ${x.name}: 当前 ${x.currentInventoryQty}${x.unit||''} / FIFO重建 ${x.calculatedRemaining}${x.unit||''} / 差额 ${x.reconciliationDelta}${x.unit||''}`+
-        `${x.allocationStatus?' / '+x.allocationStatus:''}`
-      );
+      const shadowLines=(result.shadowReview||[]).map(x=>{
+        const legacy=String(x.allocationStatus||'')==='LEGACY_STOCK';
+        return `• ${x.name}: 当前 ${x.currentInventoryQty}${x.unit||''} / FIFO重建 ${x.calculatedRemaining}${x.unit||''}`+
+          `${x.allocationStatus?' / '+x.allocationStatus:''}`+
+          (legacy?'（当前有库存，但没有 canonical FIFO opening batch）':'');
+      });
 
       return {
         ready:false,
@@ -15257,7 +15306,7 @@ function getCategoryEmoji(cat){
           (shadowLines.length
             ? '\n\nFIFO Shadow 需要处理的库存项目：\n'+shadowLines.join('\n')
             : '')+
-          '\n\n这一步只做只读检查，不会扣库存。'
+          '\n\n手动库存若属于 LEGACY_STOCK，系统会自动建立 FIFO Opening Batch，不要求 Purchase 日期；其他异常仍会继续阻挡确认。'
       };
     }
 
