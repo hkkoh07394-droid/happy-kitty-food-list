@@ -197,7 +197,86 @@
 
     /* ===== v2.4.1 Modal layer + date input fix ===== */
 
-    /* Inventory remains the base modal */
+  
+  /* ======================================================
+     8.9.3.10.2.17.1.3 · iPhone Add/Edit modal hardening
+     ====================================================== */
+  @media(max-width:1023px){
+    html.mobile-modal-open-8931021713,
+    body.mobile-modal-open-8931021713{
+      overflow-x:hidden !important;
+    }
+
+    #addDishModal,
+    #editRecipeModal{
+      position:fixed !important;
+      inset:0 !important;
+      width:100vw !important;
+      height:100dvh !important;
+      max-width:none !important;
+      z-index:1200 !important;
+      overflow-y:auto !important;
+      overflow-x:hidden !important;
+      align-items:flex-start !important;
+      justify-content:center !important;
+      padding:calc(12px + env(safe-area-inset-top)) 12px
+              calc(24px + env(safe-area-inset-bottom)) !important;
+      -webkit-overflow-scrolling:touch;
+      overscroll-behavior:contain;
+    }
+
+    #addDishModal .modal-card,
+    #editRecipeModal .recipe-editor-card{
+      display:block !important;
+      position:relative !important;
+      width:calc(100vw - 24px) !important;
+      max-width:calc(100vw - 24px) !important;
+      min-width:0 !important;
+      height:auto !important;
+      max-height:none !important;
+      margin:0 auto !important;
+      overflow:visible !important;
+      box-sizing:border-box !important;
+    }
+
+    #editRecipeMethod{
+      width:100% !important;
+      min-width:0 !important;
+      max-width:100% !important;
+      height:96px !important;
+    }
+
+    #addDishModal .form-group,
+    #editRecipeModal .form-group,
+    #addDishModal .v2-field,
+    #editRecipeModal .v2-field{
+      min-width:0 !important;
+      width:100% !important;
+      max-width:100% !important;
+      box-sizing:border-box !important;
+    }
+
+    #addDishModal input,
+    #addDishModal select,
+    #addDishModal textarea,
+    #editRecipeModal input,
+    #editRecipeModal select,
+    #editRecipeModal textarea{
+      max-width:100% !important;
+      box-sizing:border-box !important;
+    }
+
+    #addDishModal .modal-actions,
+    #editRecipeModal .modal-actions{
+      display:flex !important;
+      position:static !important;
+      gap:10px !important;
+      margin-top:16px !important;
+      padding:10px 0 4px !important;
+    }
+  }
+
+  /* Inventory remains the base modal */
     #inventoryModal {
       z-index: 220 !important;
     }
@@ -8402,7 +8481,7 @@ textarea::placeholder{
 </style>
 
 </head>
-<body data-app-build="8.9.3.10.2.17.1.2-mobile-modal-scroll-and-readiness-fix">
+<body data-app-build="8.9.3.10.2.17.1.3-live-recipe-shadow-and-mobile-modal-fix">
 <div class="app-container">
   
   <div class="header">
@@ -9224,7 +9303,7 @@ textarea::placeholder{
   // ===== v2.4 小票价格模式 =====
   // ===== Google Sheets API =====
   // After deploying Code.gs as a Web App, paste the /exec URL here.
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyNhuKkEN54CbXjz705A32jNY_FO8-S2BmmKUJTvS89-6a3m12NL-oGhSHPDf1yf6c/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxHyHlqoeZERQbhsVHoJL2dCkWXXtZNV-noYAit_BkDnD1SoT_IdSb0DzRthMy4YYk/exec';
 
   // Part 5.8.1:
   // Normal Google Sheet/API loading has NO client-side timeout.
@@ -14062,40 +14141,21 @@ async backendProbe(){
 
       function lockMobilePageScroll8931021712_(){
         if(!window.matchMedia('(max-width:1023px)').matches)return;
-        if(mobilePageScrollLockY8931021712_!==null)return;
-
-        const y=Math.max(0,window.scrollY||window.pageYOffset||0);
-        mobilePageScrollLockY8931021712_=y;
-
-        document.body.dataset.mobileScrollLockY=String(y);
-        document.body.style.position='fixed';
-        document.body.style.top=`-${y}px`;
-        document.body.style.left='0';
-        document.body.style.right='0';
-        document.body.style.width='100%';
-        document.body.style.overflow='hidden';
+        if(mobilePageScrollLockY8931021712_===null){
+          mobilePageScrollLockY8931021712_=Math.max(0,window.scrollY||window.pageYOffset||0);
+        }
+        // Do NOT set body position:fixed on iOS. Fixed body was preventing
+        // the Add/Edit modal from opening reliably in Safari.
+        document.documentElement.classList.add('mobile-modal-open-8931021713');
+        document.body.classList.add('mobile-modal-open-8931021713');
       }
 
       function unlockMobilePageScroll8931021712_(restore=true){
-        if(!window.matchMedia('(max-width:1023px)').matches){
-          mobilePageScrollLockY8931021712_=null;
-          return;
-        }
-
-        const saved=mobilePageScrollLockY8931021712_!==null
-          ? mobilePageScrollLockY8931021712_
-          : Number(document.body.dataset.mobileScrollLockY||0);
-
-        document.body.style.position='';
-        document.body.style.top='';
-        document.body.style.left='';
-        document.body.style.right='';
-        document.body.style.width='';
-        document.body.style.overflow='';
-        delete document.body.dataset.mobileScrollLockY;
+        const saved=mobilePageScrollLockY8931021712_;
+        document.documentElement.classList.remove('mobile-modal-open-8931021713');
+        document.body.classList.remove('mobile-modal-open-8931021713');
         mobilePageScrollLockY8931021712_=null;
-
-        if(restore){
+        if(restore && saved!==null){
           requestAnimationFrame(()=>window.scrollTo({top:saved,left:0,behavior:'auto'}));
         }
       }
@@ -14106,7 +14166,6 @@ async backendProbe(){
         go();
         requestAnimationFrame(go);
         setTimeout(go,60);
-        setTimeout(go,220);
       }
 
       function closeMobileTransientUI(exceptId=''){
@@ -15184,12 +15243,20 @@ function getCategoryEmoji(cat){
         return `• ${label}: ${reasons.join(', ')||r.status||'BLOCKED'}${details.length?'（'+details.join('；')+'）':''}`;
       });
 
+      const shadowLines=(result.shadowReview||[]).map(x=>
+        `• ${x.name}: 当前 ${x.currentInventoryQty}${x.unit||''} / FIFO重建 ${x.calculatedRemaining}${x.unit||''} / 差额 ${x.reconciliationDelta}${x.unit||''}`+
+        `${x.allocationStatus?' / '+x.allocationStatus:''}`
+      );
+
       return {
         ready:false,
         result,
         message:
           '以下菜品尚不能进行 Production FIFO 确认：\n\n'+
           (lines.length?lines.join('\n'):'诊断没有返回菜品明细，请刷新页面后重试。')+
+          (shadowLines.length
+            ? '\n\nFIFO Shadow 需要处理的库存项目：\n'+shadowLines.join('\n')
+            : '')+
           '\n\n这一步只做只读检查，不会扣库存。'
       };
     }
